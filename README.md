@@ -19,11 +19,11 @@ Officially supported Spark versions: 1.6+
  
  - python >= 2.7 . Python 3+ should work but has not been tested.
  
- - The python TensorFlow package if you want to use the python interface. See the 
+ - (Optional) the python TensorFlow package if you want to use the python interface. See the 
  [official instructions](https://www.tensorflow.org/versions/r0.7/get_started/os_setup.html#download-and-setup)
   on how to get the latest release of TensorFlow.
 
-Additionally, if you want to run unit tests, you need the following dependencies:
+Additionally, if you want to run unit tests for python, you need the following dependencies:
 
  - nose >= 1.3 
 
@@ -40,7 +40,7 @@ build/sbt assembly
 
 ## How to run in python
 
-You must compile the assembly first:
+You must compile the assembly first.
 
 Then, assuming that `SPARK_HOME` is set and that you are at the project root, 
 you can use PySpark:
