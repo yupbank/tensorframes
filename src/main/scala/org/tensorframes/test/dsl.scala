@@ -1,0 +1,216 @@
+package org.tensorframes.test
+
+import java.nio.file.{Files, Paths}
+
+import org.apache.spark.sql.types.{DoubleType, NumericType}
+import org.tensorflow.framework._
+import org.tensorframes.Shape
+import org.tensorframes.impl.SupportedOperations
+
+import scala.collection.JavaConverters._
+
+/**
+ * Some testing utilities into what may become a DSL at some point.
+ */
+object dsl {
+
+  import ProtoConversions._
+
+  private implicit class ShapeToAttr(s: Shape) {
+    def toAttr: AttrValue = AttrValue.newBuilder().setShape(buildShape(s)).build()
+  }
+
+  private implicit class SQLTypeToAttr(s: NumericType) {
+    def toAttr: AttrValue = buildType(s)
+  }
+
+  private implicit class DataTypeToAttr(dt: DataType) {
+    def toAttr: AttrValue = dataTypeToAttrValue(dt)
+  }
+
+  implicit class StringToIdentifier(s: String) {
+    def @@(n: Node): Node = n.copy(name = s)
+  }
+
+  implicit class RichDouble(x: Double) {
+    def +(n: Node): Node = {
+      op_add(constant(DoubleType, n.shape), n)
+      ???
+    }
+  }
+
+  private var counter: Int = 0
+
+  case class Node(
+      name: String,
+      opName: String,
+      scalarType: NumericType,
+      shape: Shape,
+      parents: Seq[Node],
+      isOp: Boolean) {
+
+    def node: NodeDef = {
+      val b = NodeDef.newBuilder()
+      b.setName(name)
+      b.setOp(opName)
+      parents.foreach(p => b.addInput(p.name))
+      if (isOp) {
+        b.putAllAttr(Map("T" -> getDType(scalarType).toAttr).asJava)
+      } else {
+        b.putAllAttr(Map(
+          "shape" -> shape.toAttr,
+          "dtype" -> getDType(scalarType).toAttr).asJava)
+      }
+      b.build()
+    }
+
+    def named (newName: String): Node = copy(name = newName)
+
+    def +(other: Node): Node = op_add(this, other)
+  }
+
+  def placeholder(dtype: NumericType, shape: Shape): Node = {
+    build("Placeholder", shape=shape, dtype=dtype, isOp = false)
+  }
+
+  def constant(dtype: NumericType, shape: Shape): Node = {
+    ???
+  }
+
+  def op_id(node: Node): Node = {
+    build("Identity", parents = Seq(node))
+  }
+
+  def op_add(node1: Node, node2: Node): Node = {
+    build("Add", parents=Seq(node1, node2))
+  }
+
+  // Common loading and building
+
+  def buildGraph(nodes: Node*): GraphDef = {
+    var treated: Seq[Node] = Nil
+    nodes.foreach { n =>
+      treated = getClosure(n, treated)
+    }
+    val b = GraphDef.newBuilder()
+    treated.map(_.node).foreach(b.addNode)
+    b.build()
+  }
+
+  def load(file: String): GraphDef = {
+    val byteArray = Files.readAllBytes(Paths.get(file))
+    GraphDef.newBuilder().mergeFrom(byteArray).build()
+  }
+
+  private def commonShape(shapes: Seq[Shape]): Shape = {
+    require(shapes.nonEmpty)
+    require(shapes.forall(_ == shapes.head), s"$shapes")
+    shapes.head
+  }
+
+  private def commonType(dtypes: Seq[NumericType]): NumericType = {
+    require(dtypes.nonEmpty)
+    require(dtypes.forall(_ == dtypes.head))
+    dtypes.head
+  }
+
+  private def build(
+      opName: String,
+      name: String = null,
+      parents: Seq[Node] = Seq.empty,
+      isOp: Boolean = true,
+      dtype: NumericType = null,
+      shape: Shape = null,
+      dtypeInfer: Seq[NumericType] => NumericType = commonType,
+      shapeInfer: Seq[Shape] => Shape = commonShape): Node = {
+    val n = Option(name).getOrElse {
+      counter += 1
+      s"${opName}_$counter"
+    }
+    val dt = Option(dtype).getOrElse(dtypeInfer(parents.map(_.scalarType)))
+    val sh = Option(shape).getOrElse(shapeInfer(parents.map(_.shape)))
+    Node(n, opName, dt, sh, parents, isOp)
+  }
+
+  private def buildShape(s: Shape): TensorShapeProto = {
+    val b = TensorShapeProto.newBuilder()
+    s.dims.foreach { d =>
+      b.addDimBuilder().setSize(d).build()
+    }
+    b.build()
+  }
+
+  private def buildType(sqlType: NumericType): AttrValue = {
+    AttrValue.newBuilder().setType(getDType(sqlType)).build()
+  }
+
+  private def getClosure(node: Node, treated: Seq[Node]): Seq[Node] = {
+    val explored = node.parents
+      .filterNot(n => treated.exists(_.node.getName == n.node.getName))
+      .flatMap(getClosure(_, treated :+ node))
+
+    (node +: explored)
+      .groupBy(_.node.getName)
+      .mapValues(_.head).values.toSeq // Remove duplicates using the name
+  }
+
+  // Reducers (unfinished business)
+
+  def reduce_min(
+      input_tensor: Node,
+      reduction_indices: Seq[Int] = null,
+      name: String = null): Node = {
+    // The reducers are not supported, because they require more advanced
+    // implementation features: they build separate nodes for the reduction indices,
+    // which requires storing tensor constants and custom attributes.
+    ???
+  }
+
+
+  private def build_reducer(
+      opName: String,
+      parent: Node,
+      reduction_indices: Seq[Int] = null,
+      name: String = null): Node = {
+    build(opName, name, Seq(parent),
+      dtype = parent.scalarType,
+      shape = reduce_shape(parent.shape, Option(reduction_indices).getOrElse(Nil)))
+  }
+
+  private def reduce_shape(s: Shape, red_indices: Seq[Int]): Shape = {
+    require(s.numDims >= red_indices.size)
+    // Special case for empty
+    if (red_indices.isEmpty) {
+      Shape.empty
+    } else {
+      // The remaining dimensions:
+      val rem = s.dims.indices.filterNot(red_indices.contains)
+      Shape(rem: _*)
+    }
+  }
+
+}
+
+/**
+ * Utilities to convert data back and forth between the proto descriptions and the dataframe descriptions.
+ */
+object ProtoConversions {
+  def getDType(nodeDef: NodeDef): DataType = {
+    val opt = Option(nodeDef.getAttr.get("T")).orElse(Option(nodeDef.getAttr.get("dtype")))
+    val v = opt.getOrElse(throw new Exception(s"Neither 'T' no 'dtype' was found in $nodeDef"))
+    v.getType
+  }
+
+  def getDType(sqlType: NumericType): DataType = {
+    SupportedOperations.opsFor(sqlType).tfType
+  }
+
+  def sqlTypeToAttrValue(sqlType: NumericType): AttrValue = {
+    AttrValue.newBuilder().setType(getDType(sqlType)).build()
+  }
+
+  def dataTypeToAttrValue(dataType: DataType): AttrValue = {
+    AttrValue.newBuilder().setType(dataType).build()
+  }
+
+}
