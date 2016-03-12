@@ -1,13 +1,11 @@
 package org.tensorframes
 
-import scala.reflect.runtime.universe._
-
 import org.scalatest.FunSuite
 import org.tensorframes.impl.DebugRowOps
 import org.tensorframes.test.dsl._
 
 import org.apache.spark.Logging
-import org.apache.spark.sql.{DataFrame, Row}
+import org.apache.spark.sql.Row
 import org.apache.spark.sql.types.{DoubleType, IntegerType}
 
 // Some basic operations that stress shape transforms mostly.

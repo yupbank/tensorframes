@@ -1,6 +1,6 @@
 package org.tensorframes.test
 
-import org.apache.spark.sql.{DataFrame, Row}
+import org.apache.spark.sql.{GroupedData, DataFrame, Row}
 import org.tensorflow.framework.GraphDef
 import org.tensorframes.{OperationsInterface, ShapeDescription}
 import org.tensorframes.impl.{GraphNodeSummary, TensorFlowOps}
@@ -42,6 +42,10 @@ trait DslOperations extends OperationsInterface {
   def reduceBlocks(df: DataFrame, node1: dsl.Node, nodes: dsl.Node*): Row = {
     val ns = node1 +: nodes
     make(ns, df, reduceBlocks)
+  }
+
+  def aggregate(gdf: GroupedData, node1: dsl.Node, nodes: dsl.Node*): DataFrame = {
+    ???
   }
 }
 
