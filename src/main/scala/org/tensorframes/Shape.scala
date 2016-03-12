@@ -26,6 +26,8 @@ class Shape private (private val ds: Array[DimType]) extends Serializable {
    */
   def prepend(x: DimType): Shape = Shape(x +: ds)
 
+  def prepend(x: Int): Shape = Shape(x.toLong +: ds)
+
   /**
    * A shape with the first dimension dropped.
    */
@@ -51,6 +53,14 @@ class Shape private (private val ds: Array[DimType]) extends Serializable {
     var res: Long = 1
     ds.foreach(x => res += res * 31 + x)
     res.toInt
+  }
+
+  private[tensorframes] def toProto: TensorShapeProto = {
+    val b = TensorShapeProto.newBuilder()
+    dims.foreach { d =>
+      b.addDimBuilder().setSize(d).build()
+    }
+    b.build()
   }
 }
 

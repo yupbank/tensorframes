@@ -173,6 +173,13 @@ class BasicOperationsSuite
       Row(Seq(2.0), Seq(2.2), Seq(4.2))))
   }
 
+  test("Constant") {
+    val x = constant(1.0) named "x"
+    val df = sql.createDataFrame(Seq(Tuple1(1))).toDF("a")
+    val df2 = ops.mapRows(df, x).select("a", "x")
+    assert(df2.collect() === Array(Row(1, 1.0)))
+  }
+
 //  test("Reduce block - sum double") {
 //    val df = make1(Seq(1.0, 2.0), "x")
 //    val x1 = placeholder(DoubleType, Shape.empty) named "x_input"

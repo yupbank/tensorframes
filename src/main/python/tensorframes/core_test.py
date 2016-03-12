@@ -86,9 +86,17 @@ class TestCore(object):
             res = tfs.reduce_blocks(x, df)
         assert res == sum([r.x for r in data])
 
-# with tf.Graph().as_default() as g:
-#     x_input = tf.placeholder(tf.double, shape=[2, 3], name="x_input")
-#     x = tf.reduce_sum(x_input, [0], name='x')
-#     print g.as_graph_def()
+if __name__ == "__main__":
+    # Some testing stuff that should not be executed
+    with tf.Graph().as_default() as g:
+        x_input = tf.placeholder(tf.double, shape=[2, 3], name="x_input")
+        x = tf.reduce_sum(x_input, [0], name='x')
+        print g.as_graph_def()
 
+    with tf.Graph().as_default() as g:
+        tf.constant(1, name="x1")
+        tf.constant(1.0, name="x2")
+        tf.constant([1.0], name="x3")
+        tf.constant([1.0, 2.0], name="x4")
+        print g.as_graph_def()
 

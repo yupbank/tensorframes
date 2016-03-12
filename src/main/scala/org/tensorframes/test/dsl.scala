@@ -5,9 +5,10 @@ import java.nio.file.{Files, Paths}
 import org.apache.spark.sql.types.{DoubleType, NumericType}
 import org.tensorflow.framework._
 import org.tensorframes.Shape
-import org.tensorframes.impl.SupportedOperations
+import org.tensorframes.impl.{DenseTensor, SupportedOperations}
 
 import scala.collection.JavaConverters._
+import scala.reflect.runtime.universe._
 
 /**
  * Some testing utilities into what may become a DSL at some point.
@@ -28,14 +29,9 @@ object dsl {
     def toAttr: AttrValue = dataTypeToAttrValue(dt)
   }
 
-  implicit class StringToIdentifier(s: String) {
-    def @@(n: Node): Node = n.copy(name = s)
-  }
-
   implicit class RichDouble(x: Double) {
     def +(n: Node): Node = {
-      op_add(constant(DoubleType, n.shape), n)
-      ???
+      op_add(constant(x), n)
     }
   }
 
@@ -47,7 +43,8 @@ object dsl {
       scalarType: NumericType,
       shape: Shape,
       parents: Seq[Node],
-      isOp: Boolean) {
+      isOp: Boolean,
+      extraAttr: Map[String, AttrValue]) {
 
     def node: NodeDef = {
       val b = NodeDef.newBuilder()
@@ -61,6 +58,7 @@ object dsl {
           "shape" -> shape.toAttr,
           "dtype" -> getDType(scalarType).toAttr).asJava)
       }
+      b.putAllAttr(extraAttr.asJava)
       b.build()
     }
 
@@ -73,8 +71,12 @@ object dsl {
     build("Placeholder", shape=shape, dtype=dtype, isOp = false)
   }
 
-  def constant(dtype: NumericType, shape: Shape): Node = {
-    ???
+  def constant[T : Numeric : TypeTag](x: T): Node = {
+    build_constant(DenseTensor(x))
+  }
+
+  def constant[T : Numeric : TypeTag](x: Seq[T]): Node = {
+    build_constant(DenseTensor(x))
   }
 
   def op_id(node: Node): Node = {
@@ -122,23 +124,18 @@ object dsl {
       dtype: NumericType = null,
       shape: Shape = null,
       dtypeInfer: Seq[NumericType] => NumericType = commonType,
-      shapeInfer: Seq[Shape] => Shape = commonShape): Node = {
+      shapeInfer: Seq[Shape] => Shape = commonShape,
+      extraAttrs: Map[String, AttrValue] = Map.empty): Node = {
     val n = Option(name).getOrElse {
       counter += 1
       s"${opName}_$counter"
     }
     val dt = Option(dtype).getOrElse(dtypeInfer(parents.map(_.scalarType)))
     val sh = Option(shape).getOrElse(shapeInfer(parents.map(_.shape)))
-    Node(n, opName, dt, sh, parents, isOp)
+    Node(n, opName, dt, sh, parents, isOp, extraAttrs)
   }
 
-  private def buildShape(s: Shape): TensorShapeProto = {
-    val b = TensorShapeProto.newBuilder()
-    s.dims.foreach { d =>
-      b.addDimBuilder().setSize(d).build()
-    }
-    b.build()
-  }
+  private def buildShape(s: Shape): TensorShapeProto = s.toProto
 
   private def buildType(sqlType: NumericType): AttrValue = {
     AttrValue.newBuilder().setType(getDType(sqlType)).build()
@@ -152,6 +149,13 @@ object dsl {
     (node +: explored)
       .groupBy(_.node.getName)
       .mapValues(_.head).values.toSeq // Remove duplicates using the name
+  }
+
+  private def build_constant(dt: DenseTensor): Node = {
+    val a = AttrValue.newBuilder().setTensor(DenseTensor.toTensorProto(dt))
+    build("Const", isOp = false,
+      shape = dt.shape, dtype = dt.dtype,
+      extraAttrs = Map("value" -> a.build()))
   }
 
   // Reducers (unfinished business)

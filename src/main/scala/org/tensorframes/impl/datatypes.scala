@@ -28,7 +28,7 @@ private sealed abstract class TensorConverter[T : TypeTag] (
    */
   def reserve(): Unit
 
-  protected def appendRaw(t: T): Unit
+  def appendRaw(t: T): Unit
 
   def append(row: Row, position: Int): Unit = {
     require(shape.dims.size <= 1)
@@ -43,6 +43,18 @@ private sealed abstract class TensorConverter[T : TypeTag] (
   }
 
   def tensor(): jtf.Tensor
+
+  protected def byteBuffer(): ByteBuffer
+
+  def toByteArray(): Array[Byte] = {
+    val buff = byteBuffer()
+    val pos = buff.position()
+    buff.rewind()
+    val res = Array.fill[Byte](buff.limit())(0)
+    buff.put(res)
+    buff.position(pos)
+    res
+  }
 }
 
 
@@ -65,12 +77,12 @@ private[impl] sealed abstract class ScalarTypeOperation[T : TypeTag] {
   val tfType: DataType
 
   /**
-   * Returns a new converter for Array[Row] -> Tensor
+   * Returns a new converter for Array[Row] -> DenseTensor
    */
   def tfConverter(cellShape: Shape, numCells: Int): TensorConverter[T]
 
   /**
-   * The conversion of Tensor -> Row stuff.
+   * The conversion of DenseTensor -> Row stuff.
  *
    * @param numElements the number of elements expected to be found in the tensor.
    */
@@ -78,6 +90,8 @@ private[impl] sealed abstract class ScalarTypeOperation[T : TypeTag] {
   def convertBuffer(buff: ByteBuffer, numElements: Int): Iterable[Any]
 
   def convertBuffer(buff: ByteBuffer): IndexedSeq[Any]
+
+  def tag: TypeTag[_] = implicitly[TypeTag[T]]
 }
 
 private[tensorframes] object SupportedOperations {
@@ -100,6 +114,15 @@ private[tensorframes] object SupportedOperations {
       throw new IllegalArgumentException(s"Type $t is not supported. Only the following types are" +
         s"supported: ${tfTypes.mkString(", ")}")
     }
+  }
+
+  def getOps[T : TypeTag](): ScalarTypeOperation[T] = {
+    val ev: TypeTag[_] = implicitly[TypeTag[T]]
+    ops.find(_.tag.tpe =:= ev.tpe).getOrElse {
+      val tags = ops.map(_.tag.toString()).mkString(", ")
+      throw new IllegalArgumentException(s"Type ${ev} is not supported. Only the following types " +
+        s"are supported: ${tags}")
+    }   .asInstanceOf[ScalarTypeOperation[T]]
   }
 
   def hasOps(x: Any): Boolean = x match {
@@ -126,7 +149,7 @@ private class DoubleTensorConverter(s: Shape, numCells: Int)
     logDebug(s"s2=$s2 phys=${TensorFlowOps.jtfShape(physicalShape)}")
     _tensor = new jtf.Tensor(jtf.TF_DOUBLE, physicalShape)
     logDebug(s"alloc=${TensorFlowOps.jtfShape(_tensor.shape())}")
-    buffer = _tensor.tensor_data().asByteBuffer().asDoubleBuffer()
+    buffer = byteBuffer().asDoubleBuffer()
     buffer.rewind()
   }
 
@@ -135,6 +158,8 @@ private class DoubleTensorConverter(s: Shape, numCells: Int)
   }
 
   override def tensor(): jtf.Tensor = _tensor
+
+  override def byteBuffer(): ByteBuffer =  _tensor.tensor_data().asByteBuffer()
 }
 
 private object DoubleOperations extends ScalarTypeOperation[Double] with Logging {
@@ -183,7 +208,7 @@ private class IntTensorConverter(s: Shape, numCells: Int)
     logDebug(s"s2=$s2 phys=${TensorFlowOps.jtfShape(physicalShape)}")
     _tensor = new jtf.Tensor(jtf.TF_INT32, physicalShape)
     logDebug(s"alloc=${TensorFlowOps.jtfShape(_tensor.shape())}")
-    buffer = _tensor.tensor_data().asByteBuffer().asIntBuffer()
+    buffer =byteBuffer().asIntBuffer()
     buffer.rewind()
   }
 
@@ -192,6 +217,8 @@ private class IntTensorConverter(s: Shape, numCells: Int)
   }
 
   override def tensor(): jtf.Tensor = _tensor
+
+  override def byteBuffer(): ByteBuffer =  _tensor.tensor_data().asByteBuffer()
 }
 
 private object IntOperations extends ScalarTypeOperation[Int] with Logging {
@@ -234,7 +261,7 @@ private class LongTensorConverter(s: Shape, numCells: Int)
     logDebug(s"s2=$s2 phys=${TensorFlowOps.jtfShape(physicalShape)}")
     _tensor = new jtf.Tensor(jtf.TF_INT64, physicalShape)
     logDebug(s"alloc=${TensorFlowOps.jtfShape(_tensor.shape())}")
-    buffer = _tensor.tensor_data().asByteBuffer().asLongBuffer()
+    buffer = byteBuffer().asLongBuffer()
     buffer.rewind()
   }
 
@@ -243,6 +270,8 @@ private class LongTensorConverter(s: Shape, numCells: Int)
   }
 
   override def tensor(): jtf.Tensor = _tensor
+
+  override def byteBuffer(): ByteBuffer =  _tensor.tensor_data().asByteBuffer()
 }
 
 private object LongOperations extends ScalarTypeOperation[Long] with Logging {
