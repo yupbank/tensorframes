@@ -1,6 +1,6 @@
 package org.tensorframes
 
-import org.apache.spark.sql.{Row, DataFrame}
+import org.apache.spark.sql.{GroupedData, Row, DataFrame}
 import org.tensorflow.framework.GraphDef
 
 
@@ -41,12 +41,6 @@ trait OperationsInterface {
   @throws[InvalidDimensionException]("If some data in the dataframe has the wrong shape to be accepted by TF")
   @throws[InvalidDimensionException]("If some data in the dataframe has the wrong datatype to be accepted by TF")
   def mapRows(dataframe: DataFrame, graph: GraphDef, shapeHints: ShapeDescription): DataFrame
-  // Input validation
-  //  - the graph loads
-  //  - the inputs are all filled
-  //  - the inputs have the proper dimension (to the extent we can check that)
-  //  - the output is defined in the graph
-  //  - the output does not collide with existing columns
 
   /**
    * Transforms the data in a dataframe by applying transforms in blocks of data.
@@ -95,6 +89,24 @@ trait OperationsInterface {
    * @return
    */
   def reduceBlocks(dataFrame: DataFrame, graph: GraphDef, shapeHints: ShapeDescription): Row
+
+  /**
+   * Aggregates rows together, using a reducing transform on grouped data.
+   *
+   * This is useful when data is already grouped by key.
+   *
+   * This example computes the minimum for each key of some dataset:
+   *
+   * ???
+   *
+   * Only numerical data is supported at present.
+   *
+   * @param data the grouped data.
+   * @param graph the computation graph. It is subject to the same conditions as in [reduceBlocks].
+   * @param shapeHints some hints for the shape.
+   * @return
+   */
+  def aggregate(data: GroupedData, graph: GraphDef, shapeHints: ShapeDescription): DataFrame
 
   /**
    * A string that contains detailed information about a dataframe, in particular relevant information

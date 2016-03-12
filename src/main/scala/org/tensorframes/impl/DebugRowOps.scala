@@ -4,7 +4,7 @@ import org.apache.spark.Logging
 import org.apache.spark.broadcast.Broadcast
 import org.apache.spark.sql.catalyst.expressions.GenericRowWithSchema
 import org.apache.spark.sql.types.StructType
-import org.apache.spark.sql.{DataFrame, Row}
+import org.apache.spark.sql.{GroupedData, DataFrame, Row}
 import org.bytedeco.javacpp.{tensorflow => jtf}
 import org.tensorflow.framework.GraphDef
 import org.tensorframes._
@@ -417,6 +417,11 @@ class DebugRowOps
     }
     builder.toString()
   }
+
+  override def aggregate(
+      data: GroupedData,
+      graph: GraphDef,
+      shapeHints: ShapeDescription): DataFrame = ???
 }
 
 object DebugRowOpsImpl extends Logging {
