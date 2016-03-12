@@ -5,6 +5,7 @@ package org.tensorframes
  * to the interface
  */
 // TODO: rename to TFExtraInfo (?)
+// TODO: add the ordering of the column?
 // It should also include: a specific subset of columns (if requested)
 // Some data constants to be used to fill the placeholders
 case class ShapeDescription(out: Map[String, Shape]) {

@@ -38,6 +38,11 @@ trait DslOperations extends OperationsInterface {
     val ns = node1 +: nodes
     make(ns, df, reduceRows)
   }
+
+  def reduceBlocks(df: DataFrame, node1: dsl.Node, nodes: dsl.Node*): Row = {
+    val ns = node1 +: nodes
+    make(ns, df, reduceBlocks)
+  }
 }
 
 object DslOperations {

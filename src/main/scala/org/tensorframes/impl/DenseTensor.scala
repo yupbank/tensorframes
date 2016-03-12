@@ -1,6 +1,6 @@
 package org.tensorframes.impl
 
-import java.nio.ByteBuffer
+import java.nio.{ByteOrder, ByteBuffer}
 
 import scala.collection.JavaConverters._
 import scala.reflect.runtime.universe._
@@ -47,7 +47,7 @@ private[tensorframes] object DenseTensor {
 
   private def convert[T](xs: Seq[T])(implicit ev1: Numeric[T], ev2: TypeTag[T]): Array[Byte] = {
     val ops = SupportedOperations.getOps[T]()
-    val conv = ops.tfConverter(Shape.empty, 1)
+    val conv = ops.tfConverter(Shape.empty, xs.size)
     conv.reserve()
     xs.foreach(conv.appendRaw)
     conv.toByteArray()
@@ -59,7 +59,8 @@ private[tensorframes] object DenseTensor {
     val ops = SupportedOperations.opsFor(t.dtype)
     b.setTensorShape(t.shape.toProto)
     b.setDtype(ops.tfType)
-    val rawBuffer = ByteBuffer.wrap(t.data)
+    // Watch out for the bit order. It seems that wrapping does not use the same ordering.
+    val rawBuffer = ByteBuffer.wrap(t.data).order(ByteOrder.LITTLE_ENDIAN)
     ops.sqlType match {
       case DoubleType =>
         val buff = rawBuffer.asDoubleBuffer()

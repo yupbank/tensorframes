@@ -281,6 +281,8 @@ class DebugRowOps
       StructType(outputTFSchema ++ dataframe.schema.fields)
     }
 
+    logDebug(s"mapBlocks: TF input schema = $inputSchema, complete output schema = $outputSchema")
+
     val gProto = sc.broadcast(TensorFlowOps.graphSerial(graph))
     val transformRdd = dataframe.rdd.mapPartitions { it =>
       DebugRowOpsImpl.performMap(
@@ -344,7 +346,7 @@ class DebugRowOps
     // The column indices requested by TF
     val requestedTFInput: Array[Int] = {
       val colIdxs = dataframe.schema.fieldNames.zipWithIndex.toMap
-      dataframe.schema.fieldNames.map { name => colIdxs(name) }
+      inputs.keys.map { name => colIdxs(name) }   .toArray
     }
     // Full output schema, including data being passed through and validated for duplicates.
     // The first columns are the TF columns, followed by all the other columns.
@@ -352,7 +354,10 @@ class DebugRowOps
       StructType(outputTFSchema ++ dataframe.schema.fields)
     }
 
+
     val schema = dataframe.schema // Classic rookie mistake...
+    logDebug(s"mapRows: input schema = $schema, requested cols: ${requestedTFInput.toSeq}" +
+      s" complete output schema = $outputSchema")
     val gProto = sc.broadcast(TensorFlowOps.graphSerial(graph))
     val transformRdd = dataframe.rdd.mapPartitions { it =>
       DebugRowOpsImpl.performMapRows(
@@ -426,6 +431,9 @@ class DebugRowOps
 
 object DebugRowOpsImpl extends Logging {
 
+  // Trying to get around some frequent crashes within TF.
+  private[this] val tfLock = new Object
+
   private[impl] def reducePair(
       schema: StructType,
       gbc: Broadcast[Array[Byte]]): (Row, Row) => Row = {
@@ -475,7 +483,7 @@ object DebugRowOpsImpl extends Logging {
       val outputs = new jtf.TensorVector()
       val requested = TensorFlowOps.stringVector(tfOutputSchema.map(_.name))
       val skipped = new jtf.StringVector()
-      val s3 = session.Run(stpv, requested, skipped, outputs)
+      val s3 = tfLock.synchronized { session.Run(stpv, requested, skipped, outputs) }
       assert(s3.ok(), s3.error_message().getString)
       DataOps.convertBack(outputs, tfOutputSchema, input, inputSchema)
     }
@@ -509,7 +517,7 @@ object DebugRowOpsImpl extends Logging {
         val stpv = DataOps.convert(row, inputSchema, inputTFCols)
         val outputs = new jtf.TensorVector()
         val skipped = new jtf.StringVector()
-        val s3 = session.Run(stpv, requested, skipped, outputs)
+        val s3 = tfLock.synchronized { session.Run(stpv, requested, skipped, outputs) }
         assert(s3.ok(), s3.error_message().getString)
         DataOps.convertBack(outputs, tfOutputSchema, Array(row), inputSchema) match {
           case Array(r) => r
@@ -550,7 +558,7 @@ object DebugRowOpsImpl extends Logging {
       val outputs = new jtf.TensorVector()
       val requested = TensorFlowOps.stringVector(schema.map(_.name))
       val skipped = new jtf.StringVector()
-      val s3 = session.Run(stpv, requested, skipped, outputs)
+      val s3 = tfLock.synchronized { session.Run(stpv, requested, skipped, outputs) }
       assert(s3.ok(), s3.error_message().getString)
       val emptyRows = Array.fill(1)(emptyRow)
       DataOps.convertBack(outputs, schema, emptyRows, emptySchema).head
@@ -594,7 +602,7 @@ object DebugRowOpsImpl extends Logging {
         val outputs = new jtf.TensorVector()
         val requested = TensorFlowOps.stringVector(schema.map(_.name))
         val skipped = new jtf.StringVector()
-        val s3 = session.Run(stpv, requested, skipped, outputs)
+        val s3 = tfLock.synchronized { session.Run(stpv, requested, skipped, outputs) }
         assert(s3.ok(), s3.error_message().getString)
         // Fill in with an empty row, because we are not passing the rest of of the data.
         val emptyRows = Array.fill(1)(emptyRow)

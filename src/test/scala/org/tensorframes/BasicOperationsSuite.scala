@@ -1,14 +1,14 @@
 package org.tensorframes
 
-import org.apache.spark.Logging
-import org.apache.spark.sql.types.{DoubleType, IntegerType}
-import org.apache.spark.sql.{DataFrame, Row}
+import scala.reflect.runtime.universe._
+
 import org.scalatest.FunSuite
 import org.tensorframes.impl.DebugRowOps
-import org.tensorframes.test.dsl
 import org.tensorframes.test.dsl._
 
-import scala.reflect.runtime.universe._
+import org.apache.spark.Logging
+import org.apache.spark.sql.{DataFrame, Row}
+import org.apache.spark.sql.types.{DoubleType, IntegerType}
 
 // Some basic operations that stress shape transforms mostly.
 class BasicOperationsSuite
@@ -17,10 +17,6 @@ class BasicOperationsSuite
   import Shape.Unknown
 
   val ops = new DebugRowOps
-
-  def make1[T : TypeTag](xs: Seq[T], col: String): DataFrame = {
-    sql.createDataFrame(xs.map(Tuple1.apply)).toDF(col)
-  }
 
   test("Identity") {
     val df = make1(Seq(1.0, 2.0), "in")
@@ -173,18 +169,26 @@ class BasicOperationsSuite
       Row(Seq(2.0), Seq(2.2), Seq(4.2))))
   }
 
-  test("Constant") {
-    val x = constant(1.0) named "x"
-    val df = sql.createDataFrame(Seq(Tuple1(1))).toDF("a")
-    val df2 = ops.mapRows(df, x).select("a", "x")
-    assert(df2.collect() === Array(Row(1, 1.0)))
+  test("Reduce block - sum double") {
+    val df = make1(Seq(1.0, 2.0), "x")
+    val x1 = placeholder(DoubleType, Shape(Unknown)) named "x_input"
+    val x = reduce_sum(x1, Seq(0)) named "x"
+    val r = ops.reduceBlocks(df, x)
+    assert(r === Row(3.0))
   }
+}
 
-//  test("Reduce block - sum double") {
-//    val df = make1(Seq(1.0, 2.0), "x")
-//    val x1 = placeholder(DoubleType, Shape.empty) named "x_input"
-//    val x = x1 + x2 named "x"
-//    val r = ops.reduceRows(df, x)
-//    assert(r === Row(3.0))
-//  }
+class CurrentOperationsSuite
+  extends FunSuite with TensorFramesTestSparkContext with Logging {
+  lazy val sql = sqlContext
+
+  val ops = new DebugRowOps
+
+  test("Reduce block - sum double") {
+    val df = make1(Seq(1.0, 2.0), "x")
+    val x1 = placeholder(DoubleType, Shape(Shape.Unknown)) named "x_input"
+    val x = reduce_sum(x1, Seq(0)) named "x"
+    val r = ops.reduceBlocks(df, x)
+    assert(r === Row(3.0))
+  }
 }

@@ -55,7 +55,6 @@ object dsl {
         b.putAllAttr(Map("T" -> getDType(scalarType).toAttr).asJava)
       } else {
         b.putAllAttr(Map(
-          "shape" -> shape.toAttr,
           "dtype" -> getDType(scalarType).toAttr).asJava)
       }
       b.putAllAttr(extraAttr.asJava)
@@ -68,7 +67,8 @@ object dsl {
   }
 
   def placeholder(dtype: NumericType, shape: Shape): Node = {
-    build("Placeholder", shape=shape, dtype=dtype, isOp = false)
+    build("Placeholder", shape=shape, dtype=dtype, isOp = false,
+      extraAttrs = Map("shape" -> shape.toAttr))
   }
 
   def constant[T : Numeric : TypeTag](x: T): Node = {
@@ -164,21 +164,27 @@ object dsl {
       input_tensor: Node,
       reduction_indices: Seq[Int] = null,
       name: String = null): Node = {
-    // The reducers are not supported, because they require more advanced
-    // implementation features: they build separate nodes for the reduction indices,
-    // which requires storing tensor constants and custom attributes.
-    ???
+    build_reducer("Min", input_tensor, reduction_indices, name)
   }
 
+  def reduce_sum(
+      input_tensor: Node,
+      reduction_indices: Seq[Int] = null,
+      name: String = null): Node = {
+    build_reducer("Sum", input_tensor, reduction_indices, name)
+  }
 
   private def build_reducer(
       opName: String,
       parent: Node,
       reduction_indices: Seq[Int] = null,
       name: String = null): Node = {
-    build(opName, name, Seq(parent),
+    val idxs = constant(reduction_indices) named (parent.name + "/reduction_indices")
+    val attr = AttrValue.newBuilder().setB(false).build()
+    build(opName, name, Seq(parent, idxs),
       dtype = parent.scalarType,
-      shape = reduce_shape(parent.shape, Option(reduction_indices).getOrElse(Nil)))
+      shape = reduce_shape(parent.shape, Option(reduction_indices).getOrElse(Nil)),
+      extraAttrs = Map("keep_dims" -> attr))
   }
 
   private def reduce_shape(s: Shape, red_indices: Seq[Int]): Shape = {

@@ -94,6 +94,11 @@ if __name__ == "__main__":
         print g.as_graph_def()
 
     with tf.Graph().as_default() as g:
+        x = tf.constant([1, 1], name="x")
+        y = tf.reduce_sum(x, [0], name='y')
+        print g.as_graph_def()
+
+    with tf.Graph().as_default() as g:
         tf.constant(1, name="x1")
         tf.constant(1.0, name="x2")
         tf.constant([1.0], name="x3")

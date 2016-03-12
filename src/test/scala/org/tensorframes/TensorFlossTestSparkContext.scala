@@ -1,9 +1,11 @@
 package org.tensorframes
 
-import org.apache.spark.sql.SQLContext
-import org.apache.spark.{SparkConf, SparkContext}
+import scala.reflect.runtime.universe._
+
 import org.scalatest.{BeforeAndAfterAll, Suite}
 
+import org.apache.spark.{SparkConf, SparkContext}
+import org.apache.spark.sql.{DataFrame, SQLContext}
 
 trait TensorFramesTestSparkContext extends BeforeAndAfterAll { self: Suite =>
   @transient var sc: SparkContext = _
@@ -27,5 +29,10 @@ trait TensorFramesTestSparkContext extends BeforeAndAfterAll { self: Suite =>
     sc = null
     super.afterAll()
   }
+
+  def make1[T : TypeTag](xs: Seq[T], col: String): DataFrame = {
+    sqlContext.createDataFrame(xs.map(Tuple1.apply)).toDF(col)
+  }
+
 
 }

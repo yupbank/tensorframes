@@ -1,6 +1,6 @@
 package org.tensorframes.impl
 
-import java.nio.{ByteBuffer, DoubleBuffer, IntBuffer, LongBuffer}
+import java.nio._
 
 import org.apache.spark.Logging
 import org.apache.spark.sql.Row
@@ -12,6 +12,10 @@ import org.tensorframes.Shape
 import scala.reflect.runtime.universe.TypeTag
 
 // All the datatypes supported by TensorFrames
+// TODO: all the buffer operations should specify their byte orders:
+//  - TensorFlow: ???
+//  - jvm: ???
+//  - protobuf: ???
 
 /**
  * @param shape the shape of the element in the row (not the overall shape of the block)
@@ -20,7 +24,7 @@ import scala.reflect.runtime.universe.TypeTag
  */
 private sealed abstract class TensorConverter[T : TypeTag] (
     val shape: Shape,
-    val numCells: Int) {
+    val numCells: Int) extends Logging {
   /**
    * Creates memory space for a given number of units of the given shape.
    *
@@ -50,8 +54,11 @@ private sealed abstract class TensorConverter[T : TypeTag] (
     val buff = byteBuffer()
     val pos = buff.position()
     buff.rewind()
+//    logDebug(s"toByteArray: lim=${buff.limit()} size=${buff.position()}")
     val res = Array.fill[Byte](buff.limit())(0)
-    buff.put(res)
+    buff.get(res, 0, buff.limit())
+//    (0 until buff.limit()).foreach(i => buff.get)
+//    logDebug(s"toByteArray: res=${res.toSeq}")
     buff.position(pos)
     res
   }
