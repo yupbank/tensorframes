@@ -2,13 +2,39 @@ package org.tensorframes.impl
 
 import org.apache.spark.Logging
 import org.apache.spark.broadcast.Broadcast
-import org.apache.spark.sql.catalyst.expressions.GenericRowWithSchema
-import org.apache.spark.sql.types.StructType
+import org.apache.spark.sql.catalyst.expressions.{MutableRow, GenericRowWithSchema}
+import org.apache.spark.sql.expressions.{MutableAggregationBuffer, UserDefinedAggregateFunction}
+import org.apache.spark.sql.types._
+import org.apache.spark.sql.functions.col
 import org.apache.spark.sql.{GroupedData, DataFrame, Row}
 import org.bytedeco.javacpp.{tensorflow => jtf}
 import org.tensorflow.framework.GraphDef
 import org.tensorframes._
 import org.tensorframes.test.DslOperations
+
+import scala.collection.mutable
+import scala.util.{Failure, Success, Try}
+
+/**
+ * The different schemas required for the block reduction.
+ *
+ * Here is the order (block reduction in a map phase followed by pair-wise aggregation in a
+ * reduce phase):
+ *  mapInput -> output -> reduceInput -> output
+ *
+ * Call 'x' a variable required by the transform, and 'y' an extra column
+ *
+ * @param mapInput the schema of the column block. Contains 'x_input' and 'y'
+ * @param mapTFCols the indexes of the columns required by the transform
+ * @param output contains 'x' only
+ * @param reduceInput contains 'x_input' only ('y' column has been dropped in the map phase).
+ */
+case class ReduceBlockSchema(
+    mapInput: StructType,
+    mapTFCols: List[Int],
+    output: StructType,
+    reduceInput: StructType) extends Serializable
+
 
 /**
   * All the schema transformations that are done by the basic TF operations.
@@ -28,17 +54,28 @@ private[impl] trait SchemaTransforms extends Logging {
     throw new Exception(msg)
   }
 
+
   /**
-    *
-    * @param schema the schema of the dataframe
-    * @param graph the graph
-    * @param shapeHints the shape hints obtained for this graph
-    * @return a pair of inputSchema, outputSchema. The schemas are for the blocks.
-    */
+   * Validates and computes the transformation schema under reducing.
+   *
+   * A graph may access a subset of the rows. All the schemas are for blocks of data.
+   *
+   * For each output x of the graph, there must be:
+   *  - a placeholder called x_input with one extra dimension (left unknown)
+   *  - a corresponding column labeled 'x' with the same row structure as the output
+   *
+   * @param schema the schema of the dataframe
+   * @param graph the graph
+   * @param shapeHints the shape hints obtained for this graph
+   * @return a triplet containing the input block schema, the output block schema, and the
+   *         requested inputs, which may be a subset of the input.
+   */
+  // TODO(tjh) all the inputs and outputs are created by hashmaps, which makes their order not
+  // deterministick. Change that.
   def reduceBlocksSchema(
       schema: StructType,
       graph: GraphDef,
-      shapeHints: ShapeDescription): (StructType, StructType) = {
+      shapeHints: ShapeDescription): ReduceBlockSchema = {
     val summary = TensorFlowOps.analyzeGraph(graph, shapeHints)
       .map(x => x.name -> x).toMap
     val fieldsByName = schema.fields.map(f => f.name -> f).toMap
@@ -48,33 +85,32 @@ private[impl] trait SchemaTransforms extends Logging {
 
     // Initial check: all the fields are here:
     val outputs = summary.filter(_._2.isOutput)
-    // Check that there are precisely as many outputs as columns:
-    val extraOutputs = (outputs.keySet -- fieldsByName.keySet).toSeq.sorted
-    check(extraOutputs.isEmpty, {
-      val extra = extraOutputs.mkString(", ")
-      s"Some extra outputs were found in the reducer: $extra. " +
+
+    // Check that the outputs of the graph are a subset of the columns of the dataframe.
+    val missingColInputs = (outputs.keySet -- fieldsByName.keySet).toSeq.sorted
+    check(missingColInputs.isEmpty, {
+      val missing = missingColInputs.mkString(", ")
+      s"Based on the TF graph, some inputs are missing: $missing. " +
         s"Dataframe columns: $fieldNameList; Outputs: $outputNameList" })
 
-    val missingOutputs = (fieldsByName.keySet -- outputs.keySet).toSeq.sorted
-    check(missingOutputs.isEmpty, {
-      val extra = missingOutputs.mkString(", ")
-      s"Some outputs are missing in the reducer: $extra. " +
-        s"Dataframe columns: $fieldNameList; Outputs: $outputNameList" })
-
-    // Initial check: the inputs are all there:
+    // Initial check: the inputs are all there, and they are the only ones.
     val inputs = summary.filter(_._2.isInput)
-    val expectedInputs = fieldsByName.keys.map(_ + suffix).toSet
+    val expectedInputs = outputs.keySet.map(_ + suffix)
     val extraInputs = (inputs.keySet -- expectedInputs).toSeq.sorted
     logDebug(s"reduceRows: expectedInputs=$expectedInputs")
     check(extraInputs.isEmpty,
-      s"Extra graph inputs have been found: ${extraInputs.mkString(", ")}. Dataframe columns: $fieldNameList")
+      s"Extra graph inputs have been found: ${extraInputs.mkString(", ")}. " +
+        s"Dataframe columns: $fieldNameList")
 
     val missingInputs = (expectedInputs -- inputs.keySet).toSeq.sorted
     check(missingInputs.isEmpty,
-      s"Some inputs are missing in the graph: ${missingInputs.mkString(", ")}. Dataframe columns: $fieldNameList")
+      s"Some inputs are missing in the graph: ${missingInputs.mkString(", ")}. " +
+        s"Dataframe columns: $fieldNameList")
 
-    // Check that all the fields are here. Each field schema is the column schema.
-    val fields = for (f <- fieldsByName.values) yield {
+    // Check that for each output, the field is present with the right schema.
+    val fields = for (fname <- outputs.keys) yield {
+      // Already checked before
+      val f = schema(fname)
       val ci = ColumnInformation(f)
       val stf = get(ci.stf,
         s"Data column '${f.name}' has not been analyzed yet, cannot run TF on this dataframe")
@@ -82,7 +118,8 @@ private[impl] trait SchemaTransforms extends Logging {
       val out = summary(f.name)
       check(out.isOutput, s"Graph node '${out.name}' should be an output")
 
-      check(stf.dataType == out.scalarType, s"Output '${f.name}' has type ${out.scalarType} but the column type " +
+      check(stf.dataType == out.scalarType, s"Output '${f.name}' has type ${out.scalarType}" +
+        s" but the column type " +
         s"is ${stf.dataType}")
 
       // Take the tail, we only compare cells
@@ -106,10 +143,19 @@ private[impl] trait SchemaTransforms extends Logging {
     }
     val outputSchema = StructType(fields.toArray)
     // The input schema is simply the block schema, with a different name for the variables.
+    // We still pass all the variables because the filtering is done on the indices selected.
     val inputSchema = StructType(schema.map { f =>
-      f.copy(name = f.name + "_input")
+      if (outputs.contains(f.name)) {
+        f.copy(name = f.name + "_input")
+      } else { f }
     })
-    inputSchema -> outputSchema
+    val inputReduceSchema = StructType(schema
+      .filter(f => outputs.contains(f.name))
+      .map(f => f.copy(name=f.name + "_input")))
+    val requestedIndexes = schema.zipWithIndex
+        .filter { case (f, idx) => outputs.contains(f.name)}
+        .map(_._2)   .toList
+    ReduceBlockSchema(inputSchema, requestedIndexes, outputSchema, inputReduceSchema)
   }
 
   def reduceRowsSchema(
@@ -247,7 +293,8 @@ class DebugRowOps
         // We do not support autocasting for now.
         if (stf.dataType != in.scalarType) {
           throw new Exception(
-            s"The type of node '${in.name}' (${stf.dataType}) is not compatible with the data type of the column (${in.scalarType})")
+            s"The type of node '${in.name}' (${stf.dataType}) is not compatible with the data type " +
+              s"of the column (${in.scalarType})")
         }
         // The input has to be either a constant or a placeholder
         if (! in.isPlaceholder) {
@@ -394,15 +441,16 @@ class DebugRowOps
       shapeHints: ShapeDescription): Row = {
     val sc = dataframe.sqlContext.sparkContext
     val schema = dataframe.schema
-    val (inputSchema, outputSchema) = reduceBlocksSchema(schema, graph, shapeHints)
+    val allSchema = reduceBlocksSchema(schema, graph, shapeHints)
     val gProto = sc.broadcast(TensorFlowOps.graphSerial(graph))
     // It first reduces each block, and then performs pair-wise reduction.
     val transformRdd = dataframe.rdd.mapPartitions { it =>
       val row = DebugRowOpsImpl.performReduceBlock(
-        it.toArray, inputSchema, outputSchema, gProto.value)
+        it.toArray, allSchema.mapInput, allSchema.mapTFCols, allSchema.output, gProto.value)
       Array(row).iterator
     }
-    transformRdd.reduce(DebugRowOpsImpl.reducePairBlock(inputSchema, outputSchema, gProto))
+    transformRdd.reduce(DebugRowOpsImpl.reducePairBlock(
+      allSchema.reduceInput, allSchema.output, gProto))
   }
 
   override def explain(df: DataFrame): String = {
@@ -426,10 +474,177 @@ class DebugRowOps
   override def aggregate(
       data: GroupedData,
       graph: GraphDef,
-      shapeHints: ShapeDescription): DataFrame = ???
+      shapeHints: ShapeDescription): DataFrame = {
+    // The constraints on the graph are the same as blocked data.
+    val dataframe = DebugRowOpsImpl.backingDF(data) match {
+      case Success(d) => d
+      case Failure(e) =>
+        throw e
+    }
+    logDebug(s"aggregate: found dataframe: $dataframe")
+
+    val sc = dataframe.sqlContext.sparkContext
+
+    val allSchemas = SchemaTransforms.reduceBlocksSchema(
+      dataframe.schema, graph, shapeHints)
+    val gProto = sc.broadcast(TensorFlowOps.graphSerial(graph))
+
+    // TODO(tjh) fix the size of the schema based on the overall size of the row, which we know
+    // based on the shapes (there is no unknown shape when reducing).
+    // The input schema is a bit different than for reduce: we already filter the columns we are
+    // interested in.
+    val inputSchema = StructType(allSchemas.output.map { of =>
+      allSchemas.mapInput(of.name + "_input")
+    })
+
+    val tfudaf = new TensorFlowUDAF(allSchemas.output, inputSchema, gProto, 10)
+    val cols = allSchemas.output.fields.map(f => col(f.name))
+    val sname = "tf_output"
+    val df2 = data.agg(tfudaf(cols: _*).as(sname))
+    // Unpack the structure as the main columns:
+    val unpackCols = allSchemas.output.fieldNames.map(n => col(s"$sname.$n").as(n))
+    val othercols = df2.schema.fieldNames.filter(_ != sname).map(n => col(n))
+    val allcols = othercols ++ unpackCols
+    df2.select(allcols: _*)
+  }
+}
+
+/**
+ * Simple implementation of a reduction with TF graphs.
+ *
+ * This version keeps a running buffer of elements and compacts them once the buffer becomes too
+ * big or once the evaluation is called.
+ */
+class TensorFlowUDAF(
+    val rowSchema: StructType,
+    val tfInputSchema: StructType,
+    val gProto: Broadcast[Array[Byte]],
+    val bufferSize: Int) extends UserDefinedAggregateFunction with Logging {
+
+  private val COUNT = 0
+  private val ROWS = 1
+  private type RowArray = mutable.WrappedArray[Row]
+
+  override def inputSchema: StructType = rowSchema
+
+  // We keep a buffer of rows, a counter of how many rows we have seen so far, and the current
+  // aggregates before operating on the given rows.
+  override val bufferSchema: StructType = {
+    StructType(List(
+      StructField("counter", IntegerType, nullable = false),
+      StructField("rows", ArrayType(rowSchema, containsNull = true), nullable = false)
+    ))
+  }
+
+  override def deterministic: Boolean = true
+
+  override def dataType: DataType = rowSchema
+
+  override def initialize(buffer: MutableAggregationBuffer): Unit = {
+    buffer(COUNT) = 0
+    buffer(ROWS) = empty
+  }
+
+  override def update(buffer: MutableAggregationBuffer, input: Row): Unit = {
+    val currentCount = count(buffer)
+    buffer(COUNT) = currentCount + 1
+    val arr = array(buffer)
+    logDebug(s"update: arr = $arr")
+    arr(currentCount) = input.copy()
+    logDebug(s"update: arr2 = $arr")
+    buffer(ROWS) = arr
+    if (currentCount >= bufferSize) {
+      compact(buffer)
+    }
+  }
+
+  private def compact(buffer: MutableAggregationBuffer): Unit = {
+    buffer(COUNT) = 1
+    val arr0 = array(buffer)
+    val arr1 = empty
+    arr1(0) = compact2(arr0)
+    buffer(ROWS) = arr1
+  }
+
+  private def compact2(arr: mutable.WrappedArray[Row]): Row = {
+    // This is simply performing a block reduce on the rows. The schema has already
+    DebugRowOpsImpl.performReduceBlock(
+      arr.toArray.filterNot(_ == null), tfInputSchema, rowSchema.indices, rowSchema, gProto.value)
+  }
+
+  override def merge(buffer: MutableAggregationBuffer, other: Row): Unit = {
+    logDebug(s"merge: buffer=$buffer, other=$other")
+    val initialCount = count(buffer)
+    val otherCount = count(other)
+    val (currentCount, totalCount) = if (initialCount + otherCount >= bufferSize) {
+      compact(buffer)
+      (1, 1 + otherCount)
+    } else {
+      (initialCount, initialCount + otherCount)
+    }
+    buffer(COUNT) = totalCount
+    val arr = array(buffer)
+    val arr2 = array(other)
+    for (i <- 0 until otherCount) {
+      arr(currentCount + i) = arr2(i).copy()
+    }
+    buffer(ROWS) = arr
+    logDebug(s"merge (after): buffer=$buffer")
+  }
+
+  override def evaluate(buffer: Row): Row = {
+    logDebug(s"evaluate: $buffer")
+    val c = count(buffer)
+    require(c >= 1, buffer)
+    // No need for compaction
+    if (c == 1) {
+      array(buffer).head
+    } else {
+      compact2(array(buffer))
+    }
+  }
+
+  private def count(b: Row): Int = b.getInt(COUNT)
+  private def array(buffer: Row): RowArray = {
+    buffer.getAs[RowArray](ROWS)
+  }
+  private def empty: RowArray = Array.fill[Row](bufferSize + 1)(null)
 }
 
 object DebugRowOpsImpl extends Logging {
+
+  /**
+   * Accesses the backing dataframe by reflection.
+   *
+   * This is very brittle, there should be some other ways of doing it.
+   *
+   * @param groupedData the grouped data
+   * @return the dataframe, if it succeeded.
+   */
+  def backingDF(groupedData: GroupedData): Try[DataFrame] = {
+      Try {
+        groupedData.getClass.getDeclaredMethods.foreach { m =>
+          logDebug(s"method: ${m.getName}")
+        }
+        val method = groupedData.getClass.getDeclaredMethod("df")
+        method.setAccessible(true)
+        method.invoke(groupedData).asInstanceOf[DataFrame]
+      }   .orElse {
+        Try {
+          // Find the name of the field, which is tricky...
+          val fname = groupedData.getClass
+            .getDeclaredFields.find(_.getName.endsWith("df")).getOrElse {
+            groupedData.getClass.getDeclaredFields.foreach { m =>
+              logDebug(s"field: ${m.getName}")
+            }
+            throw new Exception("Could not find field")
+          }
+          val method = groupedData.getClass.getDeclaredField(fname.getName)
+          method.setAccessible(true)
+          method.get(groupedData).asInstanceOf[DataFrame]
+        }
+      }
+  }
 
   // Trying to get around some frequent crashes within TF.
   private[this] val tfLock = new Object
@@ -448,7 +663,8 @@ object DebugRowOpsImpl extends Logging {
       outputSchema: StructType,
       gbc: Broadcast[Array[Byte]]): (Row, Row) => Row = {
     def f(row1: Row, row2: Row): Row = {
-      performReduceBlock(Array(row1, row2), inputSchema, outputSchema, gbc.value)
+      performReduceBlock(Array(row1, row2), inputSchema, inputSchema.indices.toArray, outputSchema,
+        gbc.value)
     }
     f
   }
@@ -544,12 +760,13 @@ object DebugRowOpsImpl extends Logging {
   def performReduceBlock(
       input: Array[Row],
       inputSchema: StructType,
+      inputTFCols: Seq[Int],
       schema: StructType,
       graphDef: Array[Byte]): Row = {
     logDebug(s"performReduceBlock: schema=$schema inputSchema=$inputSchema with ${input.length} rows")
     // The input schema and the actual data representation depend on the block operation.
 
-    val stpv = DataOps.convert(input, inputSchema, schema.indices.toArray)
+    val stpv = DataOps.convert(input, inputSchema, inputTFCols.toArray)
     val g = TensorFlowOps.readGraph(graphDef)
     TensorFlowOps.withSession { session =>
       val s1 = session.Extend(g)

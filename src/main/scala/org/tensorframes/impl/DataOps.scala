@@ -77,7 +77,8 @@ object DataOps extends Logging {
       requestedTFCols: Array[Int]): jtf.StringTensorPairVector = {
     // This is a very simple and very inefficient implementation. It should be kept
     // as is for correctness checks.
-    logDebug(s"Calling convert on ${it.length} rows with struct: $struct")
+    logDebug(s"Calling convert on ${it.length} rows with struct: $struct " +
+      s"and indices: ${requestedTFCols.toSeq}")
     val fields = requestedTFCols.map(struct.fields(_))
     val converters = fields.map { f =>
       // Extract and check the shape
@@ -102,7 +103,7 @@ object DataOps extends Logging {
     }
 
     val tensors = converters.map(_.tensor())
-    val names = struct.fields.map(_.name)
+    val names = requestedTFCols.map(struct(_).name)
     for ((name, t) <- names.zip(tensors)) {
       logDebug(s"convert: $name : ${TensorFlowOps.jtfShape(t.shape())}")
     }

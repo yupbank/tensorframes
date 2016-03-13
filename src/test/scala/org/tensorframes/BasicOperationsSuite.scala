@@ -174,6 +174,17 @@ class BasicOperationsSuite
     val r = ops.reduceBlocks(df, x)
     assert(r === Row(3.0))
   }
+
+  test("Reduce block - sum double with extra column") {
+    val df = sql.createDataFrame(Seq(
+      ("1", 1.0),
+      ("2", 1.1),
+      ("3", 2.0))).toDF("key2", "x")
+    val x1 = placeholder(DoubleType, Shape(Unknown)) named "x_input"
+    val x = reduce_sum(x1, Seq(0)) named "x"
+    val r = ops.reduceBlocks(df, x)
+    assert(r === Row(4.1))
+  }
 }
 
 class CurrentOperationsSuite
@@ -182,11 +193,15 @@ class CurrentOperationsSuite
 
   val ops = new DebugRowOps
 
-  test("Reduce block - sum double") {
-    val df = make1(Seq(1.0, 2.0), "x")
+  test("Aggregate over rows") {
+    val df = sql.createDataFrame(Seq(
+      (1, 1.0),
+      (1, 1.1),
+      (2, 2.0))).toDF("key", "x")
     val x1 = placeholder(DoubleType, Shape(Shape.Unknown)) named "x_input"
     val x = reduce_sum(x1, Seq(0)) named "x"
-    val r = ops.reduceBlocks(df, x)
-    assert(r === Row(3.0))
+    val df2 = ops.aggregate(df.groupBy("key"), x).select("key", "x")
+    df2.printSchema()
+    assert(df2.collect() === Array(Row(1, 2.1), Row(2, 2.0)))
   }
 }

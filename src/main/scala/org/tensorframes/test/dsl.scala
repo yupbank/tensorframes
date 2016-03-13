@@ -66,9 +66,14 @@ object dsl {
     def +(other: Node): Node = op_add(this, other)
   }
 
-  def placeholder(dtype: NumericType, shape: Shape): Node = {
+  private[tensorframes] def placeholder(dtype: NumericType, shape: Shape): Node = {
     build("Placeholder", shape=shape, dtype=dtype, isOp = false,
       extraAttrs = Map("shape" -> shape.toAttr))
+  }
+
+  def placeholder[T : Numeric : TypeTag](shape: Int*): Node = {
+    val ops = SupportedOperations.getOps[T]()
+    placeholder(ops.sqlType, Shape(shape: _*))
   }
 
   def constant[T : Numeric : TypeTag](x: T): Node = {

@@ -45,7 +45,10 @@ trait DslOperations extends OperationsInterface {
   }
 
   def aggregate(gdf: GroupedData, node1: dsl.Node, nodes: dsl.Node*): DataFrame = {
-    ???
+    val ns = node1 +: nodes
+    val g = dsl.buildGraph(ns: _*)
+    val info = extraInfo(ns)
+    aggregate(gdf, g, info)
   }
 }
 

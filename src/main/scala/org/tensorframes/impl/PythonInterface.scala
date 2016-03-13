@@ -73,10 +73,10 @@ class PythonOpBuilder(
 
   def buildRow(): DataFrame = op match {
     case ReduceBlock =>
-      val (_, outSchema) = SchemaTransforms.reduceBlocksSchema(
+      val allSchema = SchemaTransforms.reduceBlocksSchema(
         df.schema, _graph, _shapeHints)
       val r = interface.reduceBlocks(df, _graph, _shapeHints)
-      wrapDF(r, outSchema)
+      wrapDF(r, allSchema.output)
     case ReduceRow =>
       val outSchema: StructType = SchemaTransforms.reduceRowsSchema(
         df.schema, _graph, _shapeHints)
