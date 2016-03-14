@@ -5,10 +5,17 @@ import java.util
 import scala.collection.JavaConverters._
 
 import org.apache.log4j.PropertyConfigurator
-import org.apache.spark.sql.{DataFrame, Row}
+import org.apache.spark.sql.{GroupedData, DataFrame, Row}
 import org.apache.spark.sql.types.StructType
 import org.tensorflow.framework.GraphDef
-import org.tensorframes.{ExperimentalOperations, OperationsInterface, Shape, ShapeDescription}
+import org.tensorframes._
+
+/**
+ *
+ * @param fieldName
+ * @param shape the shape of blocks for this field in a dataframe.
+ */
+case class FieldInfo(fieldName: String, shape: util.ArrayList[Integer])
 
 /**
   * Wrapper for python interop.
@@ -48,12 +55,32 @@ private[tensorframes] trait PythonInterface { self: OperationsInterface with Exp
   def reduce_rows(dataFrame: DataFrame): PythonOpBuilder = {
     new PythonOpBuilder(this, ReduceRow, dataFrame)
   }
+
+  def aggregate_blocks(groupedData: GroupedData): PythonOpBuilder = {
+    new PythonOpBuilder(this, AggregateBlock, null, groupedData)
+  }
+
+  /**
+   * More information about a dataframe, to help the python side build automatic placeholders.
+ *
+   * @param dataFrame
+   */
+  def extra_schema_info(dataFrame: DataFrame): util.List[FieldInfo] = {
+    dataFrame.schema.flatMap { f =>
+      val ci = ColumnInformation(f)
+      ci.stf.map { s =>
+        val a = new util.ArrayList(s.shape.dims.map(x => new Integer(x.toInt)).asJava)
+        FieldInfo(ci.columnName, a)
+      }
+    }   .asJava
+  }
 }
 
 class PythonOpBuilder(
     interface: OperationsInterface with ExperimentalOperations,
     op: PythonInterface.Operation,
-    df: DataFrame) {
+    df: DataFrame = null,
+    groupedData: GroupedData = null) {
   import PythonInterface._
   private var _shapeHints: ShapeDescription = null
   private var _graph: GraphDef = null
@@ -89,6 +116,7 @@ class PythonOpBuilder(
   def buildDF(): DataFrame = op match {
     case MapBlock => interface.mapBlocks(df, _graph, _shapeHints)
     case MapRow => interface.mapRows(df, _graph, _shapeHints)
+    case AggregateBlock => interface.aggregate(groupedData, _graph, _shapeHints)
     case x =>
       throw new Exception(s"Programming error: $x")
   }
@@ -106,4 +134,5 @@ private object PythonInterface {
   case object MapRow extends Operation
   case object ReduceBlock extends Operation
   case object ReduceRow extends Operation
+  case object AggregateBlock extends Operation
 }

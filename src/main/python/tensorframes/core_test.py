@@ -86,6 +86,9 @@ class TestCore(object):
             res = tfs.reduce_blocks(x, df)
         assert res == sum([r.x for r in data])
 
+    def test_aggregate(self):
+
+
 if __name__ == "__main__":
     # Some testing stuff that should not be executed
     with tf.Graph().as_default() as g:
@@ -104,4 +107,46 @@ if __name__ == "__main__":
         tf.constant([1.0], name="x3")
         tf.constant([1.0, 2.0], name="x4")
         print g.as_graph_def()
+
+import tensorframes as tfs
+import tensorflow as tf
+from pyspark.sql import Row
+from pyspark.sql.functions import *
+from pyspark.sql.types import DoubleType, IntegerType, LongType, FloatType
+
+from tensorframes.core import _java_api
+japi = _java_api()
+_java_api().initialize_logging()
+
+data = [Row(x=float(x), key=str(x / 3)) for x in range(1, 6)]
+df = sqlContext.createDataFrame(data)
+tfs.block(df, "x")
+
+data = [Row(x=float(x), key=str(x / 3)) for x in range(1, 6)]
+df = sqlContext.createDataFrame(data)
+gb = df.groupBy("key")
+with tf.Graph().as_default() as g:
+    x_input = tfs.block(df, "x", tf_name="x_input")
+    x = tf.reduce_sum(x_input, [0], name='x')
+    df2 = tfs.aggregate(x, gb)
+
+# The input data
+data = [Row(x=float(x), key=str(x / 3)) for x in range(1, 6)]
+df = sqlContext.createDataFrame(data)
+
+# The geometric mean
+gb = df.withColumn("count", lit(1)).groupBy("key")
+with tf.Graph().as_default() as g:
+    x_input = tf.placeholder(tf.double, shape=[None], name="x_input")
+    count_input = tf.placeholder(tf.int32, shape=[None], name="count_input")
+    invs = tf.inv(x_input)
+    x = tf.reduce_sum(invs, [0], name='x')
+    count = tf.reduce_sum(count_input, [0], name='count')
+    df2 = tfs.aggregate([x, count], gb)
+
+with tf.Graph().as_default() as g:
+    x = tf.placeholder(tf.double, shape=[None], name="x")
+    count = tf.placeholder(tf.int32, shape=[None], name="count")
+    geom_mean = tf.div(tf.inv(x), tf.to_double(count), name = "geom_mean")
+    df3 = tfs.map_blocks(geom_mean, df2).select("key", "geom_mean")
 

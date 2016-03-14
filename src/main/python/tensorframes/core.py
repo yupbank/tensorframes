@@ -2,11 +2,14 @@ from tensorframes.shape_infer import *
 
 import tensorflow as tf
 
-from pyspark import RDD, SparkContext
-from pyspark.sql import SQLContext, Row, DataFrame
 import logging
 
-__all__ = ['reduce_rows', 'map_rows', 'reduce_blocks', 'map_blocks', 'analyze', 'print_schema']
+from pyspark import RDD, SparkContext
+from pyspark.sql import SQLContext, Row, DataFrame
+from pyspark.sql.types import DoubleType, IntegerType, LongType, FloatType
+
+__all__ = ['reduce_rows', 'map_rows', 'reduce_blocks', 'map_blocks',
+           'analyze', 'print_schema', 'aggregate', 'block']
 
 _sc = None
 _sql = None
@@ -14,7 +17,8 @@ logger = logging.getLogger('tensorframes')
 
 def _java_api():
     """
-    Loads the PythonInterface object (lazily, because the spark context needs to be initialized first).
+    Loads the PythonInterface object (lazily, because the spark context needs to be initialized
+    first).
     """
     global _sc, _sql
     javaClassName = "org.tensorframes.impl.DebugRowOps"
@@ -261,6 +265,60 @@ def analyze(dframe):
     :return: a Spark DataFrame with metadata information embedded.
     """
     return DataFrame(_java_api().analyze(dframe._jdf), _sql)
+
+def aggregate(fetches, grouped_data):
+    """
+    Performs an algebraic aggregation on the grouped data.
+
+
+    :param fetches: a single graph element, or a sequence of graph elements
+    :param grouped_data: a Spark groupedData object
+    :return: a dataframe, with all the columns corresponding to the fetches being appended to the
+      key columns.
+    """
+    fetches = _check_fetches(fetches)
+    graph = _get_graph(fetches)
+    builder = _java_api().aggregate_blocks(grouped_data._jdf)
+    _add_graph(graph, builder)
+    _add_shapes(graph, builder, fetches)
+    jdf = builder.buildDF()
+    return DataFrame(jdf, _sql)
+
+def block(df, col_name, tf_name = None):
+    """
+    Automatically infers a placeholder from a dataframe. The shape returned is that of blocks of
+    data in the dataframe.
+
+    :param df: a Spark dataframe
+    :param col_name: the name of a column in a dataframe
+    :param tf_name: if specified, the name assigned to the placeholder. If not specified,
+    it will be the name of the column.
+    :return: a TensorFlow placeholder.
+    """
+    info = _java_api().extra_schema_info(df._jdf)
+    col_shape = [x.shape() for x in info if x.fieldName() == col_name]
+    if len(col_shape) == 0:
+        raise Exception("Could not find column with name {col_name}")
+    col_shape = col_shape[0]
+    col_struct = [x for x in df.schema.fields if x.name == col_name]
+    if len(col_struct) == 0:
+        raise
+    col_struct = col_struct[0]
+    # The dtypes known to TensorFrames.
+    dtypes = {DoubleType() : tf.double,
+              IntegerType() : tf.int32,
+              LongType() : tf.int64,
+              FloatType() : tf.float32}
+    if col_struct.dataType not in dtypes:
+        raise
+    tfdtype = dtypes[col_struct.dataType]
+    if tf_name is None:
+        tf_name = col_name
+    # Use the python convention (None)
+    shape = [x if x >= 0 else None for x in col_shape]
+    return tf.placeholder(tfdtype, shape=shape, name=tf_name)
+
+
 
 def _validate_fetch(graph, fetch):
     try:
