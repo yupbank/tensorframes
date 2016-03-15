@@ -94,6 +94,7 @@ object TensorFlowOps extends Logging {
     val hasChild: Set[String] = nodes.flatMap { n =>
       n.getInputList.asScala } .toSet
     val outputs = allNames -- hasChild
+    logDebug(s"Outputs: ${outputs}")
 
     withSession { session =>
       val g = readGraph(graphSerial(graphDef))

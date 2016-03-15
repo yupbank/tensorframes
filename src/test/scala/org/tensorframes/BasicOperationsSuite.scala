@@ -185,13 +185,6 @@ class BasicOperationsSuite
     val r = ops.reduceBlocks(df, x)
     assert(r === Row(4.1))
   }
-}
-
-class CurrentOperationsSuite
-  extends FunSuite with TensorFramesTestSparkContext with Logging {
-  lazy val sql = sqlContext
-
-  val ops = new DebugRowOps
 
   test("Aggregate over rows") {
     val df = sql.createDataFrame(Seq(
@@ -204,4 +197,13 @@ class CurrentOperationsSuite
     df2.printSchema()
     assert(df2.collect() === Array(Row(1, 2.1), Row(2, 2.0)))
   }
+
+}
+
+class CurrentOperationsSuite
+  extends FunSuite with TensorFramesTestSparkContext with Logging {
+  lazy val sql = sqlContext
+
+  val ops = new DebugRowOps
+
 }

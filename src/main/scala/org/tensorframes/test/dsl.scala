@@ -2,6 +2,7 @@ package org.tensorframes.test
 
 import java.nio.file.{Files, Paths}
 
+import org.apache.spark.Logging
 import org.apache.spark.sql.types.{DoubleType, NumericType}
 import org.tensorflow.framework._
 import org.tensorframes.Shape
@@ -13,7 +14,7 @@ import scala.reflect.runtime.universe._
 /**
  * Some testing utilities into what may become a DSL at some point.
  */
-object dsl {
+object dsl extends Logging {
 
   import ProtoConversions._
 
@@ -95,12 +96,14 @@ object dsl {
   // Common loading and building
 
   def buildGraph(nodes: Node*): GraphDef = {
-    var treated: Seq[Node] = Nil
+    logDebug(s"buildGraph for nodes: ${nodes.map(_.name)}")
+    var treated: Map[String, Node] = Map.empty
     nodes.foreach { n =>
+      logDebug(s"call: n=${n.name}, treated=${treated.keySet}")
       treated = getClosure(n, treated)
     }
     val b = GraphDef.newBuilder()
-    treated.map(_.node).foreach(b.addNode)
+    treated.values.map(_.node).foreach(b.addNode)
     b.build()
   }
 
@@ -146,14 +149,19 @@ object dsl {
     AttrValue.newBuilder().setType(getDType(sqlType)).build()
   }
 
-  private def getClosure(node: Node, treated: Seq[Node]): Seq[Node] = {
-    val explored = node.parents
-      .filterNot(n => treated.exists(_.node.getName == n.node.getName))
-      .flatMap(getClosure(_, treated :+ node))
+  private def uniqueByName(nodes: Seq[Node]): Map[String, Node] = {
+    nodes.groupBy(_.name).mapValues(_.head)
+  }
 
-    (node +: explored)
-      .groupBy(_.node.getName)
-      .mapValues(_.head).values.toSeq // Remove duplicates using the name
+  private def getClosure(node: Node, treated: Map[String, Node]): Map[String, Node] = {
+    logDebug(s"closure: n=${node.name}, parents=${node.parents.map(_.name)}," +
+      s" treated=${treated.keySet}")
+    val explored = node.parents
+      .filterNot(n => treated.contains(n.node.getName))
+      .flatMap(getClosure(_, treated + (node.name -> node)))
+      .toMap
+
+    uniqueByName(node +: (explored.values.toSeq ++ treated.values.toSeq))
   }
 
   private def build_constant(dt: DenseTensor): Node = {
