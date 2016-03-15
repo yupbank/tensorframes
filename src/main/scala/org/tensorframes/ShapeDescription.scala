@@ -1,16 +1,17 @@
 package org.tensorframes
 
 /**
- * In order to go around a limitation of the C++ kernel of TensorFlow, the shape of the outputs must be provided
- * to the interface
+ * In order to go around a limitation of the C++ kernel of TensorFlow, the shape of the outputs
+ * must be provided to the interface.
+ *
+ * It also includes the names of the fetches (since they may be used in some other ways within
+ * the graph, and not all of them may be requested).
  */
 // TODO: rename to TFExtraInfo (?)
-// TODO: add the ordering of the column?
-// It should also include: a specific subset of columns (if requested)
 // Some data constants to be used to fill the placeholders
-case class ShapeDescription(out: Map[String, Shape]) {
+case class ShapeDescription(out: Map[String, Shape], requestedFetches: Seq[String]) {
 }
 
 object ShapeDescription {
-  val empty = ShapeDescription(Map.empty)
+  val empty = ShapeDescription(Map.empty, Seq.empty)
 }

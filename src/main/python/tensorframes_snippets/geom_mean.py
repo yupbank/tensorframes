@@ -16,6 +16,10 @@ data = [Row(x=float(x), key=str(x / 3)) for x in range(1, 6)]
 df = sqlContext.createDataFrame(data)
 
 # The geometric mean:
+# TODO(tjh) make a test out of this, it found some bugs
+# - non numeric columns (string)
+# - unused columns
+# - output that has a child
 col_name = "x"
 col_key = "key"
 with tf.Graph().as_default() as g:
@@ -25,18 +29,18 @@ with tf.Graph().as_default() as g:
 
 
 # The geometric mean
-gb = df.withColumn("count", lit(1)).groupBy("key")
+gb = df2.select(col_key, "invs", "count").groupBy("key")
 with tf.Graph().as_default() as g:
-    x_input = tf.placeholder(tf.double, shape=[None], name="x_input")
-    count_input = tf.placeholder(tf.int32, shape=[None], name="count_input")
-    invs = tf.inv(x_input)
-    x = tf.reduce_sum(invs, [0], name='x')
+    x_input = tfs.block(df2, "invs", tf_name="invs_input")
+    count_input = tfs.block(df2, "invs", tf_name="count_input")
+    x = tf.reduce_sum(x_input, [0], name='invs')
     count = tf.reduce_sum(count_input, [0], name='count')
-    df2 = tfs.aggregate([x, count], gb)
+    df3 = tfs.aggregate([x, count], gb)
 
 with tf.Graph().as_default() as g:
-    x = tf.placeholder(tf.double, shape=[None], name="x")
-    count = tf.placeholder(tf.int32, shape=[None], name="count")
-    geom_mean = tf.div(tf.inv(x), tf.to_double(count), name = "geom_mean")
-    df3 = tfs.map_blocks(geom_mean, df2).select("key", "geom_mean")
+    invs = tfs.block(df2, "invs")
+    count = tfs.block(df2, "count")
+    geom_mean = tf.div(tf.to_double(count), invs,  name = "harmonic_mean")
+    df4 = tfs.map_blocks(geom_mean, df3).select("key", "harmonic_mean")
 
+df4.collect()

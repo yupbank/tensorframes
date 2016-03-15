@@ -82,14 +82,19 @@ class PythonOpBuilder(
     df: DataFrame = null,
     groupedData: GroupedData = null) {
   import PythonInterface._
-  private var _shapeHints: ShapeDescription = null
+  private var _shapeHints: ShapeDescription = ShapeDescription.empty
   private var _graph: GraphDef = null
 
   def shape(
       shapeHintsNames: util.ArrayList[String],
       shapeHintShapes: util.ArrayList[util.ArrayList[Int]]): this.type = {
     val s = shapeHintShapes.asScala.map(_.asScala.toSeq).map(x => Shape(x: _*))
-    _shapeHints = ShapeDescription(shapeHintsNames.asScala.zip(s).toMap)
+    _shapeHints = _shapeHints.copy(out = shapeHintsNames.asScala.zip(s).toMap)
+    this
+  }
+
+  def fetches(fetchNames: util.ArrayList[String]): this.type = {
+    _shapeHints = _shapeHints.copy(requestedFetches = fetchNames.asScala.toSeq)
     this
   }
 

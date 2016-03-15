@@ -320,7 +320,7 @@ class DebugRowOps
     // The column indices requested by TF
     val requestedTFInput: Array[Int] = {
       val colIdxs = dataframe.schema.fieldNames.zipWithIndex.toMap
-      inputSchema.fieldNames.map { name => colIdxs(name) }
+      inputs.keys.toArray.map { name => colIdxs(name) }
     }
     // Full output schema, including data being passed through and validated for duplicates.
     // The first columns are the TF columns, followed by all the other columns.
@@ -689,7 +689,8 @@ object DebugRowOpsImpl extends Logging {
       inputTFCols: Array[Int],
       graphDef: Array[Byte],
       tfOutputSchema: StructType): Array[Row] = {
-    logDebug(s"performMap: inputSchema=$inputSchema, tfschema=$tfOutputSchema, ${input.length} rows")
+    logDebug(s"performMap: inputSchema=$inputSchema, tfschema=$tfOutputSchema," +
+      s" ${input.length} rows, input cols: ${inputTFCols.toSeq}")
     val stpv = DataOps.convert(input, inputSchema, inputTFCols)
     val g = TensorFlowOps.readGraph(graphDef)
     TensorFlowOps.withSession { session =>

@@ -59,6 +59,7 @@ def _add_shapes(graph, builder, fetches):
     logger.info("fetches: %s %s", str(names), str(shapes))
     logger.info("inputs: %s %s", str(ph_names), str(ph_shapes))
     builder.shape(names + ph_names, shapes + ph_shapes)
+    builder.fetches(names)
 
 def _check_fetches(fetches):
     is_list_fetch = isinstance(fetches, (list, tuple))
@@ -284,6 +285,7 @@ def aggregate(fetches, grouped_data):
     jdf = builder.buildDF()
     return DataFrame(jdf, _sql)
 
+# TODO(tjh) split into rows and blocks
 def block(df, col_name, tf_name = None):
     """
     Automatically infers a placeholder from a dataframe. The shape returned is that of blocks of
@@ -309,6 +311,7 @@ def block(df, col_name, tf_name = None):
               IntegerType() : tf.int32,
               LongType() : tf.int64,
               FloatType() : tf.float32}
+    # TODO(tjh) deal with arrays
     if col_struct.dataType not in dtypes:
         raise
     tfdtype = dtypes[col_struct.dataType]

@@ -90,10 +90,8 @@ object TensorFlowOps extends Logging {
     val inputs: Set[String] = nodes
       .filter(n => n.getInputCount == 0 && n.getOp == "Placeholder")
       .map(_.getName).toSet
-    val allNames = nodes.map(_.getName).toSet
-    val hasChild: Set[String] = nodes.flatMap { n =>
-      n.getInputList.asScala } .toSet
-    val outputs = allNames -- hasChild
+    // We identify a node with its output tensor.
+    val outputs = shapeHints.requestedFetches.map(_.stripSuffix(":0")).toSet
     logDebug(s"Outputs: ${outputs}")
 
     withSession { session =>

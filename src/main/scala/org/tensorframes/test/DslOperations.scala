@@ -54,8 +54,10 @@ trait DslOperations extends OperationsInterface {
 
 object DslOperations {
 
-  private def extraInfo(nodes: Seq[Node]): ShapeDescription = {
-    ShapeDescription(nodes.map(n => n.name -> n.shape).toMap)
+  private def extraInfo(fetches: Seq[Node]): ShapeDescription = {
+    ShapeDescription(
+      fetches.map(n => n.name -> n.shape).toMap,
+      fetches.map(_.name))
   }
 
   def analyzeGraph(nodes: Node*): (GraphDef, Seq[GraphNodeSummary]) = {
