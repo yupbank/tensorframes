@@ -6,10 +6,10 @@ import logging
 
 from pyspark import RDD, SparkContext
 from pyspark.sql import SQLContext, Row, DataFrame
-from pyspark.sql.types import DoubleType, IntegerType, LongType, FloatType
+from pyspark.sql.types import DoubleType, IntegerType, LongType, FloatType, ArrayType
 
 __all__ = ['reduce_rows', 'map_rows', 'reduce_blocks', 'map_blocks',
-           'analyze', 'print_schema', 'aggregate', 'block']
+           'analyze', 'print_schema', 'aggregate', 'block', 'row']
 
 _sc = None
 _sql = None
@@ -285,11 +285,12 @@ def aggregate(fetches, grouped_data):
     jdf = builder.buildDF()
     return DataFrame(jdf, _sql)
 
-# TODO(tjh) split into rows and blocks
 def block(df, col_name, tf_name = None):
     """
     Automatically infers a placeholder from a dataframe. The shape returned is that of blocks of
     data in the dataframe.
+
+    The placeholder uses implicitly the current computation graph of tensorflow.
 
     :param df: a Spark dataframe
     :param col_name: the name of a column in a dataframe
@@ -297,6 +298,24 @@ def block(df, col_name, tf_name = None):
     it will be the name of the column.
     :return: a TensorFlow placeholder.
     """
+    return _auto_placeholder(df, col_name, tf_name, block = True)
+
+def row(df, col_name, tf_name = None):
+    """
+    Automatically infers a placeholder from a dataframe. The shape returned is that of one row of
+    data in the dataframe.
+
+    The placeholder uses implicitly the current computation graph of tensorflow.
+
+    :param df: a Spark dataframe
+    :param col_name: the name of a column in a dataframe
+    :param tf_name: if specified, the name assigned to the placeholder. If not specified,
+    it will be the name of the column.
+    :return: a TensorFlow placeholder.
+    """
+    return _auto_placeholder(df, col_name, tf_name, block = False)
+
+def _auto_placeholder(df, col_name, tf_name, block):
     info = _java_api().extra_schema_info(df._jdf)
     col_shape = [x.shape() for x in info if x.fieldName() == col_name]
     if len(col_shape) == 0:
@@ -307,21 +326,27 @@ def block(df, col_name, tf_name = None):
         raise
     col_struct = col_struct[0]
     # The dtypes known to TensorFrames.
-    dtypes = {DoubleType() : tf.double,
-              IntegerType() : tf.int32,
-              LongType() : tf.int64,
-              FloatType() : tf.float32}
-    # TODO(tjh) deal with arrays
-    if col_struct.dataType not in dtypes:
-        raise
-    tfdtype = dtypes[col_struct.dataType]
+    tfdtype = _get_dtype(col_struct.dataType)
     if tf_name is None:
         tf_name = col_name
     # Use the python convention (None)
     shape = [x if x >= 0 else None for x in col_shape]
+    if not block:
+        shape = shape[1:]
     return tf.placeholder(tfdtype, shape=shape, name=tf_name)
 
+_dtypes = {DoubleType() : tf.double,
+          IntegerType() : tf.int32,
+          LongType() : tf.int64,
+          FloatType() : tf.float32}
 
+
+def _get_dtype(dtype):
+    if isinstance(dtype, ArrayType):
+        return _get_dtype(dtype.elementType)
+    if dtype not in _dtypes:
+        raise Exception("Unknown type %s " % str(dtype))
+    return _dtypes[dtype]
 
 def _validate_fetch(graph, fetch):
     try:
