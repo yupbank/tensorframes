@@ -64,15 +64,20 @@ private[tensorframes] object ExtraOperations extends ExperimentalOperations with
    * @return
    */
   // TODO(tjh) add support for Spark's VectorUDT and MatrixUDT
+  // TODO(tjh) add test when the number of partitions is greater than the number of elements
   def deepAnalyzeDataFrame(df: DataFrame): DataFrameInfo = {
     val numCols = df.schema.fields.length
 
-    val partitionInfo: Array[Array[Option[Shape]]] = df.rdd.mapPartitions { it =>
+    // Some partitions may be empty, so make sure they do not pollute the analysis.
+    val rowPartitionInfo: Array[Option[Array[Option[Shape]]]] = df.rdd.mapPartitions { it =>
       var partitionSize = 0
       val opt1 = it.map { row =>
         partitionSize += 1
-        (0 until row.size).map(i => analyzeData(row.get(i))).toArray
+        val analyzed = (0 until row.size).map(i => analyzeData(row.get(i)))
+        logDebug(s"analyzed: $analyzed")
+        analyzed.toArray
       } .reduceOption(ExtraOperations.f2)
+      logDebug(s"opt1: $opt1")
 
       val it2 = opt1.getOrElse(Array.fill(numCols)(None))
       logDebug(s"it2: ${it2.toSeq}")
@@ -82,8 +87,12 @@ private[tensorframes] object ExtraOperations extends ExperimentalOperations with
         case None => None
         case Some(shape) => Some(shape.prepend(partitionSize))
       }
-      Iterable(it3).toIterator
+      val res = if (partitionSize == 0) { None } else { Some(it3) }
+      Iterable(res).toIterator
     } .collect()
+
+    // Remove the empty partitions
+    val partitionInfo: Array[Array[Option[Shape]]] = rowPartitionInfo.flatten
 
     val agg = partitionInfo.reduceOption(ExtraOperations.f2).getOrElse {
       // The dataframe is empty, there is nothing extra we can say about that.
@@ -117,7 +126,8 @@ private[tensorframes] object ExtraOperations extends ExperimentalOperations with
       mergeStructs(shapes).map(_.prepend(u.size))
     case z if SupportedOperations.hasOps(z) => Some(Shape.empty)
     case _ =>
-      throw new Exception(s"Type of item '$x' (${x.getClass.getSimpleName}) is not understood")
+      None
+//      throw new Exception(s"Type of item '$x' (${x.getClass.getSimpleName}) is not understood")
   }
 
   private def f(o1: Option[Shape], o2: Option[Shape]): Option[Shape] =

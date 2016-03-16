@@ -1,3 +1,5 @@
+
+
 import logging
 logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.INFO)
 import tensorframes as tfs
@@ -12,8 +14,9 @@ _java_api().initialize_logging()
 
 
 # The input data
-data = [Row(x=float(x), key=str(x / 3)) for x in range(1, 6)]
+data = [Row(x=[float(x), float(2 * x)], key=str(x % 2)) for x in range(1, 6)]
 df = sqlContext.createDataFrame(data)
+df = tfs.analyze(sqlContext.createDataFrame(data))
 
 # The geometric mean:
 # TODO(tjh) make a test out of this, it found some bugs

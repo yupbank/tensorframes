@@ -11,6 +11,8 @@ TensorFrames (TensorFlow on Spark Dataframes) lets you manipulate Spark's DataFr
 
 Officially supported Spark versions: 1.6+
 
+See the [user guide](https://github.com/tjhunter/tensorframes/wiki/TensorFrames-user-guide) for more information.
+
 ## Requirements
 
  - A working version of Spark (1.6 or greater), available locally through the `SPARK_HOME` variable.

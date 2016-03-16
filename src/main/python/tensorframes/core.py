@@ -333,6 +333,11 @@ def _auto_placeholder(df, col_name, tf_name, block):
     shape = [x if x >= 0 else None for x in col_shape]
     if not block:
         shape = shape[1:]
+    else:
+        # The lead is always set to None, because otherwise it may choke on empty partitions.
+        # (This happens when the dataset is too small)
+        # TODO(tjh) add a test for this case.
+        shape[0] = None
     return tf.placeholder(tfdtype, shape=shape, name=tf_name)
 
 _dtypes = {DoubleType() : tf.double,

@@ -332,12 +332,18 @@ class DebugRowOps
 
     val gProto = sc.broadcast(TensorFlowOps.graphSerial(graph))
     val transformRdd = dataframe.rdd.mapPartitions { it =>
-      DebugRowOpsImpl.performMap(
-        it.toArray,
-        inputSchema,
-        requestedTFInput,
-        gProto.value,
-        outputTFSchema).toIterator
+      // If the partition is empty, return immediately, it seems to happen often for small datasets
+      // TODO(tjh) add test for that
+      if (it.hasNext) {
+        DebugRowOpsImpl.performMap(
+          it.toArray,
+          inputSchema,
+          requestedTFInput,
+          gProto.value,
+          outputTFSchema).toIterator
+      } else {
+        mutable.Iterable.empty.iterator
+      }
     }
     dataframe.sqlContext.createDataFrame(transformRdd, outputSchema)
   }
@@ -463,8 +469,8 @@ class DebugRowOps
       val f = col.field
       builder.append(s"$prefix-- ${f.name}: ${f.dataType.typeName} (nullable = ${f.nullable})")
       val stf = col.stf.map { s =>
-        s" ${s.dataType}${s.shape}"
-      }   .getOrElse("No tensor info")
+        s" ${s.dataType.typeName}${s.shape}"
+      }   .getOrElse(" <no tensor info>")
       builder.append(stf)
       builder.append("\n")
     }
@@ -502,7 +508,17 @@ class DebugRowOps
     val sname = "tf_output"
     val df2 = data.agg(tfudaf(cols: _*).as(sname))
     // Unpack the structure as the main columns:
-    val unpackCols = allSchemas.output.fieldNames.map(n => col(s"$sname.$n").as(n))
+    // For some reason, the metadata does not get through, so it is added here as a post-processing
+    // step.
+    // TODO(tjh) add a test for shape propagation
+    val unpackCols = allSchemas.output.map { field =>
+      val n = field.name
+      val meta = ColumnInformation(field).merged.metadata
+      logDebug(s"aggregate: output: $n -> $meta")
+      col(s"$sname.$n").as(n, meta)
+    }
+
+    // The columns that were used for the key
     val othercols = df2.schema.fieldNames.filter(_ != sname).map(n => col(n))
     val allcols = othercols ++ unpackCols
     df2.select(allcols: _*)
@@ -691,6 +707,11 @@ object DebugRowOpsImpl extends Logging {
       tfOutputSchema: StructType): Array[Row] = {
     logDebug(s"performMap: inputSchema=$inputSchema, tfschema=$tfOutputSchema," +
       s" ${input.length} rows, input cols: ${inputTFCols.toSeq}")
+    // Some partitions may be empty
+    // TODO(tjh) add test for that
+    if (input.length == 0) {
+      return Array.empty
+    }
     val stpv = DataOps.convert(input, inputSchema, inputTFCols)
     val g = TensorFlowOps.readGraph(graphDef)
     TensorFlowOps.withSession { session =>
@@ -723,6 +744,10 @@ object DebugRowOpsImpl extends Logging {
       inputTFCols: Array[Int],
       graphDef: Array[Byte],
       tfOutputSchema: StructType): Array[Row] = {
+    // Some partitions may be empty
+    if (input.length == 0) {
+      return Array.empty
+    }
     // We read the graph once, and within the same session we run each row after the other.
     val g = TensorFlowOps.readGraph(graphDef)
     TensorFlowOps.withSession { session =>
