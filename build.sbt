@@ -40,6 +40,8 @@ spDescription := {
   """.stripMargin
 }
 
+credentials += Credentials(new File(".") / "sbtcredentials")
+
 // *********** Regular settings ***********
 
 // Using a custom resolver to host the TF artifacts, before publication
