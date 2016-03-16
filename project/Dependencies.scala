@@ -1,4 +1,5 @@
 import sbt._
+import java.nio.file.Paths
 
 object Dependencies {
   // The spark version
@@ -9,4 +10,7 @@ object Dependencies {
 
   val jcppVersion = "0.0.2-0.7.1"
 
+  def credentialPath: File = {
+    Paths.get("sbtcredentials").toAbsolutePath().toFile
+  }
 }

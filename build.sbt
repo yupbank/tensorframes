@@ -40,7 +40,7 @@ spDescription := {
   """.stripMargin
 }
 
-credentials += Credentials(new File(".") / "sbtcredentials")
+credentials += Credentials(credentialPath)
 
 // *********** Regular settings ***********
 
