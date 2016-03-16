@@ -9,20 +9,47 @@ name := "tensorframes"
 scalaVersion := "2.11.7"
 
 // Don't forget to set the version
-version := "0.1.0-SNAPSHOT"
+version := "0.1.0"
+
+// ******* Spark-packages settings **********
+
+spName := "tjhunter/tensorframes"
+
+sparkVersion := "1.6.0"
+
+sparkComponents ++= Seq("core", "sql")
+
+spIncludeMaven := false
+
+licenses := Seq("Apache-2.0" -> url("http://opensource.org/licenses/Apache-2.0"))
+
+spShortDescription := "Tensorflow wrapper for DataFrames on Apache Spark"
+
+spDescription := {
+  """TensorFrames (TensorFlow on Spark Dataframes) lets you manipulate Spark's DataFrames with
+    | TensorFlow programs.
+    |
+    |This package provides a small runtime to express and run TensorFlow computation graphs.
+    |Tensorflow programs can be interpreted from:
+    | - the official Python API
+    | - the semi-official protocol buffer graph description format
+    | - the Scala DSL embedded with TensorFrames (experimental)
+    |
+    |For more information, visit the TensorFrames user guide:
+    |
+  """.stripMargin
+}
+
+// *********** Regular settings ***********
 
 // Using a custom resolver to host the TF artifacts, before publication
 resolvers += 
   "Tensorframes-artifacts" at "https://github.com/tjhunter/tensorframes-artifacts/raw/master/deploy"
 
 
+//libraryDependencies += "org.apache.spark" %% "spark-core" % sparkVersion % "provided"
 
-// All Spark Packages need a license
-licenses := Seq("Apache-2.0" -> url("http://opensource.org/licenses/Apache-2.0"))
-
-libraryDependencies += "org.apache.spark" %% "spark-core" % sparkVersion % "provided"
-
-libraryDependencies += "org.apache.spark" %% "spark-sql" % sparkVersion % "provided"
+//libraryDependencies += "org.apache.spark" %% "spark-sql" % sparkVersion % "provided"
 
 libraryDependencies += "org.scalatest" %% "scalatest" % "2.1.3" % "test"
 

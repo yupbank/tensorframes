@@ -439,7 +439,7 @@ class DebugRowOps
         arr.iterator
       } else {
         val row = DebugRowOpsImpl.performReducePairwise(
-          it.toArray, schema, gProto.value
+          arr, schema, gProto.value
         )
         Array(row).iterator
       }
@@ -463,7 +463,7 @@ class DebugRowOps
         arr.iterator
       } else {
         val row = DebugRowOpsImpl.performReduceBlock(
-          it.toArray, allSchema.mapInput, allSchema.mapTFCols, allSchema.output, gProto.value)
+          arr, allSchema.mapInput, allSchema.mapTFCols, allSchema.output, gProto.value)
         Array(row).iterator
       }
     }
