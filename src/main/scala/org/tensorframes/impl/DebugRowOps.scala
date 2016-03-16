@@ -433,10 +433,16 @@ class DebugRowOps
     val schema = dataframe.schema
     val gProto = sc.broadcast(TensorFlowOps.graphSerial(graph))
     val transformRdd = dataframe.rdd.mapPartitions { it =>
-      val row = DebugRowOpsImpl.performReducePairwise(
-        it.toArray, schema, gProto.value
-      )
-      Array(row).iterator
+      // TODO(tjh) add test for empty iterator
+      val arr = it.toArray
+      if (arr.length <= 1) {
+        arr.iterator
+      } else {
+        val row = DebugRowOpsImpl.performReducePairwise(
+          it.toArray, schema, gProto.value
+        )
+        Array(row).iterator
+      }
     }
     transformRdd.reduce(DebugRowOpsImpl.reducePair(schema, gProto))
   }
@@ -451,9 +457,15 @@ class DebugRowOps
     val gProto = sc.broadcast(TensorFlowOps.graphSerial(graph))
     // It first reduces each block, and then performs pair-wise reduction.
     val transformRdd = dataframe.rdd.mapPartitions { it =>
-      val row = DebugRowOpsImpl.performReduceBlock(
-        it.toArray, allSchema.mapInput, allSchema.mapTFCols, allSchema.output, gProto.value)
-      Array(row).iterator
+      // TODO(tjh) add test for empty iterator
+      val arr = it.toArray
+      if (arr.length <= 1) {
+        arr.iterator
+      } else {
+        val row = DebugRowOpsImpl.performReduceBlock(
+          it.toArray, allSchema.mapInput, allSchema.mapTFCols, allSchema.output, gProto.value)
+        Array(row).iterator
+      }
     }
     transformRdd.reduce(DebugRowOpsImpl.reducePairBlock(
       allSchema.reduceInput, allSchema.output, gProto))

@@ -1,17 +1,20 @@
-# tensorframes
+# TensorFrames
 
-Experimental TF binding for Scala and Spark.
+Experimental [TensorFlow](https://www.tensorflow.org/) binding for Scala and 
+[Spark](http://spark.apache.org/).
 
 TensorFrames (TensorFlow on Spark Dataframes) lets you manipulate Spark's DataFrames with TensorFlow programs.
 
-> This package is highly experimental and is provided as a technical preview only.
+> This package is experimental and is provided as a technical preview only. While the 
+> interfaces are all implemented and working, performance is not a goal at this point.
 
 
 > This package only supports linux 64bit platforms as a target. Contributions are welcome for other platforms.
 
 Officially supported Spark versions: 1.6+
 
-See the [user guide](https://github.com/tjhunter/tensorframes/wiki/TensorFrames-user-guide) for more information.
+See the [user guide](https://github.com/tjhunter/tensorframes/wiki/TensorFrames-user-guide) for
+ extensive information about the API.
 
 ## Requirements
 
@@ -173,3 +176,10 @@ By default, TensorFrames features a relatively stable version of TensorFlow that
 for build sizes and for CPUs. If you want to change the internal version being used, you should
 check the [tensorframes-artifacts](https://github.com/tjhunter/tensorframes-artifacts) project. 
 That project contains scripts to build the proper jar files. 
+
+## Acknowledgements
+
+This project builds on the great [javacpp](https://github.com/bytedeco/javacpp) project, that
+ implements the low-level bindings between TensorFlow and the Java virtual machine.
+
+Many thanks to Google for the release of TensorFlow.
