@@ -160,8 +160,8 @@ import org.apache.spark.sql.types._
 
 val df = sqlContext.createDataFrame(Seq(1.0->1.1, 2.0->2.2)).toDF("a", "b")
 
-val a = placeholder(DoubleType, Shape.empty) named "a"
-val b = placeholder(DoubleType, Shape.empty) named "b"
+val a = placeholder[Double]() named "a"
+val b = placeholder[Double]() named "b"
 val out = a + b named "out"
 val df2 = ops.mapRows(df, out).select("a", "b","out")
 

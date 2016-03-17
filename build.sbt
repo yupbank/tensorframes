@@ -9,15 +9,16 @@ name := "tensorframes"
 scalaVersion := "2.11.7"
 
 // Don't forget to set the version
-version := "0.1.0"
+version := "0.1.1"
 
 // ******* Spark-packages settings **********
 
 spName := "tjhunter/tensorframes"
 
-sparkVersion := "1.6.0"
+sparkVersion := targetSparkVersion
 
-sparkComponents ++= Seq("core", "sql")
+// We need to manually build the artifact
+//sparkComponents ++= Seq("core", "sql")
 
 spIncludeMaven := false
 
@@ -42,6 +43,8 @@ spDescription := {
 
 credentials += Credentials(credentialPath)
 
+spIgnoreProvided := true
+
 // *********** Regular settings ***********
 
 // Using a custom resolver to host the TF artifacts, before publication
@@ -49,9 +52,9 @@ resolvers +=
   "Tensorframes-artifacts" at "https://github.com/tjhunter/tensorframes-artifacts/raw/master/deploy"
 
 
-//libraryDependencies += "org.apache.spark" %% "spark-core" % sparkVersion % "provided"
+libraryDependencies += "org.apache.spark" %% "spark-core" % targetSparkVersion % "provided"
 
-//libraryDependencies += "org.apache.spark" %% "spark-sql" % sparkVersion % "provided"
+libraryDependencies += "org.apache.spark" %% "spark-sql" % targetSparkVersion % "provided"
 
 libraryDependencies += "org.scalatest" %% "scalatest" % "2.1.3" % "test"
 
@@ -101,3 +104,13 @@ unmanagedResourceDirectories in Compile += {
 // Because of shading, sbt freaks out
 
 addCommandAlias("doit", ";clean;compile;assembly")
+
+// Remove all the dependencies from the pom because TF is packaged as a fat jar.
+// See this stackoverflow question:
+// http://stackoverflow.com/questions/24807875/how-to-remove-projectdependencies-from-pom
+makePomConfiguration := makePomConfiguration.value.copy(process = dependenciesFilter)
+
+// Spark packages messes this part
+test in assembly := {}
+
+Seq(tfPackageTask)
