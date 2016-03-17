@@ -1,9 +1,10 @@
 # TensorFrames
 
 Experimental [TensorFlow](https://www.tensorflow.org/) binding for Scala and 
-[Spark](http://spark.apache.org/).
+[Apache Spark](http://spark.apache.org/).
 
-TensorFrames (TensorFlow on Spark Dataframes) lets you manipulate Spark's DataFrames with TensorFlow programs.
+TensorFrames (TensorFlow on Spark Dataframes) lets you manipulate Apache Spark's DataFrames with 
+TensorFlow programs.
 
 > This package is experimental and is provided as a technical preview only. While the 
 > interfaces are all implemented and working, performance is not a goal at this point.
@@ -18,11 +19,11 @@ See the [user guide](https://github.com/tjhunter/tensorframes/wiki/TensorFrames-
 
 ## Requirements
 
- - A working version of Spark (1.6 or greater), available locally through the `SPARK_HOME` variable.
+ - A working version of Apache Spark (1.6 or greater)
 
  - java version >= 7
  
- - python >= 2.7 . Python 3+ should work but has not been tested.
+ - python >= 2.7 . Python 3+ should work but it has not been tested.
  
  - (Optional) the python TensorFlow package if you want to use the python interface. See the 
  [official instructions](https://www.tensorflow.org/versions/r0.7/get_started/os_setup.html#download-and-setup)
@@ -33,25 +34,12 @@ Additionally, if you want to run unit tests for python, you need the following d
  - nose >= 1.3 
 
 
-## How to compile and install
-
-There is no official release yet and you have to compile the code in order to use it.
- The C++ bindings are already compiled though, so you should only have to deal with compiling
- the scala code. The recommended procedure is to use the assembly:
-
-```bash
-build/sbt assembly
-```
-
 ## How to run in python
 
-You must compile the assembly first.
-
-Then, assuming that `SPARK_HOME` is set and that you are at the project root, 
-you can use PySpark:
+Assuming that `SPARK_HOME` is set, you can use PySpark like any other Spark package.
 
 ```bash
-PYTHONPATH=$PWD/target/scala-2.11/tensorframes-assembly-0.1.0-SNAPSHOT.jar IPYTHON=1 $SPARK_HOME/bin/pyspark --jars $PWD/target/scala-2.11/tensorframes-assembly-0.1.0-SNAPSHOT.jar
+IPYTHON=1 $SPARK_HOME/bin/pyspark --packages tjhunter:tensorframes:0.1.1
 ```
 
 Here is a small program that uses Tensorflow to add 3 to an existing column.
@@ -144,10 +132,10 @@ The scala support is a bit more limited than python. In scala, operations can be
  Scala DSL only features a very limited subset of TensorFlow transforms. It is very easy to extend
  though, so other transforms could be added without much effort in the future.
 
-Assuming that SPARK_HOME is set and that you are in the root directory of the project:
+You simply use the published package:
 
 ```bash
-$SPARK_HOME/bin/spark-shell --jars $PWD/target/scala-2.11/tensorframes-assembly-0.1.0-SNAPSHOT.jar
+$SPARK_HOME/bin/spark-shell --packages tjhunter:tensorframes:0.1.1
 ```
 
 Here is a simple program to add two columns together:
@@ -169,6 +157,29 @@ val df2 = ops.mapRows(df, out).select("a", "b","out")
 df2.collect()
 // res0: Array[org.apache.spark.sql.Row] = Array([1.0,1.1,2.1], [2.0,2.2,4.2])   
 ```
+
+## How to compile and install for developers
+
+ The C++ bindings are already compiled though, so you should only have to deal with compiling
+ the scala code. The recommended procedure is to use the assembly:
+
+```bash
+build/sbt assembly
+```
+
+Assuming that SPARK_HOME is set and that you are in the root directory of the project:
+
+```bash
+$SPARK_HOME/bin/spark-shell --jars $PWD/target/scala-2.11/tensorframes-assembly-0.1.1.jar
+```
+
+If you want to run the python version:
+ 
+```bash
+PYTHONPATH=$PWD/target/scala-2.11/tensorframes-assembly-0.1.1.jar IPYTHON=1 \
+$SPARK_HOME/bin/pyspark --jars $PWD/target/scala-2.11/tensorframes-assembly-0.1.1.jar
+```
+
 
 ## How to change the version of TensorFlow
 
