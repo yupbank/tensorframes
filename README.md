@@ -16,6 +16,9 @@ Officially supported Spark versions: 1.6+
 
 See the [user guide](https://github.com/tjhunter/tensorframes/wiki/TensorFrames-user-guide) for
  extensive information about the API.
+ 
+TensorFrames is available as a
+ [Spark package](http://spark-packages.org/package/tjhunter/tensorframes).
 
 ## Requirements
 
