@@ -43,20 +43,19 @@ object Dependencies {
     val oldJar: File = sp.spPackage.value
     val oldDist: File = sp.spDist.value
 
-    println("Hello World" + sparkVersion)
     println("oldJar: " + oldJar.toString)
     println("oldDist: " + oldDist.toString)
     println("assembly: " + ass.toString)
 
     val spArtifactName = spBaseArtifactName(sp.spName.value,
       SparkPackagePlugin.packageVersion.value)
-    val pom = sp.spMakePom.value
+    val pom: File = sp.spMakePom.value
 
     val zipFile: File = sp.spDistDirectory.value / (spArtifactName + ".zip")
 
     IO.delete(zipFile)
     IO.zip(Seq(ass -> (spArtifactName + ".jar"), pom -> (spArtifactName + ".pom")), zipFile)
-    println(s"\nZip File created at: $zipFile\n")
+    println(s"\nZip File overwritten at: $zipFile\n")
     zipFile
   }
 
