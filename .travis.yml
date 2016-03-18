@@ -26,5 +26,5 @@ before_install:
 script:
  - sbt -Dspark.version=$SPARK_VERSION "set test in assembly := {}" assembly
  - sbt -Dspark.version=$SPARK_VERSION 
- - ./python/run-tests.sh
+ - SPARK_HOME=$HOME/.cache/spark-versions/$SPARK_BUILD ./python/run-tests.sh
 
