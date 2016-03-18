@@ -24,6 +24,12 @@ if [ -z "$SPARK_HOME" ]; then
     exit 1
 fi
 
+if [ -z "$SCALA_BINARY_VERSION" ]; then
+    echo 'You need to set $SCALA_BINARY_VERSION (2.10, 2.11, ...) to run these tests.' >&2
+    exit 1
+fi
+
+
 LIBS=""
 for lib in "$SPARK_HOME/python/lib"/*zip ; do
   LIBS=$LIBS:$lib
@@ -33,10 +39,9 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 PROJECT_HOME="$DIR/../"
 
-# TensorFlow needs to be added separately, because the jar file is too big to be
-# to be embedded in the rest of the assembly.
-# TODO this should be changed, because it is very brittle.
-JAR_PATH="$PROJECT_HOME/target/scala-2.11/tensorframes-assembly-0.1.1.jar"
+
+# Tests run with scala-2.10 because the binaries are distributed in scala 2.10 for now.
+JAR_PATH="$PROJECT_HOME/target/scala-$SCALA_BINARY_VERSION/tensorframes-assembly-0.1.1.jar"
 
 export PYSPARK_SUBMIT_ARGS="--jars $JAR_PATH pyspark-shell"
 
