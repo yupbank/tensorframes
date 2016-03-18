@@ -25,6 +25,7 @@ before_install:
 
 install:
  - pip install --user -r ./python/requirements.txt
+ - pip install --user --upgrade https://storage.googleapis.com/tensorflow/linux/cpu/tensorflow-0.7.1-cp27-none-linux_x86_64.whl
 
 script:
  - sbt -Dspark.version=$SPARK_VERSION "set test in assembly := {}" assembly
