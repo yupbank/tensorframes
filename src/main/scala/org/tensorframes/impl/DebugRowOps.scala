@@ -263,6 +263,8 @@ class DebugRowOps
 
   import SchemaTransforms._
 
+  override def toString: String = "DebugRowOps"
+
   override def mapBlocks(
       dataframe: DataFrame,
       graph: GraphDef,

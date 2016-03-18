@@ -72,7 +72,7 @@ private sealed abstract class TensorConverter[T : TypeTag] (
  * It does not support TF's rich type collection (uint16, float128, etc.). These have to be handled
  * internally through casting.
  */
-private[impl] sealed abstract class ScalarTypeOperation[T : TypeTag] {
+private[tensorframes] sealed abstract class ScalarTypeOperation[T : TypeTag] {
   /**
    * The SQL type associated with the given type.
    */
