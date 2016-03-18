@@ -22,9 +22,10 @@ env:
 
 before_install:
  - ./bin/download_travis_dependencies.sh
- - sudo apt-get install libstdc++6
+ #- sudo apt-get -y install libstdc++6
 
 script:
-  - strings /usr/lib/x86_64-linux-gnu/libstdc++.so.6 | grep GLIBCXX
-  - sbt -Dspark.version=$SPARK_VERSION "set test in assembly := {}" assembly
-  #- sbt -Dspark.version=$SPARK_VERSION test
+ - strings /usr/lib/x86_64-linux-gnu/libstdc++.so.6 | grep GLIBCXX
+ - sbt -Dspark.version=$SPARK_VERSION "set test in assembly := {}" assembly
+ #- sbt -Dspark.version=$SPARK_VERSION test
+
