@@ -5,6 +5,7 @@ import org.tensorframes.impl.DebugRowOps
 import org.tensorframes.test.dsl._
 
 import org.apache.spark.Logging
+import org.apache.spark.mllib.linalg.Vectors
 import org.apache.spark.sql.Row
 import org.apache.spark.sql.types.{DoubleType, IntegerType}
 
@@ -202,8 +203,48 @@ class BasicOperationsSuite
 
 class CurrentOperationsSuite
   extends FunSuite with TensorFramesTestSparkContext with Logging {
+  import Shape.Unknown
   lazy val sql = sqlContext
 
   val ops = new DebugRowOps
 
+  test("dense vector udts") {
+    val df = sql.createDataFrame(Seq(
+      (1, Vectors.dense(1.0)),
+      (2, Vectors.dense(2.0)))).toDF("col1", "col2")
+    val exp = ops.explainDetailed(df)
+    logDebug(s"exp=$exp")
+    val stf = exp.cols.find(_.columnName=="col2").get.stf.get
+    println(ops.explain(df))
+    assert(stf.dataType === DoubleType)
+    assert(stf.shape === Shape(2, 1))
+  }
+
+  test("dense vector udts with different shapes") {
+    val df = sql.createDataFrame(Seq(
+      (1, Vectors.dense(1.0)),
+      (2, Vectors.dense(2.0, 2.1)))).toDF("col1", "col2")
+    val exp = ops.explainDetailed(df)
+    logDebug(s"exp=$exp")
+    val stf = exp.cols.find(_.columnName=="col2").get.stf.get
+    println(ops.explain(df))
+    assert(stf.dataType === DoubleType)
+    assert(stf.shape === Shape(2, Unknown))
+  }
+
+  test("dense matrix udts") {
+
+  }
+
+  test("dense matrix udts with different row sizes") {
+
+  }
+
+  test("dense matrix udts with different column sizes") {
+
+  }
+
+  test("dense matrix udts with different column and row sizes") {
+
+  }
 }

@@ -56,6 +56,8 @@ libraryDependencies += "org.apache.spark" %% "spark-core" % targetSparkVersion %
 
 libraryDependencies += "org.apache.spark" %% "spark-sql" % targetSparkVersion % "provided"
 
+libraryDependencies += "org.apache.spark" %% "spark-mllib" % targetSparkVersion % "provided"
+
 libraryDependencies += "org.scalatest" %% "scalatest" % "2.1.3" % "test"
 
 // Compilation of proto files
