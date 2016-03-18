@@ -27,5 +27,5 @@ before_install:
 script:
  - strings /usr/lib/x86_64-linux-gnu/libstdc++.so.6 | grep GLIBCXX
  - sbt -Dspark.version=$SPARK_VERSION "set test in assembly := {}" assembly
- #- sbt -Dspark.version=$SPARK_VERSION test
+ - sbt -Dspark.version=$SPARK_VERSION test
 
