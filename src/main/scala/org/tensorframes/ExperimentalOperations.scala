@@ -1,9 +1,10 @@
 package org.tensorframes
 
 import org.apache.spark.Logging
+import org.apache.spark.mllib.linalg.{VectorUDT, DenseVector, Vector}
 import org.apache.spark.sql.DataFrame
 import org.apache.spark.sql.functions.col
-import org.apache.spark.sql.types.{ArrayType, DataType, NumericType}
+import org.apache.spark.sql.types.{DoubleType, ArrayType, DataType, NumericType}
 import org.tensorframes.impl.SupportedOperations
 
 /**
@@ -113,11 +114,14 @@ private[tensorframes] object ExtraOperations extends ExperimentalOperations with
   private def extractBasicType(dt: DataType): Option[NumericType] = dt match {
     case x: NumericType => Some(x)
     case x: ArrayType => extractBasicType(x.elementType)
+    case _: VectorUDT => Some(DoubleType)
     case _ => None
   }
 
   def analyzeData(x: Any): Option[Shape] = x match {
     case null => None
+    case x: DenseVector =>
+      Some(Shape(x.size))
     case u: Array[_] =>
       val shapes = u.map(analyzeData)
       mergeStructs(shapes).map(_.prepend(u.length))

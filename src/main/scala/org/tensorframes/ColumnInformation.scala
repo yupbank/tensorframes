@@ -1,6 +1,7 @@
 package org.tensorframes
 
 import org.apache.spark.Logging
+import org.apache.spark.mllib.linalg.VectorUDT
 import org.apache.spark.sql.types._
 
 
@@ -126,6 +127,11 @@ object ColumnInformation extends Logging {
       extractFromRow(x.elementType).map { info =>
         SparkTFColInfo(info.shape.prepend(Unknown), info.dataType)
       }
+    case v: VectorUDT =>
+      // We do not have extra shape information at this point.
+      // The dtype is generic double
+      val dtype = DoubleType
+      Some(SparkTFColInfo(Shape(Unknown, Unknown), DoubleType))
     case _ =>
       logDebug("not understood: " + dt)
       // Not understood.

@@ -217,7 +217,7 @@ class CurrentOperationsSuite
     val stf = exp.cols.find(_.columnName=="col2").get.stf.get
     println(ops.explain(df))
     assert(stf.dataType === DoubleType)
-    assert(stf.shape === Shape(2, 1))
+    assert(stf.shape === Shape(Unknown, Unknown))
   }
 
   test("dense vector udts with different shapes") {
@@ -229,22 +229,48 @@ class CurrentOperationsSuite
     val stf = exp.cols.find(_.columnName=="col2").get.stf.get
     println(ops.explain(df))
     assert(stf.dataType === DoubleType)
+    assert(stf.shape === Shape(Unknown, Unknown))
+  }
+
+  test("analyze dense vector udts") {
+    val df = sql.createDataFrame(Seq(
+      (1, Vectors.dense(1.0)),
+      (2, Vectors.dense(2.0)))).toDF("col1", "col2")
+    val df2 = ops.analyze(df)
+    val exp = ops.explainDetailed(df2)
+    logDebug(s"exp=$exp")
+    val stf = exp.cols.find(_.columnName=="col2").get.stf.get
+    println(ops.explain(df))
+    assert(stf.dataType === DoubleType)
+    assert(stf.shape === Shape(2, 1))
+  }
+
+  test("analyze dense vector udts with different shapes") {
+    val df = sql.createDataFrame(Seq(
+      (1, Vectors.dense(1.0)),
+      (2, Vectors.dense(2.0, 2.1)))).toDF("col1", "col2")
+    val df2 = ops.analyze(df)
+    val exp = ops.explainDetailed(df2)
+    logDebug(s"exp=$exp")
+    val stf = exp.cols.find(_.columnName=="col2").get.stf.get
+    println(ops.explain(df))
+    assert(stf.dataType === DoubleType)
     assert(stf.shape === Shape(2, Unknown))
   }
 
-  test("dense matrix udts") {
+  ignore("dense matrix udts") {
 
   }
 
-  test("dense matrix udts with different row sizes") {
+  ignore("dense matrix udts with different row sizes") {
 
   }
 
-  test("dense matrix udts with different column sizes") {
+  ignore("dense matrix udts with different column sizes") {
 
   }
 
-  test("dense matrix udts with different column and row sizes") {
+  ignore("dense matrix udts with different column and row sizes") {
 
   }
 }
