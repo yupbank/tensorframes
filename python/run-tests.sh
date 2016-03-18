@@ -29,15 +29,16 @@ for lib in "$SPARK_HOME/python/lib"/*zip ; do
   LIBS=$LIBS:$lib
 done
 
-PROJECT_HOME="`pwd`/../"
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+PROJECT_HOME="$DIR/../"
 
 # TensorFlow needs to be added separately, because the jar file is too big to be
 # to be embedded in the rest of the assembly.
 # TODO this should be changed, because it is very brittle.
-TF_JAR_PATH="$HOME/.ivy2/cache/org.tensorframes/javacpp-tensorflow-linux-x86_64/0.0.1-1.2SNAP/jars/javacpp-tensorflow-linux-x86_64.jar"
-JAR_PATH="$PROJECT_HOME/target/scala-2.11/tensorframes-assembly-0.1.0-SNAPSHOT.jar"
+JAR_PATH="$PROJECT_HOME/target/scala-2.11/tensorframes-assembly-0.1.1.jar"
 
-export PYSPARK_SUBMIT_ARGS="--jars $JAR_PATH,$TF_JAR_PATH pyspark-shell"
+export PYSPARK_SUBMIT_ARGS="--jars $JAR_PATH pyspark-shell"
 
 export PYTHONPATH=$PYTHONPATH:$SPARK_HOME/python:$LIBS:.
 
