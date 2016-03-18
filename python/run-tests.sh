@@ -51,7 +51,7 @@ export PYTHONPATH=$PYTHONPATH:"$PROJECT_HOME/src/main/python/"
 
 # Run test suites
 
-nosetests -v --all-modules -w "$PROJECT_HOME/src/main/python"
+nosetests -v --all-modules -w "$PROJECT_HOME/src/main/python" 2>&1 | grep -vE "Level 1:tensorflow:Registering"
 
 
 # Run doc tests
