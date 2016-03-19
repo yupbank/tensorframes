@@ -1,0 +1,36 @@
+language: scala
+
+scala:
+  - 2.10.6
+
+jdk:
+  - oraclejdk7
+
+sudo: required
+
+dist: trusty
+
+cache:
+  directories:
+    - $HOME/.ivy2/
+    - $HOME/.sbt/launchers/
+    - $HOME/.cache/spark-versions/
+    - $HOME/.sbt/boot/scala-2.10.4/
+    - $HOME/.sbt/boot/scala-2.10.5/
+
+env:
+  matrix:
+    - SCALA_BINARY_VERSION="2.10" SPARK_VERSION=1.6.0 SPARK_BUILD="spark-1.6.0-bin-hadoop2.6" SPARK_BUILD_URL="http://d3kbcqa49mib13.cloudfront.net/spark-1.6.0-bin-hadoop2.6.tgz"
+
+before_install:
+ - ./bin/download_travis_dependencies.sh
+
+install:
+ - pip install --user -r ./python/requirements.txt
+ - pip install --user --upgrade https://storage.googleapis.com/tensorflow/linux/cpu/tensorflow-0.7.1-cp27-none-linux_x86_64.whl
+
+script:
+ - sbt -Dspark.version=$SPARK_VERSION "set scalaVersion := \"$TRAVIS_SCALA_VERSION\"" "set test in assembly := {}" assembly
+ - sbt -Dspark.version=$SPARK_VERSION "set scalaVersion := \"$TRAVIS_SCALA_VERSION\"" test
+ - SPARK_HOME=$HOME/.cache/spark-versions/$SPARK_BUILD ./python/run-tests.sh
+
