@@ -22,7 +22,7 @@ import scala.reflect.runtime.universe.TypeTag
  * @param numCells the number of cells that are going to be allocated with the given shape.
  * @tparam T
  */
-private sealed abstract class TensorConverter[T : TypeTag] (
+private[tensorframes] sealed abstract class TensorConverter[T : TypeTag] (
     val shape: Shape,
     val numCells: Int) extends Logging {
   /**
