@@ -105,7 +105,7 @@ trait BasicMonoidTests[T] { self: CommonOperationsSuite[T] =>
   }
 
   test(s"Simple add row - id $dtname") {
-    val df = make1(Seq(1.0, 20.0), "in")
+    val df = make1(Seq(1.0, 20.0).u, "in")
     val p1 = placeholder(dtype, Shape.empty) named "in"
     val out = op_id(p1) named "out"
     val df2 = ops.mapRows(df, out).select("in", "out")
@@ -152,11 +152,11 @@ trait BasicMonoidTests[T] { self: CommonOperationsSuite[T] =>
     val df2 = ops.mapRows(adf, out).select("a", "b","out")
     assert(df2.collect() === Seq(
       Row(Seq(10.0, 10.0), Seq(11.0, 11.0), Seq(21.0, 21.0)),
-      Row(Seq(20.0), Seq(22.0), Seq(420.0))).u)
+      Row(Seq(20.0), Seq(22.0), Seq(42.0))).u)
   }
 
   test(s"Reduce block - sum double $dtname") {
-    val df = make1(Seq(1.0, 20.0), "x")
+    val df = make1(Seq(1.0, 2.0).u, "x")
     val x1 = placeholder(dtype, Shape(Unknown)) named "x_input"
     val x = reduce_sum(x1, Seq(0)) named "x"
     val r = ops.reduceBlocks(df, x)
@@ -197,4 +197,10 @@ class DoubleDebugSuite extends CommonOperationsSuite[Double]
   with BasicIdentityTests[Double] with BasicMonoidTests[Double] {
 
   override def convert(x: Double) = x
+}
+
+class LongDebugSuite extends CommonOperationsSuite[Long]
+  with BasicIdentityTests[Long] with BasicMonoidTests[Long] {
+
+  override def convert(x: Double) = x.toLong
 }

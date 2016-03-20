@@ -4,7 +4,7 @@ import java.nio._
 
 import org.apache.spark.Logging
 import org.apache.spark.sql.Row
-import org.apache.spark.sql.types.{DoubleType, IntegerType, NumericType}
+import org.apache.spark.sql.types.{LongType, DoubleType, IntegerType, NumericType}
 import org.bytedeco.javacpp.{tensorflow => jtf}
 import org.tensorflow.framework.DataType
 import org.tensorframes.Shape
@@ -282,7 +282,7 @@ private class LongTensorConverter(s: Shape, numCells: Int)
 }
 
 private object LongOperations extends ScalarTypeOperation[Long] with Logging {
-  override val sqlType = IntegerType
+  override val sqlType = LongType
   override val tfType = DataType.DT_INT64
   override def tfConverter(cellShape: Shape, numCells: Int): TensorConverter[Long] =
     new LongTensorConverter(cellShape, numCells)
