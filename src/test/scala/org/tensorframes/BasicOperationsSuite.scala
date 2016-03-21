@@ -1,7 +1,9 @@
 package org.tensorframes
 
+import scala.reflect.runtime.universe._
+
 import org.scalatest.FunSuite
-import org.tensorframes.impl.DebugRowOps
+import org.tensorframes.impl.{SupportedOperations, ScalarTypeOperation, DebugRowOps}
 import org.tensorframes.test.dsl._
 
 import org.apache.spark.Logging
@@ -197,13 +199,4 @@ class BasicOperationsSuite
     df2.printSchema()
     assert(df2.collect() === Array(Row(1, 2.1), Row(2, 2.0)))
   }
-
-}
-
-class CurrentOperationsSuite
-  extends FunSuite with TensorFramesTestSparkContext with Logging {
-  lazy val sql = sqlContext
-
-  val ops = new DebugRowOps
-
 }

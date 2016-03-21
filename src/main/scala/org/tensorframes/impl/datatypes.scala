@@ -4,7 +4,7 @@ import java.nio._
 
 import org.apache.spark.Logging
 import org.apache.spark.sql.Row
-import org.apache.spark.sql.types.{DoubleType, IntegerType, NumericType}
+import org.apache.spark.sql.types.{LongType, DoubleType, IntegerType, NumericType}
 import org.bytedeco.javacpp.{tensorflow => jtf}
 import org.tensorflow.framework.DataType
 import org.tensorframes.Shape
@@ -22,7 +22,7 @@ import scala.reflect.runtime.universe.TypeTag
  * @param numCells the number of cells that are going to be allocated with the given shape.
  * @tparam T
  */
-private sealed abstract class TensorConverter[T : TypeTag] (
+private[tensorframes] sealed abstract class TensorConverter[T : TypeTag] (
     val shape: Shape,
     val numCells: Int) extends Logging {
   /**
@@ -72,7 +72,7 @@ private sealed abstract class TensorConverter[T : TypeTag] (
  * It does not support TF's rich type collection (uint16, float128, etc.). These have to be handled
  * internally through casting.
  */
-private[impl] sealed abstract class ScalarTypeOperation[T : TypeTag] {
+private[tensorframes] sealed abstract class ScalarTypeOperation[T : TypeTag] {
   /**
    * The SQL type associated with the given type.
    */
@@ -282,7 +282,7 @@ private class LongTensorConverter(s: Shape, numCells: Int)
 }
 
 private object LongOperations extends ScalarTypeOperation[Long] with Logging {
-  override val sqlType = IntegerType
+  override val sqlType = LongType
   override val tfType = DataType.DT_INT64
   override def tfConverter(cellShape: Shape, numCells: Int): TensorConverter[Long] =
     new LongTensorConverter(cellShape, numCells)
