@@ -17,6 +17,7 @@ cache:
     - $HOME/.cache/spark-versions/
     - $HOME/.sbt/boot/scala-2.10.4/
     - $HOME/.sbt/boot/scala-2.10.5/
+    - $HOME/.sbt/boot/scala-2.10.6/
 
 env:
   matrix:
