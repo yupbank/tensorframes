@@ -16,8 +16,20 @@ trait DFImplicits {
       ops.mapRows(df, graph, shapeHints)
     }
 
+    def mapRows(o0: Operation, os: Operation*): DataFrame = {
+      val seq = Seq(o0) ++ os
+      val g = DslImpl.buildGraph(seq)
+      mapRows(g, Node.hints(seq))
+    }
+
     def mapBlocks(graph: GraphDef, shapeHints: ShapeDescription): DataFrame = {
       ops.mapBlocks(df, graph, shapeHints)
+    }
+
+    def mapBlocks(o0: Operation, os: Operation*): DataFrame = {
+      val seq = Seq(o0) ++ os
+      val g = DslImpl.buildGraph(Seq(o0) ++ os)
+      mapBlocks(g, Node.hints(seq))
     }
 
     def reduceRows(graph: GraphDef, shapeHints: ShapeDescription): Row = {
@@ -36,5 +48,10 @@ trait DFImplicits {
       ops.aggregate(dg, graphDef, shapeDescription)
     }
   }
+
+}
+
+object Implicits extends DFImplicits with DefaultConversions {
+  override def ops = Ops
 
 }

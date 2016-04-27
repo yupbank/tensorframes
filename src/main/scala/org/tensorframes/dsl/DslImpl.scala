@@ -4,11 +4,10 @@ import org.apache.spark.Logging
 import org.apache.spark.sql.types.NumericType
 import org.tensorflow.framework.{TensorShapeProto, DataType, AttrValue, GraphDef}
 import org.tensorframes.Shape
-import org.tensorframes.impl.DenseTensor
-import org.tensorframes.test.ProtoConversions
+import org.tensorframes.impl.{DenseTensor}
 
 
-private[dsl] object DslImpl extends Logging {
+private[dsl] object DslImpl extends Logging with DefaultConversions {
   import ProtoConversions._
 
   private var counter: Int = 0
@@ -42,6 +41,10 @@ private[dsl] object DslImpl extends Logging {
     val b = GraphDef.newBuilder()
     treated.values.map(_.node).foreach(b.addNode)
     b.build()
+  }
+
+  def buildGraph(node: Node, nodes: Node*): GraphDef = {
+    buildGraph(Seq(node) ++ nodes)
   }
 
   private def getClosure(node: Node, treated: Map[String, Node]): Map[String, Node] = {

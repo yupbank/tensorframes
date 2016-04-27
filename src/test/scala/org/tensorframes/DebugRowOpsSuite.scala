@@ -5,8 +5,9 @@ import org.apache.spark.sql.Row
 import org.apache.spark.sql.types.{DoubleType, StructType}
 import org.scalatest.FunSuite
 import org.tensorframes.impl.DebugRowOpsImpl
+// TODO: replace
 import org.tensorframes.test.dsl._
-import org.tensorframes.test.{DslOperations, dsl}
+import org.tensorframes.test.DslOperations
 
 class DebugRowOpsSuite
   extends FunSuite with TensorFramesTestSparkContext with Logging {

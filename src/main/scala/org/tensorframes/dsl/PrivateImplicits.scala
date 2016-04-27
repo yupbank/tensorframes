@@ -9,16 +9,16 @@ import org.tensorframes.Shape
  */
 private[dsl] object PrivateImplicits {
 
-  private implicit class ShapeToAttr(s: Shape) {
-    def toAttr: AttrValue = AttrValue.newBuilder().setShape(buildShape(s)).build()
-  }
-
-  private implicit class SQLTypeToAttr(s: NumericType) {
-    def toAttr: AttrValue = buildType(s)
-  }
-
-  private implicit class DataTypeToAttr(dt: DataType) {
-    def toAttr: AttrValue = dataTypeToAttrValue(dt)
-  }
+//  private implicit class ShapeToAttr(s: Shape) {
+//    def toAttr: AttrValue = AttrValue.newBuilder().setShape(buildShape(s)).build()
+//  }
+//
+//  private implicit class SQLTypeToAttr(s: NumericType) {
+//    def toAttr: AttrValue = buildType(s)
+//  }
+//
+//  private implicit class DataTypeToAttr(dt: DataType) {
+//    def toAttr: AttrValue = dataTypeToAttrValue(dt)
+//  }
 
 }

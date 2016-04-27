@@ -2,10 +2,8 @@ package org.tensorframes.dsl
 
 import org.apache.spark.sql.types.NumericType
 import org.tensorflow.framework.{NodeDef, AttrValue}
-import org.tensorframes.Shape
-import org.tensorframes.test.ProtoConversions
+import org.tensorframes.{dsl => tf, ShapeDescription, Shape}
 import scala.collection.JavaConverters._
-import org.tensorframes.{dsl => tf}
 
 /**
  * A node in the TensorFlow graph.
@@ -13,12 +11,14 @@ import org.tensorframes.{dsl => tf}
 trait Operation {
   /**
    * The path of the operation. It follows TensorFlow's path conventions.
+ *
    * @return
    */
   def name: String
 
   /**
    * The name of the operation.
+ *
    * @return
    */
   def opName: String
@@ -29,6 +29,8 @@ trait Operation {
    * @return
    */
   def dims: Seq[Int]
+
+  def named(newName: String): Operation
 
   def +(other: Operation): Operation = tf.add(this, other)
 }
@@ -65,6 +67,16 @@ private[tensorframes] case class Node(
     b.build()
   }
 
-  def named(newName: String): Node = copy(name = newName)
+  override def named(newName: String): Node = copy(name = newName)
 
+}
+
+private[dsl] object Node {
+  def hints(ns: Seq[Node]): ShapeDescription = {
+    val m = ns.map { n =>
+      n.name -> n.shape
+    } .toMap
+    val f = ns.map(_.name)
+    ShapeDescription(m, f)
+  }
 }

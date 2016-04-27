@@ -67,7 +67,7 @@ class Shape private (private val ds: Array[DimType]) extends Serializable {
 object Shape {
   type DimType = Long
   private val UNKNOWN: DimType = -1L
-  var Unknown: Int = -1
+  val Unknown: Int = -1
 
   def empty: Shape = Shape()
 
