@@ -20,5 +20,11 @@ trait DefaultConversions {
     def tensor(data: Int): DenseTensor = DenseTensor(data)
   }
 
+  implicit class RichConvertibleToDenseTensor[T](v: T)(implicit ev: ConvertibleToDenseTensor[T]) {
+    def +(other: Operation): Operation = {
+      constant(v) + other
+    }
+  }
+
 }
 

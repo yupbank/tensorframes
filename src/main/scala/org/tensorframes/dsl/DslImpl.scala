@@ -7,8 +7,6 @@ import org.tensorframes.Shape
 import org.tensorframes.impl.DenseTensor
 import org.tensorframes.test.ProtoConversions
 
-object Conversions {
-}
 
 private[dsl] object DslImpl extends Logging {
   import ProtoConversions._

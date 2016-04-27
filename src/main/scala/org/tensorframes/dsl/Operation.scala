@@ -33,6 +33,9 @@ trait Operation {
   def +(other: Operation): Operation = tf.add(this, other)
 }
 
+/**
+ * Implementation of an operation.
+ */
 private[tensorframes] case class Node(
     name: String,
     opName: String,
@@ -62,6 +65,6 @@ private[tensorframes] case class Node(
     b.build()
   }
 
-  def named (newName: String): Node = copy(name = newName)
+  def named(newName: String): Node = copy(name = newName)
 
 }

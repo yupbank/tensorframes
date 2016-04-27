@@ -9,6 +9,9 @@ import scala.reflect.runtime.universe.TypeTag
  * The public interface that reimplements a subset of the official TensorFlow python API.
  *
  * The name of the functions and of the parameters should be the same as in python.
+ *
+ * Note that elementary operations such as +, -, etc. can be directly expressed using the
+ * standard mathematical operators.
  */
 package object dsl {
 

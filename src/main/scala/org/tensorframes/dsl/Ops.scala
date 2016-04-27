@@ -6,6 +6,9 @@ import org.tensorframes.{ShapeDescription, OperationsInterface}
 import org.tensorframes.impl.DebugRowOps
 import org.tensorframes.test.DslOperations
 
+/**
+ * The default implementation of the TensorFrames operations.
+ */
 object Ops extends OperationsInterface with DslOperations {
   private val ops = new DebugRowOps
 
