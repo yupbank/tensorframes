@@ -36,4 +36,9 @@ class DSLOperationsSuite
     assert(df2.collect() === Array(Row(1.0, 1.0, 2.0), Row(2.0, 2.0, 4.0)))
   }
 
+  test("Implicit conversions of scalars") {
+    val x = constant(Seq(1.0))
+    val y = 3 + x
+  }
+
 }

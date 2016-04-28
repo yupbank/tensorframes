@@ -2,7 +2,7 @@ package org.tensorframes.impl
 
 import org.apache.spark.Logging
 import org.apache.spark.sql.Row
-import org.apache.spark.sql.catalyst.expressions.GenericRowWithSchema
+import org.apache.spark.sql.catalyst.expressions.{GenericRow, GenericRowWithSchema}
 import org.apache.spark.sql.types.{NumericType, StructType}
 import org.bytedeco.javacpp.{tensorflow => jtf}
 import org.tensorframes.{ColumnInformation, Shape}
@@ -25,6 +25,7 @@ object DataOps extends Logging {
    */
   // Note that doing it this way is very inefficient, but columnar implementation should prevent all this
   // data copying in most cases.
+  // TODO PERF: change the return type to Iterator[Row] to remove memory allocations
   def convertBack(
       tv: jtf.TensorVector,
       tf_struct: StructType,
@@ -51,14 +52,88 @@ object DataOps extends Logging {
         (tfiters ++ riters).map(_.iterator)
       }
     }
+    // TODO PERF: this is a slow spot
     val res = for (i <- input.indices) yield {
       assert(allIters.forall(_.hasNext))
       val current = allIters.map(_.next())
       new GenericRowWithSchema(current, outputSchema)
     }
     logDebug(s"outputSchema=$outputSchema")
-    logDebug(s"res: $res")
+    logTrace(s"res: $res")
+    // TODO PERF
     res.toArray
+  }
+
+
+  /**
+   * (Faster) implementation that takes data in C++ and puts it back into SQL rows, following
+   * the structure provided and merging back all the columns from the input.
+   *
+   * @param tv
+   * @param tf_struct the structure of the block represented in TF
+   * @return
+   */
+  def convertBackFaster(
+      tv: jtf.TensorVector,
+      tf_struct: StructType,
+      input: Array[Row],
+      input_struct: StructType): Array[Row] = {
+    // The structures should already have been validated.
+    // Output has all the TF columns first, and then the other columns
+    logDebug(s"convertBackFaster: ${input.length} input rows, tf_struct=$tf_struct")
+
+    val tfiters = for ((t, idx) <- tf_struct.fields.zipWithIndex) yield {
+      val info = ColumnInformation(t).stf.getOrElse {
+        throw new Exception(s"Missing info in field $t")
+      }
+      logDebug(s"convertBackFaster: $t $info")
+      // Drop the first cell, this is a block.
+      getColumn(tv, idx, info.dataType, info.shape.tail, input.length)
+    }
+    val tfiterators = tfiters.map(_.iterator)
+    val outputSchema = StructType(tf_struct.fields ++ input_struct.fields)
+    val numOutCols = outputSchema.size
+    val numInCols = input_struct.size
+    val numTFCols = tfiterators.length
+    assert(numOutCols == numInCols + numTFCols, (numOutCols, numInCols, numTFCols))
+    // TODO PERF: this is a slow spot
+    val res: Array[GenericRow] = new Array[GenericRow](input.length)
+    var rowIdx = 0
+    while(rowIdx < input.length) {
+      val rowContent = new Array[Any](numOutCols)
+      // Transfer the content of the TF outputs
+      fun1(rowContent, tfiterators)
+      // Copy the existing row into the output row
+      val r = input(rowIdx)
+      fun2(rowContent, r, numInCols, numTFCols)
+      res(rowIdx) = new GenericRow(rowContent)
+      rowIdx += 1
+    }
+    logDebug(s"outputSchema=$outputSchema")
+    logTrace(s"res: $res")
+    res.asInstanceOf[Array[Row]]
+  }
+
+  final private[this] def fun1(
+      rowContent: Array[Any],
+      tfiterators: Array[Iterator[Any]]): Unit = {
+    var tfColIdx = 0
+    while (tfColIdx < tfiterators.length) {
+      rowContent(tfColIdx) = tfiterators(tfColIdx).next()
+      tfColIdx += 1
+    }
+  }
+
+  final private[this] def fun2(
+      rowContent: Array[Any],
+      r: Row,
+      numInCols: Int,
+      numTFCols: Int): Unit = {
+    var colIdx = 0
+    while (colIdx < numInCols) {
+      rowContent(numTFCols + colIdx) = r.get(colIdx)
+      colIdx += 1
+    }
   }
 
   /**
@@ -96,6 +171,7 @@ object DataOps extends Logging {
     }
     for (c <- converters) { c.reserve() }
 
+    // TODO PERF: this seems to be a bottle neck sometimes
     for (r <- it) {
       for ((c, idx) <- converters.zip(requestedTFCols)) {
         c.append(r, idx)
@@ -109,6 +185,71 @@ object DataOps extends Logging {
     }
     new jtf.StringTensorPairVector(names, tensors)
   }
+
+  /**
+   * Performs size checks and resolutions, and converts the data from the row format to the C++
+   * buffers.
+   *
+   * @param it
+   * @param struct the structure of the block. It should contain all the extra meta-data required by
+   *               TensorFrames.
+   * @param requestedTFCols: the columns that will be fed into TF
+   * @return
+   */
+  def convertFaster(
+      it: Array[Row],
+      struct: StructType,
+      requestedTFCols: Array[Int]): jtf.StringTensorPairVector = {
+    // This is a very simple and very inefficient implementation. It should be kept
+    // as is for correctness checks.
+    logDebug(s"Calling convert on ${it.length} rows with struct: $struct " +
+      s"and indices: ${requestedTFCols.toSeq}")
+    val fields = requestedTFCols.map(struct.fields(_))
+    val converters: Array[TensorConverter[_]] = fields.map { f =>
+      // Extract and check the shape
+      val ci = ColumnInformation(f).stf.getOrElse {
+        throw new Exception(s"Could not column information for column $f")
+      }
+      val leadDim = ci.shape.dims.headOption.getOrElse {
+        throw new Exception(s"Column $f found to be scalar, but its dimensions should be >= 1")
+      } .toInt
+      if (leadDim != Shape.Unknown && leadDim != it.length) {
+        throw new Exception(s"Lead dimension for column $f (found to be $leadDim)" +
+          s" is not compatible with a block of lize ${it.length}")
+      }
+      SupportedOperations.opsFor(ci.dataType).tfConverter(ci.shape.tail, it.length)
+    }
+    for (c <- converters) { c.reserve() }
+
+    // TODO PERF: this seems to be a bottleneck sometimes
+    // Unrolled for performance
+    val numRows = it.length
+    val numRequestedCols = requestedTFCols.length
+    var requestedColIdx = 0
+    while (requestedColIdx < numRequestedCols) {
+      val converter = converters(requestedColIdx)
+      val colIdx = requestedTFCols(requestedColIdx)
+      var rowIdx = 0
+      while(rowIdx < numRows) {
+        converter.append(it(rowIdx), colIdx)
+        rowIdx += 1
+      }
+      requestedColIdx += 1
+    }
+//    for (r <- it) {
+//      for ((c, idx) <- converters.zip(requestedTFCols)) {
+//        c.append(r, idx)
+//      }
+//    }
+
+    val tensors = converters.map(_.tensor())
+    val names = requestedTFCols.map(struct(_).name)
+    for ((name, t) <- names.zip(tensors)) {
+      logDebug(s"convert: $name : ${TensorFlowOps.jtfShape(t.shape())}")
+    }
+    new jtf.StringTensorPairVector(names, tensors)
+  }
+
 
   /**
     * Converts a single row at a time.
@@ -223,10 +364,10 @@ object DataOps extends Logging {
     } else {
       cellShape.prepend(numRows)
     }
-    logDebug(s"getColumn: databuffer = $allDataBuffer")
+    logTrace(s"getColumn: databuffer = $allDataBuffer")
     logDebug(s"getColumn: reshapeShape: $reshapeShape, numData: $numData")
     val res = reshapeIter(allDataBuffer, reshapeShape.dims.toList)
-    logDebug(s"getColumn: reshaped = $res")
+    logTrace(s"getColumn: reshaped = $res")
     res
   }
 

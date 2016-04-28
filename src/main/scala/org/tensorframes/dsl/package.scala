@@ -2,6 +2,7 @@ package org.tensorframes
 
 import java.nio.file.{Paths, Files}
 
+import org.apache.spark.sql.DataFrame
 import org.tensorflow.framework.GraphDef
 import org.tensorframes.impl.{DenseTensor, SupportedOperations}
 
@@ -29,7 +30,6 @@ package object dsl {
    */
   val Unknown = Shape.Unknown
 
-  // TODO(tjh) replace these with typeclasses once the feed inputs are implemented.
   def placeholder[T : Numeric : TypeTag](shape: Int*): Operation = {
     val ops = SupportedOperations.getOps[T]()
     DslImpl.placeholder(ops.sqlType, Shape(shape: _*))
@@ -38,6 +38,21 @@ package object dsl {
   def constant[T : ConvertibleToDenseTensor](x: T): Operation = {
     val ev = implicitly[ConvertibleToDenseTensor[T]]
     build_constant(ev.tensor(x))
+  }
+
+  /**
+   * Builds a block placeholder based on the content of a column in a dataframe.
+   * @param df a dataframe
+   * @param colName the name of a column in a dataframe
+   * @return a placeholder
+   */
+  // TODO(tjh) make it work for column?
+  def block(df: DataFrame, colName: String): Operation = {
+    ???
+  }
+
+  def row(df: DataFrame, colName: String): Operation = {
+    ???
   }
 
   def identity(op: Operation): Operation = {

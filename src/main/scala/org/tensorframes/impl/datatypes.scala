@@ -9,6 +9,7 @@ import org.bytedeco.javacpp.{tensorflow => jtf}
 import org.tensorflow.framework.DataType
 import org.tensorframes.Shape
 
+import scala.collection.mutable
 import scala.reflect.runtime.universe.TypeTag
 
 // All the datatypes supported by TensorFrames
@@ -22,6 +23,7 @@ import scala.reflect.runtime.universe.TypeTag
  * @param numCells the number of cells that are going to be allocated with the given shape.
  * @tparam T
  */
+// TODO PERF: investigate the use of @specialized
 private[tensorframes] sealed abstract class TensorConverter[T : TypeTag] (
     val shape: Shape,
     val numCells: Int) extends Logging {
@@ -40,7 +42,21 @@ private[tensorframes] sealed abstract class TensorConverter[T : TypeTag] (
       case 0 =>
         appendRaw(row.getAs[T](position))
       case 1 =>
-        row.getSeq[T](position).foreach(appendRaw)
+        // TODO PERF: we know this is going to be a wrapped array -> we should should specialize
+        // the calls to array calls
+        row.getSeq[T](position) match {
+          case wa : mutable.WrappedArray[T @unchecked] =>
+            // Faster path
+            val arr = wa.toArray
+            var idx = 0
+            while (idx < arr.length) {
+              appendRaw(arr(idx))
+              idx += 1
+            }
+          case seq: Seq[T @unchecked] =>
+            // Slow path
+            seq.foreach(appendRaw)
+        }
       case x =>
         throw new Exception(s"Higher order dimension $x from shape $shape is not supported")
     }
@@ -238,7 +254,7 @@ private object IntOperations extends ScalarTypeOperation[Int] with Logging {
     dbuff.rewind()
     val res: Array[Int] = Array.fill(numElements)(Int.MinValue)
     dbuff.get(res)
-    logDebug(s"Extracted from buffer: ${res.toSeq}")
+//    logDebug(s"Extracted from buffer: ${res.toSeq}")
     res
   }
   override def convertBuffer(buff: ByteBuffer): IndexedSeq[Any] = {
@@ -247,7 +263,7 @@ private object IntOperations extends ScalarTypeOperation[Int] with Logging {
     val numBufferElements = dbuff.limit() - dbuff.position()
     val res: Array[Int] = Array.fill(numBufferElements)(Int.MinValue)
     dbuff.get(res)
-    logDebug(s"Extracted from buffer: ${res.toSeq}")
+//    logDebug(s"Extracted from buffer: ${res.toSeq}")
     res
   }
 }
@@ -291,7 +307,7 @@ private object LongOperations extends ScalarTypeOperation[Long] with Logging {
     dbuff.rewind()
     val res: Array[Long] = Array.fill(numElements)(Long.MinValue)
     dbuff.get(res)
-    logDebug(s"Extracted from buffer: ${res.toSeq}")
+    logTrace(s"Extracted from buffer: ${res.toSeq}")
     res
   }
   override def convertBuffer(buff: ByteBuffer): IndexedSeq[Any] = {
@@ -300,7 +316,7 @@ private object LongOperations extends ScalarTypeOperation[Long] with Logging {
     val numBufferElements = dbuff.limit() - dbuff.position()
     val res: Array[Long] = Array.fill(numBufferElements)(Long.MinValue)
     dbuff.get(res)
-    logDebug(s"Extracted from buffer: ${res.toSeq}")
+    logTrace(s"Extracted from buffer: ${res.toSeq}")
     res
   }
 }

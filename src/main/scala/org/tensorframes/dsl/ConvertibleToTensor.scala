@@ -10,8 +10,6 @@ import scala.reflect.runtime.universe.TypeTag
 trait ConvertibleToDenseTensor[T] {
 
   private[tensorframes] def tensor(data: T): DenseTensor
-
-//  def tag: TypeTag[T]
 }
 
 trait DefaultConversions {

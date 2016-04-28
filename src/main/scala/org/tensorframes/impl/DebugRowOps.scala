@@ -727,17 +727,29 @@ object DebugRowOpsImpl extends Logging {
       return Array.empty
     }
     val stpv = DataOps.convert(input, inputSchema, inputTFCols)
+    logDebug(s"performMap: converting the graphDef")
     val g = TensorFlowOps.readGraph(graphDef)
+    logDebug(s"performMap: entering session")
     TensorFlowOps.withSession { session =>
+      logDebug(s"performMap: entered session session")
+      logDebug(s"performMap: extending the graph")
       val s1 = session.Extend(g)
       assert(s1.ok(), s1.error_message().getString)
 
       val outputs = new jtf.TensorVector()
       val requested = TensorFlowOps.stringVector(tfOutputSchema.map(_.name))
       val skipped = new jtf.StringVector()
-      val s3 = tfLock.synchronized { session.Run(stpv, requested, skipped, outputs) }
+      logDebug(s"performMap: waiting for TF lock")
+      val s3 = tfLock.synchronized {
+        logDebug(s"performMap: TF lock acquired, running...")
+        session.Run(stpv, requested, skipped, outputs)
+      }
+      logDebug(s"performMap: TF run finished")
       assert(s3.ok(), s3.error_message().getString)
-      DataOps.convertBack(outputs, tfOutputSchema, input, inputSchema)
+      logDebug(s"performMap: converting back")
+      val res = DataOps.convertBack(outputs, tfOutputSchema, input, inputSchema)
+      logDebug(s"performMap: done")
+      res
     }
   }
 
