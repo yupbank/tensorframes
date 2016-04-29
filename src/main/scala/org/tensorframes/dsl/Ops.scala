@@ -2,14 +2,14 @@ package org.tensorframes.dsl
 
 import org.apache.spark.sql.{GroupedData, Row, DataFrame}
 import org.tensorflow.framework.GraphDef
-import org.tensorframes.{ShapeDescription, OperationsInterface}
+import org.tensorframes.{ExperimentalOperations, ShapeDescription, OperationsInterface}
 import org.tensorframes.impl.DebugRowOps
 import org.tensorframes.test.DslOperations
 
 /**
  * The default implementation of the TensorFrames operations.
  */
-object Ops extends OperationsInterface with DslOperations {
+object Ops extends OperationsInterface with DslOperations with ExperimentalOperations {
   private val ops = new DebugRowOps
 
   override def mapRows(

@@ -41,6 +41,8 @@ trait DFImplicits {
     }
 
     def explainTensors: String = ops.explain(df)
+
+    // TODO: add analysis
   }
 
   implicit class RichGroupedData(dg: GroupedData) {
