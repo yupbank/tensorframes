@@ -1,12 +1,13 @@
 package org.tensorframes.perf
 
+import org.bytedeco.javacpp.{tensorflow => jtf}
+import org.scalatest.FunSuite
+import org.tensorframes.{ColumnInformation, Shape, TensorFramesTestSparkContext}
+import org.tensorframes.impl.{DataOps, SupportedOperations}
+
 import org.apache.spark.Logging
 import org.apache.spark.sql.Row
 import org.apache.spark.sql.types._
-import org.bytedeco.javacpp.{tensorflow => jtf}
-import org.scalatest.FunSuite
-import org.tensorframes.impl.{DataOps, SupportedOperations}
-import org.tensorframes.{Shape, TensorFramesTestSparkContext}
 
 class ConvertBackPerformanceSuite
   extends FunSuite with TensorFramesTestSparkContext with Logging {
@@ -29,7 +30,9 @@ class ConvertBackPerformanceSuite
     tv
   }
 
-  test("performance of convertBack - int1") {
+  def f(a: Row, b: Row) = a
+
+  ignore("performance of convertBack - int1") {
     val numCells = 10000000
     val rows = (0 until numCells).map { i =>
       Row(1)
@@ -42,11 +45,36 @@ class ConvertBackPerformanceSuite
     val start = System.nanoTime()
     val numIters = 1000
     for (_ <- 1 to numIters) {
-      DataOps.convertBackFaster(tensor, tfSchema, rows, schema)
+      DataOps.convertBack(tensor, tfSchema, rows, schema, fastPath = true).reduce(f)
     }
     val end = System.nanoTime()
     val tIter = (end - start) / (1e9 * numIters)
     println(s"perf: $tIter s / call")
     logInfo(s"perf: $tIter s / call")
   }
+
+  ignore("performance of convertBack - int[1]") {
+    val numVals = 10000000
+    val numCells = 1
+    // Creating the rows this way, because we need to respect the collection used by Spark when
+    // unpacking the rows.
+    val rows = sqlContext.createDataFrame(Seq.fill(numCells)(Tuple1(Seq.fill(numVals)(1)))).collect()
+    val schema = StructType(Seq(ColumnInformation.structField("f1", IntegerType,
+      Shape(numCells, numVals))))
+    val tfSchema = StructType(Seq(ColumnInformation.structField("f2", IntegerType,
+      Shape(numCells, numVals))))
+    val tensor = getTensor(IntegerType, Row(Seq.fill(numVals)(1)), Shape(numVals), numCells)
+    println("generated data")
+    logInfo("generated data")
+    val start = System.nanoTime()
+    val numIters = 100
+    for (_ <- 1 to numIters) {
+      DataOps.convertBack(tensor, tfSchema, rows, schema, fastPath = true)
+    }
+    val end = System.nanoTime()
+    val tIter = (end - start) / (1e9 * numIters)
+    println(s"perf: $tIter s / call")
+    logInfo(s"perf: $tIter s / call")
+  }
+
 }

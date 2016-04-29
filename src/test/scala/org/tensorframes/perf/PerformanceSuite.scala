@@ -11,7 +11,7 @@ class PerformanceSuite
   extends FunSuite with TensorFramesTestSparkContext with Logging {
   lazy val sql = sqlContext
 
-  test("Perf 1") {
+  ignore("Perf 1") {
     val df = sql.range(0L, 20000000L).toDF("x")
 
     for (_ <- 1 to 10) {

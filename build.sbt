@@ -60,6 +60,8 @@ libraryDependencies += "org.apache.spark" %% "spark-sql" % targetSparkVersion % 
 
 libraryDependencies += "org.scalatest" %% "scalatest" % "2.1.3" % "test"
 
+libraryDependencies += "org.apache.commons" % "commons-lang3" % "3.4"
+
 // Compilation of proto files
 
 //Seq(PB.protobufSettings: _*)

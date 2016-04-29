@@ -17,6 +17,8 @@ class ConvertPerformanceSuite
 
   def println(s: String): Unit = java.lang.System.err.println(s)
 
+  def f[T](a: T, b: T): T = a
+
   def getTensor(
       sqlType: NumericType,
       row: Row,
@@ -43,7 +45,7 @@ class ConvertPerformanceSuite
     val numIters = 100
     var x: Int = 0
     for (_ <- 1 to numIters) {
-      x += DataOps.convertFaster(rows, schema, Array(0)).sizeof()
+      x += DataOps.convert(rows, schema, Array(0), fastPath = true).sizeof()
     }
     val end = System.nanoTime()
     val tIter = (end - start) / (1e9 * numIters)
@@ -51,7 +53,7 @@ class ConvertPerformanceSuite
     logInfo(s"perf: $tIter s / call")
   }
 
-  test("performance of convert - int[1000]") {
+  ignore("performance of convert - int[1000]") {
     val numVals = 10000000
     val numCells = 1
     // Creating the rows this way, because we need to respect the collection used by Spark when
@@ -65,7 +67,7 @@ class ConvertPerformanceSuite
     val numIters = 100
     var x: Int = 0
     for (_ <- 1 to numIters) {
-      x += DataOps.convertFaster(rows, schema, Array(0)).sizeof()
+      x += DataOps.convert(rows, schema, Array(0), fastPath = true).sizeof()
     }
     val end = System.nanoTime()
     val tIter = (end - start) / (1e9 * numIters)
