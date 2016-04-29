@@ -38,7 +38,7 @@ class DSLOperationsSuite
 
   test("Implicit conversions of scalars") {
     val x = constant(Seq(1.0))
-    val y = 3 + x
+    val y = 3.0 + x
   }
 
 }
