@@ -580,9 +580,9 @@ class TensorFlowUDAF(
     val currentCount = count(buffer)
     buffer(COUNT) = currentCount + 1
     val arr = array(buffer)
-    logDebug(s"update: arr = $arr")
+    logTrace(s"update: arr = $arr")
     arr(currentCount) = input.copy()
-    logDebug(s"update: arr2 = $arr")
+    logTrace(s"update: arr2 = $arr")
     buffer(ROWS) = arr
     if (currentCount >= bufferSize) {
       compact(buffer)
@@ -604,7 +604,7 @@ class TensorFlowUDAF(
   }
 
   override def merge(buffer: MutableAggregationBuffer, other: Row): Unit = {
-    logDebug(s"merge: buffer=$buffer, other=$other")
+    logTrace(s"merge: buffer=$buffer, other=$other")
     val initialCount = count(buffer)
     val otherCount = count(other)
     val (currentCount, totalCount) = if (initialCount + otherCount >= bufferSize) {
@@ -620,11 +620,11 @@ class TensorFlowUDAF(
       arr(currentCount + i) = arr2(i).copy()
     }
     buffer(ROWS) = arr
-    logDebug(s"merge (after): buffer=$buffer")
+    logTrace(s"merge (after): buffer=$buffer")
   }
 
   override def evaluate(buffer: Row): Row = {
-    logDebug(s"evaluate: $buffer")
+    logTrace(s"evaluate: $buffer")
     val c = count(buffer)
     require(c >= 1, buffer)
     // No need for compaction

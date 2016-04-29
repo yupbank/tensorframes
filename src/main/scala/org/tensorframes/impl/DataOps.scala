@@ -36,7 +36,7 @@ object DataOps extends Logging {
       tf_struct: StructType,
       input: Array[Row],
       input_struct: StructType,
-      fastPath: Boolean = false): Iterator[Row] = {
+      fastPath: Boolean = true): Iterator[Row] = {
     // The structures should already have been validated.
     // Output has all the TF columns first, and then the other columns
     logDebug(s"convertBack: ${input.length} input rows, tf_struct=$tf_struct")
@@ -127,7 +127,7 @@ object DataOps extends Logging {
       it: Array[Row],
       struct: StructType,
       requestedTFCols: Array[Int],
-      fastPath: Boolean = false): jtf.StringTensorPairVector = {
+      fastPath: Boolean = true): jtf.StringTensorPairVector = {
     // This is a very simple and very inefficient implementation. It should be kept
     // as is for correctness checks.
     logDebug(s"Calling convert on ${it.length} rows with struct: $struct " +
@@ -284,7 +284,7 @@ object DataOps extends Logging {
       scalaType: NumericType,
       cellShape: Shape,
       numRows: Int,
-      fastPath: Boolean = false): Iterable[Any] = {
+      fastPath: Boolean = true): Iterable[Any] = {
     val t = tv.get(position)
     logDebug(s"getColumn: shape: ${TensorFlowOps.jtfShape(t.shape())}  " +
       s"cellShape:$cellShape numRows:$numRows")
