@@ -98,3 +98,9 @@ case class SparkTFColInfo(
     shape: Shape,
     dataType: NumericType) extends Serializable
 
+/**
+ * Exception thrown when the user requests tensors of high order.
+ * @param s
+ */
+case class HighDimException(s: Shape)
+  extends Exception(s"Shape $s is too high - tensorframes only supports dimensions <= 1 (vectors)")

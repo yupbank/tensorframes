@@ -42,4 +42,8 @@ class DSLOperationsSuite
     val y = 3.0 + x
   }
 
+  test("XX") {
+    val x = scope("scope")(constant(1.0) named "x")
+  }
+
 }

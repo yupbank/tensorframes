@@ -1,16 +1,52 @@
 package org.tensorframes.dsl
 
+import javax.annotation.Nullable
+
+import scala.collection.mutable
 import org.apache.spark.Logging
 import org.apache.spark.sql.types.NumericType
 import org.tensorflow.framework.{TensorShapeProto, DataType, AttrValue, GraphDef}
 import org.tensorframes.Shape
-import org.tensorframes.impl.{DenseTensor}
+import org.tensorframes.impl.DenseTensor
 
+// This is a very brittle (static variables) implementation of the scoping.
+// You should not use that in a multithreaded environment...
+private[dsl] object Paths {
+  private[this] var rpath: List[String] = Nil
+  private[this] val counters: mutable.Map[String, Int] = mutable.Map.empty
+
+  def withScope[T](s: String)(fun: => T): T = {
+    rpath ::= s
+    try {
+      fun
+    } finally {
+      rpath = rpath.tail
+    }
+  }
+
+  def creationPath(): List[String] = rpath
+
+  private def path(l: List[String]): String = l.filterNot(_.isEmpty).reverse.mkString("/")
+
+  def path(creationPath: List[String], requestedName: Option[String], opName: String): String = {
+    val full = requestedName.getOrElse(opName) :: creationPath
+    val key = path(full)
+    val c = {
+      val before = counters.getOrElseUpdate(opName, 0)
+      counters.update(opName, before + 1)
+      before
+    }
+
+    if (c == 0) {
+      key
+    } else {
+      key + "_" + c
+    }
+  }
+}
 
 private[dsl] object DslImpl extends Logging with DefaultConversions {
   import ProtoConversions._
-
-  private var counter: Int = 0
 
   private[dsl] implicit class ShapeToAttr(s: Shape) {
     def toAttr: AttrValue = AttrValue.newBuilder().setShape(buildShape(s)).build()
@@ -80,6 +116,28 @@ private[dsl] object DslImpl extends Logging with DefaultConversions {
     shapes.head
   }
 
+  private val U = Unknown.toLong
+
+  // Implements the broadcasting rules
+  private[dsl] def broadcastShape(shapes: Seq[Shape]): Shape = {
+    require(shapes.length == 2, shapes)
+    val Seq(s1, s2) = shapes
+    if (s1.numDims < s2.numDims) {
+      broadcastShape(Seq(s2, s1))
+    } else {
+      // The head is going to be the same
+      val t = s1.dims.take(s1.numDims - s2.numDims)
+      // No need to work reverse, because we have isolated the head.
+      val h = (s1.dims zip s2.dims).map {
+        case (d1, d2) if d1 == U || d1 == 1L => d2
+        case (d1, d2) if d2 == U || d2 == 1L => d1
+        case (d1, d2) if d1 == d2 => d1
+        case _ => throw new Exception(s"Incompatible shapes: $s1 $s2")
+      }
+      Shape((t ++ h).toArray)
+    }
+  }
+
   private def commonType(dtypes: Seq[NumericType]): NumericType = {
     require(dtypes.nonEmpty)
     require(dtypes.forall(_ == dtypes.head))
@@ -88,48 +146,40 @@ private[dsl] object DslImpl extends Logging with DefaultConversions {
 
   def build(
       opName: String,
-      name: String = null,
+      @Nullable name: String = null,
       parents: Seq[Node] = Seq.empty,
-      isOp: Boolean = true,
-      dtype: NumericType = null,
-      shape: Shape = null,
+      @Nullable isOp: Boolean = true,
+      @Nullable dtype: NumericType = null,
+      @Nullable shape: Shape = null,
       dtypeInfer: Seq[NumericType] => NumericType = commonType,
       shapeInfer: Seq[Shape] => Shape = commonShape,
       extraAttrs: Map[String, AttrValue] = Map.empty): Node = {
-    val n = Option(name).getOrElse {
-      counter += 1
-      s"${opName}_$counter"
-    }
     val dt = Option(dtype).getOrElse(dtypeInfer(parents.map(_.scalarType)))
     val sh = Option(shape).getOrElse(shapeInfer(parents.map(_.shape)))
-    Node(n, opName, dt, sh, parents, isOp, extraAttrs)
+    Node(Option(name), opName, dt, sh, parents, isOp, extraAttrs)
   }
-
-
-
-
 
   // Reducers (unfinished business)
 
   def reduce_min(
-                  input_tensor: Node,
-                  reduction_indices: Seq[Int] = null,
-                  name: String = null): Node = {
+      input_tensor: Node,
+      reduction_indices: Seq[Int] = null,
+      name: String = null): Node = {
     build_reducer("Min", input_tensor, reduction_indices, name)
   }
 
   def reduce_sum(
-                  input_tensor: Node,
-                  reduction_indices: Seq[Int] = null,
-                  name: String = null): Node = {
+      input_tensor: Node,
+      reduction_indices: Seq[Int] = null,
+      name: String = null): Node = {
     build_reducer("Sum", input_tensor, reduction_indices, name)
   }
 
   def build_reducer(
-                             opName: String,
-                             parent: Node,
-                             reduction_indices: Seq[Int] = null,
-                             name: String = null): Node = {
+      opName: String,
+      parent: Node,
+      reduction_indices: Seq[Int] = null,
+      name: String = null): Node = {
     val idxs = constant(reduction_indices) named (parent.name + "/reduction_indices")
     val attr = AttrValue.newBuilder().setB(false).build()
     build(opName, name, Seq(parent, idxs),

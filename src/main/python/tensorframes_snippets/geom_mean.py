@@ -47,3 +47,42 @@ with tf.Graph().as_default() as g:
     df4 = tfs.map_blocks(geom_mean, df3).select("key", "harmonic_mean")
 
 df4.collect()
+
+
+with tf.Graph().as_default() as g:
+    x = tf.zeros([], tf.int32)
+    y = tf.zeros(x)
+    print y.graph.as_graph_def()
+
+with tf.Graph().as_default() as g:
+    x = tf.zeros([1, 3], tf.double)
+    y = tf.nn.l2_normalize(x, [0])
+    print y.graph.as_graph_def()
+
+with tf.Graph().as_default() as g:
+    x = tf.zeros([1, 3], tf.double)
+    y = tf.transpose(x)
+    print y.graph.as_graph_def()
+
+with tf.Graph().as_default() as g:
+    tf.zeros([], tf.int32)
+    tf.zeros([], tf.int32)
+    with tf.variable_scope("scope"):
+        tf.zeros([], tf.int32)
+        tf.ones([], tf.int32)
+        tf.ones([], tf.int32)
+        x = tf.zeros([], tf.int32)
+    print x.graph.as_graph_def()
+
+x = tf.ones([3, 2, 1])
+y = tf.reduce_sum(x, [1])
+z = tf.transpose(tf.transpose(x) / y)
+
+x = tf.placeholder(tf.float32, [None, 3])
+y = tf.reduce_sum(x, [0])
+
+x / y
+
+for n in g.node:
+    print ">>>>>", str(n.name), "<<<<<<"
+    print n

@@ -1,15 +1,16 @@
 package org.tensorframes.dsl
 
+import scala.languageFeature.implicitConversions
+
 import org.apache.spark.sql.{GroupedData, Row, DataFrame}
 import org.tensorflow.framework.GraphDef
-import org.tensorframes.{OperationsInterface, ShapeDescription, dsl}
-import org.tensorframes.impl.DebugRowOps
+import org.tensorframes.{ExperimentalOperations, OperationsInterface, ShapeDescription, dsl}
 
 /**
  * Implicit transforms to help with the construction of TensorFrames manipulations.
  */
 trait DFImplicits {
-  protected def ops: OperationsInterface
+  protected def ops: OperationsInterface with ExperimentalOperations
 
   implicit class RichDataFrame(df: DataFrame) {
     def mapRows(graph: GraphDef, shapeHints: ShapeDescription): DataFrame = {
@@ -42,6 +43,10 @@ trait DFImplicits {
 
     def explainTensors: String = ops.explain(df)
 
+    def analyze(): DataFrame = {
+      ops.analyze(df)
+    }
+
     // TODO: add analysis
   }
 
@@ -51,9 +56,14 @@ trait DFImplicits {
     }
   }
 
+  // Converts the constants to constant nodes automatically
+  implicit def canConvertToConstant[T : ConvertibleToDenseTensor](x: T): Operation = {
+    dsl.constant(x)
+  }
+
 }
 
 object Implicits extends DFImplicits with DefaultConversions {
-  override def ops = Ops
+  protected override def ops = Ops
 
 }

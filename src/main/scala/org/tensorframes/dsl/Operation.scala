@@ -39,7 +39,8 @@ trait Operation {
  * Implementation of an operation.
  */
 private[tensorframes] case class Node(
-    name: String,
+    requestedName: Option[String], // The name given by the user
+    creationPath: String, // The context path when this node was created
     opName: String,
     scalarType: NumericType,
     shape: Shape,
@@ -49,6 +50,8 @@ private[tensorframes] case class Node(
 
   import ProtoConversions._
   import DslImpl._
+
+  lazy val name: String = ???
 
   override def dims: Seq[Int] = shape.dims.map(_.toInt)
 
@@ -72,6 +75,17 @@ private[tensorframes] case class Node(
 }
 
 private[dsl] object Node {
+
+  def apply(requestedName: Option[String], opName: String,
+            scalarType: NumericType,
+            shape: Shape,
+            parents: Seq[Node],
+            isOp: Boolean,
+            extraAttr: Map[String, AttrValue]) = {
+    val p = Paths.creationPath()
+    new Node(requestedName, p, opName, scalarType, shape, parents, isOp, extraAttr)
+  }
+
   def hints(ns: Seq[Node]): ShapeDescription = {
     val m = ns.map { n =>
       n.name -> n.shape

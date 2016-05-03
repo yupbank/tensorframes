@@ -16,12 +16,15 @@ trait DefaultConversions {
 
   implicit object DoubleConversion extends ConvertibleToDenseTensor[Double] {
     def tensor(data: Double): DenseTensor = DenseTensor(data)
-//    override def tag = implicitly[TypeTag[Double]]
+  }
+
+  implicit object FloatConversion extends ConvertibleToDenseTensor[Float] {
+    // TODO(tjh) this is the wrong conversion here
+    def tensor(data: Float): DenseTensor = DenseTensor(data.toDouble)
   }
 
   implicit object IntConversion extends ConvertibleToDenseTensor[Int] {
     def tensor(data: Int): DenseTensor = DenseTensor(data)
-//    override def tag = implicitly[TypeTag[Int]]
   }
 
   implicit def sequenceVectorConversion[T : Numeric : TypeTag](
@@ -29,21 +32,8 @@ trait DefaultConversions {
     new ConvertibleToDenseTensor[Seq[T]] {
 
       override private[tensorframes] def tensor(data: Seq[T]): DenseTensor = {
-//        implicit val t = ev.tag
-
         DenseTensor(data)
       }
-
-//      override def tag = {
-//        implicit val t = ev.tag
-//        implicitly[TypeTag[Seq[T]]]
-//      }
-    }
-  }
-
-  implicit class RichConvertibleToDenseTensor[T](v: T)(implicit ev: ConvertibleToDenseTensor[T]) {
-    def +(other: Operation): Operation = {
-      constant(v) + other
     }
   }
 

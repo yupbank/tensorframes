@@ -25,10 +25,18 @@ package object dsl {
     op.map(op2Node)
   }
 
+  // ******* Control flow *********
+
+  def scope[T](pathElem: String)(fun: => T): T = {
+    Paths.withScope(pathElem)(fun)
+  }
+
   /**
    * Used to express unknown dimensions.
    */
   val Unknown = Shape.Unknown
+
+  // ******** Constants, Sequences, and Random Values ***********
 
   def placeholder[T : Numeric : TypeTag](shape: Int*): Operation = {
     val ops = SupportedOperations.getOps[T]()
@@ -38,6 +46,29 @@ package object dsl {
   def constant[T : ConvertibleToDenseTensor](x: T): Operation = {
     val ev = implicitly[ConvertibleToDenseTensor[T]]
     build_constant(ev.tensor(x))
+  }
+
+  def zeros(shape: Int*): Operation = zeros[Float](shape:_*)
+
+  def zeros[T : Numeric : ConvertibleToDenseTensor : TypeTag](shape: Int*): Operation = {
+    fill(shape, implicitly[Numeric[T]].zero)
+  }
+
+  def ones(shape: Int*): Operation = ones[Float](shape: _*)
+
+  def ones[T : Numeric : ConvertibleToDenseTensor : TypeTag](shape: Int*): Operation = {
+    fill(shape, implicitly[Numeric[T]].one)
+  }
+
+  def fill[T : Numeric : ConvertibleToDenseTensor : TypeTag](
+      dims: Seq[Int], value: T): Operation = {
+    dims match {
+      case Seq() => constant(value)
+      case Seq(n) =>
+        constant(Seq.fill(n)(value))
+      case _ =>
+        throw HighDimException(Shape(dims: _*))
+    }
   }
 
   /**
@@ -55,11 +86,16 @@ package object dsl {
     ???
   }
 
+
+  // ******** Tensor Transformations ***********
+
+
   def identity(op: Operation): Operation = {
     build("Identity", parents = Seq(op))
   }
 
-  def add(x: Operation, y: Operation): Operation = build("Add", parents=Seq(x, y))
+  def add(x: Operation, y: Operation): Operation =
+    build("Add", parents=Seq(x, y), shapeInfer = broadcastShape)
 
 
   // **** Reducers ******
