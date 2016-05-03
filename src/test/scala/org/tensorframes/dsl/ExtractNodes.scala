@@ -1,13 +1,14 @@
 package org.tensorframes.dsl
 
 import java.io.{BufferedReader, InputStreamReader, File}
-import java.nio.file.{Paths, Files}
+import java.nio.file.Files
 import java.nio.charset.StandardCharsets
+import org.apache.spark.Logging
 import org.scalatest.ShouldMatchers
 
 import scala.collection.JavaConverters._
 
-object ExtractNodes extends ShouldMatchers {
+object ExtractNodes extends ShouldMatchers with Logging {
 
   def executeCommand(py: String): Map[String, String] = {
     val content =
@@ -19,9 +20,10 @@ object ExtractNodes extends ShouldMatchers {
          |    print ">>>>>", str(n.name), "<<<<<<"
          |    print n
        """.stripMargin
-    val f = File.createTempFile("pythonTest", "py")
+    val f = File.createTempFile("pythonTest", ".py")
+    logTrace(s"Created temp file ${f.getAbsolutePath}")
     Files.write(f.toPath, content.getBytes(StandardCharsets.UTF_8))
-    val p = new ProcessBuilder("myCommand", "myArg").start()
+    val p = new ProcessBuilder("python", f.getAbsolutePath).start()
     val s = p.getInputStream
     val isr = new InputStreamReader(s)
     val br = new BufferedReader(isr)
@@ -30,13 +32,13 @@ object ExtractNodes extends ShouldMatchers {
     while(str != null) {
       str = br.readLine()
       if (str != null) {
-        res = res + str
+        res = res + "\n" + str
       }
     }
-    println(res)
-    res.split(">>>>>").map { b =>
+    res.split(">>>>>").map(_.trim).filterNot(_.isEmpty).map { b =>
+//      logDebug(s">>$b<<")
       val zs = b.split("\n")
-      val node = zs.head.drop(1).dropRight(5)
+      val node = zs.head.dropRight(7)
       val rest = zs.tail
       node -> rest.mkString("\n")
     } .toMap
@@ -44,8 +46,12 @@ object ExtractNodes extends ShouldMatchers {
 
   def compareOutput(py: String, nodes: Operation*): Unit = {
     val g = TestUtilities.buildGraph(nodes.head, nodes.tail:_*)
-    val m1 = g.getNodeList.asScala.map { n => n.getName -> n.toString } .toMap
+    val m1 = g.getNodeList.asScala.map { n =>
+      n.getName -> n.toString.trim
+    } .toMap
     val pym = executeCommand(py)
+    logDebug(s"m1 = '$m1'")
+    logDebug(s"pym = '$pym'")
     if ((m1.keySet -- pym.keySet).nonEmpty) {
       val diff = (m1.keySet -- pym.keySet).toSeq.sorted
       assert(false, s"Found extra nodes in scala: $diff")
@@ -55,7 +61,7 @@ object ExtractNodes extends ShouldMatchers {
       assert(false, s"Found extra nodes in python: $diff")
     }
     for (k <- m1.keySet) {
-      m1(k) should equal(pym(k))
+      assert(m1(k) === pym(k), k)
     }
   }
 }

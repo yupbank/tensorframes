@@ -3,6 +3,7 @@ package org.tensorframes
 import java.nio.file.{Paths, Files}
 
 import org.apache.spark.sql.DataFrame
+import org.apache.spark.sql.types.IntegerType
 import org.tensorflow.framework.GraphDef
 import org.tensorframes.impl.{DenseTensor, SupportedOperations}
 
@@ -25,11 +26,17 @@ package object dsl {
     op.map(op2Node)
   }
 
+  private[dsl] implicit class RichOperation(op: Operation) {
+    def n: Node = op2Node(op)
+  }
+
   // ******* Control flow *********
 
   def scope[T](pathElem: String)(fun: => T): T = {
     Paths.withScope(pathElem)(fun)
   }
+
+  def withGraph[T](fun: => T): T = Paths.withGraph(fun)
 
   /**
    * Used to express unknown dimensions.
@@ -63,16 +70,27 @@ package object dsl {
   def fill[T : Numeric : ConvertibleToDenseTensor : TypeTag](
       dims: Seq[Int], value: T): Operation = {
     dims match {
-      case Seq() => constant(value)
+      case Seq() =>
+        fill(constant(1), constant(value))
       case Seq(n) =>
-        constant(Seq.fill(n)(value))
+        fill(constant(2), constant(Seq.fill(n)(value)))
       case _ =>
         throw HighDimException(Shape(dims: _*))
     }
   }
 
+  def fill(dims: Operation, value: Operation): Operation = {
+    require(dims.n.scalarType == IntegerType)
+    require(value.n.shape.numDims == 1)
+    build("Fill",
+      shape = dims.n.shape,
+      dtype = value.n.scalarType,
+      extraParents = (p: String) => Seq(dims.named(p + "/dims"), value.named(p + "/value")))
+  }
+
   /**
    * Builds a block placeholder based on the content of a column in a dataframe.
+   *
    * @param df a dataframe
    * @param colName the name of a column in a dataframe
    * @return a placeholder

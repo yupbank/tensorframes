@@ -11,9 +11,9 @@ import org.tensorframes.impl.DenseTensor
 
 // This is a very brittle (static variables) implementation of the scoping.
 // You should not use that in a multithreaded environment...
-private[dsl] object Paths {
+private[dsl] object Paths extends Logging {
   private[this] var rpath: List[String] = Nil
-  private[this] val counters: mutable.Map[String, Int] = mutable.Map.empty
+  private[this] var counters: mutable.Map[String, Int] = mutable.Map.empty
 
   def withScope[T](s: String)(fun: => T): T = {
     rpath ::= s
@@ -24,19 +24,30 @@ private[dsl] object Paths {
     }
   }
 
+  def withGraph[T](fun: => T): T = {
+    val old = counters
+    counters = mutable.Map.empty
+    try {
+      fun
+    } finally {
+      counters = old
+    }
+  }
+
   def creationPath(): List[String] = rpath
 
   private def path(l: List[String]): String = l.filterNot(_.isEmpty).reverse.mkString("/")
 
   def path(creationPath: List[String], requestedName: Option[String], opName: String): String = {
-    val full = requestedName.getOrElse(opName) :: creationPath
+    val full = requestedName.getOrElse(opName).split("/").toList.reverse ::: creationPath
     val key = path(full)
     val c = {
-      val before = counters.getOrElseUpdate(opName, 0)
-      counters.update(opName, before + 1)
+      val before = counters.getOrElseUpdate(key, 0)
+      counters.update(key, before + 1)
       before
     }
 
+    logDebug(s"Request for $key -> $c")
     if (c == 0) {
       key
     } else {
@@ -68,6 +79,8 @@ private[dsl] object DslImpl extends Logging with DefaultConversions {
 
 
   def buildGraph(nodes: Seq[Node]): GraphDef = {
+    logDebug("buildGraph: freezing nodes")
+    nodes.foreach(_.freeze())
     logDebug(s"buildGraph for nodes: ${nodes.map(_.name)}")
     var treated: Map[String, Node] = Map.empty
     nodes.foreach { n =>
@@ -75,7 +88,7 @@ private[dsl] object DslImpl extends Logging with DefaultConversions {
       treated = getClosure(n, treated)
     }
     val b = GraphDef.newBuilder()
-    treated.values.map(_.node).foreach(b.addNode)
+    treated.values.flatMap(_.nodes).foreach(b.addNode)
     b.build()
   }
 
@@ -87,7 +100,7 @@ private[dsl] object DslImpl extends Logging with DefaultConversions {
     logDebug(s"closure: n=${node.name}, parents=${node.parents.map(_.name)}," +
       s" treated=${treated.keySet}")
     val explored = node.parents
-      .filterNot(n => treated.contains(n.node.getName))
+      .filterNot(n => treated.contains(n.name))
       .flatMap(getClosure(_, treated + (node.name -> node)))
       .toMap
 
@@ -148,6 +161,7 @@ private[dsl] object DslImpl extends Logging with DefaultConversions {
       opName: String,
       @Nullable name: String = null,
       parents: Seq[Node] = Seq.empty,
+      extraParents: String => Seq[Node] = _ => Nil,
       @Nullable isOp: Boolean = true,
       @Nullable dtype: NumericType = null,
       @Nullable shape: Shape = null,
@@ -156,7 +170,7 @@ private[dsl] object DslImpl extends Logging with DefaultConversions {
       extraAttrs: Map[String, AttrValue] = Map.empty): Node = {
     val dt = Option(dtype).getOrElse(dtypeInfer(parents.map(_.scalarType)))
     val sh = Option(shape).getOrElse(shapeInfer(parents.map(_.shape)))
-    Node(Option(name), opName, dt, sh, parents, isOp, extraAttrs)
+    Node(Option(name), opName, dt, sh, parents, extraParents, isOp, extraAttrs)
   }
 
   // Reducers (unfinished business)
