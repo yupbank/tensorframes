@@ -1,14 +1,14 @@
 package org.tensorframes.perf
 
+import org.bytedeco.javacpp.{tensorflow => jtf}
+import org.scalatest.FunSuite
+
 import org.apache.spark.Logging
 import org.apache.spark.sql.Row
 import org.apache.spark.sql.types._
-import org.bytedeco.javacpp.{tensorflow => jtf}
-import org.scalatest.FunSuite
-import org.tensorframes.impl.{DataOps, SupportedOperations}
-import org.tensorframes.{ColumnInformation, Shape, TensorFramesTestSparkContext}
 
-import scala.reflect.internal.util.TableDef.Column
+import org.tensorframes.{ColumnInformation, Shape, TensorFramesTestSparkContext}
+import org.tensorframes.impl.{DataOps, SupportedOperations}
 
 class ConvertPerformanceSuite
   extends FunSuite with TensorFramesTestSparkContext with Logging {
