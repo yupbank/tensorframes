@@ -52,15 +52,32 @@ trait OperationsInterface {
    * The graph must accepts inputs that are one dimension higher than the data in the dataframe. For example, if
    * a column contains integer, then the placeholder for this column must accept vectors, etc.
    *
-   * If all the data columns are passed to TensorFlow, then the output may have a different number of rows (and
-   * only in this situation). If some extra columns are not passed to TF, the output of TF must be of the same size
-   * and in the same order as the input.
-   *
    * @param dataframe
    * @param graph
    * @return
    */
   def mapBlocks(dataframe: DataFrame, graph: GraphDef, shapeHints: ShapeDescription): DataFrame
+
+  /**
+   * Transforms the data in a dataframe by applying a tensorflow graph on blocks of data (without
+   * retaining the other rows).
+   *
+   * The graph must accepts inputs that are one dimension higher than the data in the dataframe. For example, if
+   * a column contains integer scalars, then the placeholder for this column must accept
+   * integer vectors, etc.
+   *
+   * The dataframe returned contains only the columns that were created by the TensorFlow output.
+   * All the original columns (including the input columns) are dropped from the result.
+   *
+   * @param dataFrame the input DataFrame
+   * @param graphDef the graph definition
+   * @param shapeHints some hints about the shape of the outputs
+   * @return a new dataframe, see above for a description of the columns being included
+   */
+  def mapBlocksTrimmed(
+      dataFrame: DataFrame,
+      graphDef: GraphDef,
+      shapeHints: ShapeDescription): DataFrame
 
   /**
    * Uses TensorFlow to merge two rows together from the data, until there is one row left, and returns this row.
