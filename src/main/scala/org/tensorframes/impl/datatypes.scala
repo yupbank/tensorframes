@@ -71,11 +71,8 @@ private[tensorframes] sealed abstract class TensorConverter[T : TypeTag] (
     val buff = byteBuffer()
     val pos = buff.position()
     buff.rewind()
-//    logDebug(s"toByteArray: lim=${buff.limit()} size=${buff.position()}")
     val res = Array.fill[Byte](buff.limit())(0)
     buff.get(res, 0, buff.limit())
-//    (0 until buff.limit()).foreach(i => buff.get)
-//    logDebug(s"toByteArray: res=${res.toSeq}")
     buff.position(pos)
     res
   }
@@ -100,6 +97,9 @@ private[tensorframes] sealed abstract class ScalarTypeOperation[T : TypeTag : Cl
    */
   val tfType: DataType
 
+  /**
+   * A zero element for this type
+   */
   val zero: T
 
   /**
@@ -109,7 +109,7 @@ private[tensorframes] sealed abstract class ScalarTypeOperation[T : TypeTag : Cl
 
   /**
    * The conversion of DenseTensor -> Row stuff.
- *
+   *
    * @param numElements the number of elements expected to be found in the tensor.
    */
   @deprecated("to remove", "now")
@@ -117,7 +117,7 @@ private[tensorframes] sealed abstract class ScalarTypeOperation[T : TypeTag : Cl
 
   /**
    * Defensive copy to an external array
- *
+   *
    * @param buff
    * @return
    */
@@ -229,7 +229,6 @@ private object DoubleOperations extends ScalarTypeOperation[Double] with Logging
     val numBufferElements = dbuff.limit() - dbuff.position()
     logDebug(s"convertBuffer: dbuff: pos:${dbuff.position()}, cap:${dbuff.capacity()} " +
       s"limit:${dbuff.limit()} expected=$numElements")
-//    val res = new mutable.ArrayBuffer[Double]()
     val res: Array[Double] = Array.fill(numBufferElements)(Double.NaN)
     dbuff.get(res)
     logDebug(s"Extracted from buffer: ${res.toSeq}")
@@ -288,16 +287,15 @@ private object IntOperations extends ScalarTypeOperation[Int] with Logging {
     dbuff.rewind()
     val res: Array[Int] = Array.fill(numElements)(Int.MinValue)
     dbuff.get(res)
-//    logDebug(s"Extracted from buffer: ${res.toSeq}")
     res
   }
+
   override def convertBuffer(buff: ByteBuffer): mutable.WrappedArray[Int] = {
     val dbuff = buff.asIntBuffer()
     dbuff.rewind()
     val numBufferElements = dbuff.limit() - dbuff.position()
     val res: Array[Int] = new Array[Int](numBufferElements)
     dbuff.get(res)
-//    logDebug(s"Extracted from buffer: ${res.toSeq}")
     res
   }
 }
