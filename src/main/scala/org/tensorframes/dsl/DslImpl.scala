@@ -1,63 +1,19 @@
 package org.tensorframes.dsl
 
 import javax.annotation.Nullable
+import org.tensorflow.framework.{AttrValue, DataType, GraphDef, TensorShapeProto}
 
-import org.apache.spark.sql.DataFrame
-
-import scala.collection.mutable
 import org.apache.spark.Logging
+import org.apache.spark.sql.DataFrame
 import org.apache.spark.sql.types.NumericType
-import org.tensorflow.framework.{TensorShapeProto, DataType, AttrValue, GraphDef}
+
 import org.tensorframes.{ColumnInformation, Shape}
 import org.tensorframes.impl.DenseTensor
 
-// This is a very brittle (static variables) implementation of the scoping.
-// You should not use that in a multithreaded environment...
-private[dsl] object Paths extends Logging {
-  private[this] var rpath: List[String] = Nil
-  private[this] var counters: mutable.Map[String, Int] = mutable.Map.empty
 
-  def withScope[T](s: String)(fun: => T): T = {
-    rpath ::= s
-    try {
-      fun
-    } finally {
-      rpath = rpath.tail
-    }
-  }
-
-  def withGraph[T](fun: => T): T = {
-    val old = counters
-    counters = mutable.Map.empty
-    try {
-      fun
-    } finally {
-      counters = old
-    }
-  }
-
-  def creationPath(): List[String] = rpath
-
-  private def path(l: List[String]): String = l.filterNot(_.isEmpty).reverse.mkString("/")
-
-  def path(creationPath: List[String], requestedName: Option[String], opName: String): String = {
-    val full = requestedName.getOrElse(opName).split("/").toList.reverse ::: creationPath
-    val key = path(full)
-    val c = {
-      val before = counters.getOrElseUpdate(key, 0)
-      counters.update(key, before + 1)
-      before
-    }
-
-    logDebug(s"Request for $key -> $c")
-    if (c == 0) {
-      key
-    } else {
-      key + "_" + c
-    }
-  }
-}
-
+/**
+ * Implementation of the DSL operations.
+ */
 private[dsl] object DslImpl extends Logging with DefaultConversions {
   import ProtoConversions._
 
