@@ -11,7 +11,7 @@ import org.tensorframes.Shape.DimType
  * @param ds
  */
 class Shape private (private val ds: Array[DimType]) extends Serializable {
-  def dims: Seq[DimType] = ds
+  val dims: IndexedSeq[DimType] = ds
 
   def numDims = ds.length
 
@@ -67,7 +67,7 @@ class Shape private (private val ds: Array[DimType]) extends Serializable {
 object Shape {
   type DimType = Long
   private val UNKNOWN: DimType = -1L
-  var Unknown: Int = -1
+  val Unknown: Int = -1
 
   def empty: Shape = Shape()
 
@@ -98,3 +98,9 @@ case class SparkTFColInfo(
     shape: Shape,
     dataType: NumericType) extends Serializable
 
+/**
+ * Exception thrown when the user requests tensors of high order.
+ * @param s
+ */
+case class HighDimException(s: Shape)
+  extends Exception(s"Shape $s is too high - tensorframes only supports dimensions <= 1 (vectors)")

@@ -1,5 +1,6 @@
 package org.tensorframes.impl
 
+import org.apache.commons.lang3.SerializationUtils
 import org.apache.spark.Logging
 import org.apache.spark.broadcast.Broadcast
 import org.apache.spark.sql.catalyst.expressions.{MutableRow, GenericRowWithSchema}
@@ -579,9 +580,9 @@ class TensorFlowUDAF(
     val currentCount = count(buffer)
     buffer(COUNT) = currentCount + 1
     val arr = array(buffer)
-    logDebug(s"update: arr = $arr")
+    logTrace(s"update: arr = $arr")
     arr(currentCount) = input.copy()
-    logDebug(s"update: arr2 = $arr")
+    logTrace(s"update: arr2 = $arr")
     buffer(ROWS) = arr
     if (currentCount >= bufferSize) {
       compact(buffer)
@@ -603,7 +604,7 @@ class TensorFlowUDAF(
   }
 
   override def merge(buffer: MutableAggregationBuffer, other: Row): Unit = {
-    logDebug(s"merge: buffer=$buffer, other=$other")
+    logTrace(s"merge: buffer=$buffer, other=$other")
     val initialCount = count(buffer)
     val otherCount = count(other)
     val (currentCount, totalCount) = if (initialCount + otherCount >= bufferSize) {
@@ -619,11 +620,11 @@ class TensorFlowUDAF(
       arr(currentCount + i) = arr2(i).copy()
     }
     buffer(ROWS) = arr
-    logDebug(s"merge (after): buffer=$buffer")
+    logTrace(s"merge (after): buffer=$buffer")
   }
 
   override def evaluate(buffer: Row): Row = {
-    logDebug(s"evaluate: $buffer")
+    logTrace(s"evaluate: $buffer")
     val c = count(buffer)
     require(c >= 1, buffer)
     // No need for compaction
@@ -718,26 +719,38 @@ object DebugRowOpsImpl extends Logging {
       inputSchema: StructType,
       inputTFCols: Array[Int],
       graphDef: Array[Byte],
-      tfOutputSchema: StructType): Array[Row] = {
+      tfOutputSchema: StructType): Iterator[Row] = {
     logDebug(s"performMap: inputSchema=$inputSchema, tfschema=$tfOutputSchema," +
       s" ${input.length} rows, input cols: ${inputTFCols.toSeq}")
     // Some partitions may be empty
     // TODO(tjh) add test for that
     if (input.length == 0) {
-      return Array.empty
+      return Iterator.empty
     }
     val stpv = DataOps.convert(input, inputSchema, inputTFCols)
+    logDebug(s"performMap: converting the graphDef")
     val g = TensorFlowOps.readGraph(graphDef)
+    logDebug(s"performMap: entering session")
     TensorFlowOps.withSession { session =>
+      logDebug(s"performMap: entered session session")
+      logDebug(s"performMap: extending the graph")
       val s1 = session.Extend(g)
       assert(s1.ok(), s1.error_message().getString)
 
       val outputs = new jtf.TensorVector()
       val requested = TensorFlowOps.stringVector(tfOutputSchema.map(_.name))
       val skipped = new jtf.StringVector()
-      val s3 = tfLock.synchronized { session.Run(stpv, requested, skipped, outputs) }
+      logDebug(s"performMap: waiting for TF lock")
+      val s3 = tfLock.synchronized {
+        logDebug(s"performMap: TF lock acquired, running...")
+        session.Run(stpv, requested, skipped, outputs)
+      }
+      logDebug(s"performMap: TF run finished")
       assert(s3.ok(), s3.error_message().getString)
-      DataOps.convertBack(outputs, tfOutputSchema, input, inputSchema)
+      logDebug(s"performMap: converting back")
+      val res = DataOps.convertBack(outputs, tfOutputSchema, input, inputSchema)
+      logDebug(s"performMap: done")
+      res
     }
   }
 
@@ -748,8 +761,11 @@ object DebugRowOpsImpl extends Logging {
       inputTFCols: Array[Int],
       graphDef: GraphDef,
       outputSchema: StructType): Array[Row] = {
+    // Do a defensive copy of the content of the iterator, as the object may be reused.
     performMap(input, inputSchema, inputTFCols,
-      TensorFlowOps.graphSerial(graphDef), outputSchema)
+      TensorFlowOps.graphSerial(graphDef), outputSchema).map { row =>
+      SerializationUtils.clone(row)
+    } .toSeq.toArray
   }
 
   def performMapRows(
@@ -775,11 +791,11 @@ object DebugRowOpsImpl extends Logging {
         val skipped = new jtf.StringVector()
         val s3 = tfLock.synchronized { session.Run(stpv, requested, skipped, outputs) }
         assert(s3.ok(), s3.error_message().getString)
-        DataOps.convertBack(outputs, tfOutputSchema, Array(row), inputSchema) match {
-          case Array(r) => r
-          case x =>
-            throw new Exception(s"Should have received one row, received ${x.toList}")
-        }
+        val it = DataOps.convertBack(outputs, tfOutputSchema, Array(row), inputSchema)
+        assert(it.hasNext)
+        val r = it.next()
+        assert(!it.hasNext)
+        r
       }
     }
   }
@@ -818,7 +834,10 @@ object DebugRowOpsImpl extends Logging {
       val s3 = tfLock.synchronized { session.Run(stpv, requested, skipped, outputs) }
       assert(s3.ok(), s3.error_message().getString)
       val emptyRows = Array.fill(1)(emptyRow)
-      DataOps.convertBack(outputs, schema, emptyRows, emptySchema).head
+      val it = DataOps.convertBack(outputs, schema, emptyRows, emptySchema)
+      assert(it.hasNext)
+      val r = it.next()
+      r
     }
   }
 
@@ -863,10 +882,10 @@ object DebugRowOpsImpl extends Logging {
         assert(s3.ok(), s3.error_message().getString)
         // Fill in with an empty row, because we are not passing the rest of of the data.
         val emptyRows = Array.fill(1)(emptyRow)
-        result = DataOps.convertBack(outputs, schema, emptyRows, emptySchema) match {
-          case Array(finalRow) => finalRow
-          case x => throw new Exception(s"Should be one row, at ${x.toList}")
-        }
+        val it = DataOps.convertBack(outputs, schema, emptyRows, emptySchema)
+        assert(it.hasNext)
+        result = it.next()
+        assert(!it.hasNext)
       }
     }
     result

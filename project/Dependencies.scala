@@ -12,7 +12,7 @@ import xml.transform.{RuleTransformer, RewriteRule}
 
 object Dependencies {
   // The spark version
-  val targetSparkVersion = "1.6.0"
+  val targetSparkVersion = "1.6.1"
 
   // The current release of tensorflow being targeted.
   val tfVersion = "0.7.1"
