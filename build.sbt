@@ -8,7 +8,7 @@ name := "tensorframes"
 
 //scalaVersion := "2.10.5"
 
-crossScalaVersions := Seq("2.11.7", "2.10.5")
+//crossScalaVersions := Seq("2.11.7", "2.10.5")
 
 // Don't forget to set the version
 version := "0.1.2"
