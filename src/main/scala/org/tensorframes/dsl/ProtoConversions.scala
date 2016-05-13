@@ -1,9 +1,9 @@
 package org.tensorframes.dsl
 
-import org.apache.spark.sql.types.NumericType
 import org.tensorflow.framework.{AttrValue, DataType, NodeDef}
 import org.tensorframes.impl.SupportedOperations
 
+import org.apache.spark.sql.types.NumericType
 
 /**
  * Utilities to convert data back and forth between the proto descriptions and the dataframe

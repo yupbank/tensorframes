@@ -8,18 +8,20 @@ import scala.collection.JavaConverters._
 
 /**
  * A node in the TensorFlow graph.
+ *
+ * There is currently no difference between nodes and the default tensor output.
  */
 trait Operation {
   /**
    * The path of the operation. It follows TensorFlow's path conventions.
- *
+   *
    * @return
    */
   def name: String
 
   /**
    * The name of the operation.
- *
+   *
    * @return
    */
   def opName: String
@@ -31,10 +33,26 @@ trait Operation {
    */
   def dims: Seq[Int]
 
+  /**
+   * Use this method if you want to give a name to a node. This method can only be called once
+   * on a node.
+   *
+   * Note that the name will automatically include the current path, if the path is changed with
+   * [[Paths]].
+   *
+   * @param newName the name of the node.
+   * @return a named operation.
+   */
   def named(newName: String): Operation
 
+  /**
+   * Point-wise addition (with broadcasting).
+   */
   def +(other: Operation): Operation = tf.add(this, other)
 
+  /**
+   * Point-wise division (with broadcasting).
+   */
   def /(other: Operation): Operation = tf.div(this, other)
 }
 
@@ -128,18 +146,22 @@ private[tensorframes] case class Node(
 
 private[dsl] object Node {
 
-  def apply(requestedName: Option[String],
-            opName: String,
-            scalarType: NumericType,
-            shape: Shape,
-            parents: Seq[Node],
-            internalParents: String => Seq[Node],
-            isOp: Boolean,
-            extraAttr: Map[String, AttrValue]) = {
+  def apply(
+      requestedName: Option[String],
+      opName: String,
+      scalarType: NumericType,
+      shape: Shape,
+      parents: Seq[Node],
+      internalParents: String => Seq[Node],
+      isOp: Boolean,
+      extraAttr: Map[String, AttrValue]) = {
     val p = Paths.creationPath()
     new Node(requestedName, p, opName, scalarType, shape, parents, internalParents, isOp, extraAttr)
   }
 
+  /**
+   * Builds shape hints from the shape description.
+   */
   def hints(ns: Seq[Node]): ShapeDescription = {
     val m = ns.map { n =>
       n.name -> n.shape

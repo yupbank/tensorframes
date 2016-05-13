@@ -1,14 +1,16 @@
 package org.tensorframes.dsl
 
-import java.nio.file.{Paths => JPaths, Files}
+import java.nio.file.{Files, Paths => JPaths}
 
 import org.tensorflow.framework.GraphDef
+
 import org.tensorframes.ShapeDescription
-import org.tensorframes.impl.{TensorFlowOps, GraphNodeSummary}
+import org.tensorframes.impl.{GraphNodeSummary, TensorFlowOps}
 
 /**
  * Some utilities for running tests.
  */
+// TODO(tjh) check that these methods are not implemented somewhere else.
 private[tensorframes] object TestUtilities {
 
   def buildGraph(node: Operation, nodes: Operation*): GraphDef = {

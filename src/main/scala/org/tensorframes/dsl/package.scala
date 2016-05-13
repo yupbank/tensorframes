@@ -1,13 +1,11 @@
 package org.tensorframes
 
-import java.nio.file.{Paths, Files}
+import scala.reflect.runtime.universe.TypeTag
 
 import org.apache.spark.sql.DataFrame
 import org.apache.spark.sql.types.IntegerType
-import org.tensorflow.framework.GraphDef
-import org.tensorframes.impl.{DenseTensor, SupportedOperations}
 
-import scala.reflect.runtime.universe.TypeTag
+import org.tensorframes.impl.SupportedOperations
 
 /**
  * The public interface that reimplements a subset of the official TensorFlow python API.

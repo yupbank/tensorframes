@@ -12,7 +12,16 @@ import org.tensorframes.{ExperimentalOperations, OperationsInterface, ShapeDescr
 trait DFImplicits {
   protected def ops: OperationsInterface with ExperimentalOperations
 
+  /**
+   * This implicit augments Spark's DataFrame with a number of tensorflow-related methods.
+   *
+   * These methods are the preferred way to manipulate DataFrames, see the documentation for
+   * examples.
+   *
+   * @param df the underlying dataframe.
+   */
   implicit class RichDataFrame(df: DataFrame) {
+
     def mapRows(graph: GraphDef, shapeHints: ShapeDescription): DataFrame = {
       ops.mapRows(df, graph, shapeHints)
     }
@@ -47,6 +56,7 @@ trait DFImplicits {
       ops.analyze(df)
     }
 
+    // TODO: do we need this? it can be named.
     def row(columnName: String, tfName: String): Operation = {
       dsl.row(df, columnName, tfName)
     }
@@ -55,6 +65,7 @@ trait DFImplicits {
       dsl.row(df, columnName, columnName)
     }
 
+    // TODO: do we need this? it can be named.
     def block(columnName: String, tfName: String): Operation = {
       dsl.block(df, columnName, tfName)
     }
@@ -64,20 +75,29 @@ trait DFImplicits {
     }
   }
 
+  /**
+   * Extra operations for Spark's GroupedData.
+   *
+   * This is useful for aggregation.
+   */
   implicit class RichGroupedData(dg: GroupedData) {
     def aggregate(graphDef: GraphDef, shapeDescription: ShapeDescription): DataFrame = {
       ops.aggregate(dg, graphDef, shapeDescription)
     }
   }
 
-  // Converts the constants to constant nodes automatically
+  /**
+   * Automatically converts constants to TensorFlow nodes.
+   */
   implicit def canConvertToConstant[T : ConvertibleToDenseTensor](x: T): Operation = {
     dsl.constant(x)
   }
 
 }
 
+/**
+ * You should import this object if you want to access all the TensorFrames DSL.
+ */
 object Implicits extends DFImplicits with DefaultConversions {
   protected override def ops = Ops
-
 }
