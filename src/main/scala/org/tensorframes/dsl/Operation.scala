@@ -34,6 +34,8 @@ trait Operation {
   def named(newName: String): Operation
 
   def +(other: Operation): Operation = tf.add(this, other)
+
+  def /(other: Operation): Operation = tf.div(this, other)
 }
 
 /**
@@ -55,25 +57,30 @@ private[tensorframes] case class Node(
 
   private var _path: String = null
   private var _createdParents: Seq[Node] = null
+  private val creationStack = (new Exception).getStackTraceString
+  private var frozenStack: String = null
 
   logDebug(s"Created node $this")
 
   private def frozen = { _path != null }
 
-  def freeze(): Unit = {
+  def freeze(everything: Boolean = false): Unit = {
     logDebug(s"Calling freeze on $this with ${_path}")
     // May increment counter as a side effect here.
-    if (frozen) {
-      return
+    if (! frozen) {
+      val p = Paths.path(creationPath, requestedName, opName)
+      _path = p
+      logDebug(s"freeze: Path $p for $this")
+      frozenStack = (new Exception).getStackTraceString
+      val diff = creationPath.filterNot(_.isEmpty).mkString("/")
+      val suffix = p.drop(diff.length)
+      val ns = internalParents(suffix)
+      ns.foreach(_.freeze())
+      _createdParents = ns
     }
-    val p = Paths.path(creationPath, requestedName, opName)
-    _path = p
-    logDebug(s"freeze: Path $p for $this")
-    val diff = creationPath.filterNot(_.isEmpty).mkString("/")
-    val suffix = p.drop(diff.length)
-    val ns = internalParents(suffix)
-    ns.foreach(_.freeze())
-    _createdParents = ns
+    if (everything) {
+      allParents.foreach(_.freeze(everything))
+    }
     assert(frozen)
   }
 
@@ -83,7 +90,7 @@ private[tensorframes] case class Node(
   }
 
   def name: String = {
-    require(frozen)
+    require(frozen, s"The node $this is not frozen. Creation stack:\n$creationStack")
     _path
   }
 
@@ -110,6 +117,11 @@ private[tensorframes] case class Node(
     val c = copy(requestedName = Some(newName))
     c.freeze()
     c
+  }
+
+  override def toString(): String = {
+    val f = if (frozen) {"frz"} else {"liv"}
+    s"Node($f${math.abs(this.##)}, $requestedName, $creationPath, $opName, $scalarType, $shape)"
   }
 
 }

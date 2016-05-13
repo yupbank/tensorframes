@@ -5,14 +5,9 @@ import org.scalatest.FunSuite
 import org.tensorframes.{dsl => tf}
 import org.tensorframes.dsl.Implicits._
 
-class SimpleTest extends FunSuite with Logging {
+class BasicSuite extends FunSuite with GraphScoping with Logging {
 
-  import ExtractNodes._
-  import tf.withGraph
-
-  def testGraph(s: String)(fun: => Unit): Unit = {
-    test(s) { withGraph { fun } }
-  }
+  import ExtractNodes.compareOutput
 
   testGraph("Simple test") {
     val x = tf.constant(3)
@@ -34,6 +29,6 @@ class SimpleTest extends FunSuite with Logging {
   }
 
   testGraph("fill 1") {
-    compareOutput("tf.fill([1],1.0)", tf.fill(Seq(1), 1.0))
+    compareOutput("tf.fill([2],3)", tf.fill(Seq(2), 3))
   }
 }

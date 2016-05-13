@@ -73,7 +73,7 @@ package object dsl {
       case Seq() =>
         fill(constant(1), constant(value))
       case Seq(n) =>
-        fill(constant(2), constant(Seq.fill(n)(value)))
+        fill(constant(Seq(n)), constant(value))
       case _ =>
         throw HighDimException(Shape(dims: _*))
     }
@@ -81,7 +81,7 @@ package object dsl {
 
   def fill(dims: Operation, value: Operation): Operation = {
     require(dims.n.scalarType == IntegerType)
-    require(value.n.shape.numDims == 1)
+    require(value.n.shape.numDims == 0, value.n.shape)
     build("Fill",
       shape = dims.n.shape,
       dtype = value.n.scalarType,
@@ -95,15 +95,16 @@ package object dsl {
    * @param colName the name of a column in a dataframe
    * @return a placeholder
    */
-  // TODO(tjh) make it work for column?
-  def block(df: DataFrame, colName: String): Operation = {
-    ???
+  def block(df: DataFrame, colName: String, tfName: String): Operation = {
+    extractPlaceholder(df, colName, tfName, block = true)
   }
 
-  def row(df: DataFrame, colName: String): Operation = {
-    ???
+  /**
+   * Builds a row placeholder based on the content of a column in a dataframe.
+   */
+  def row(df: DataFrame, colName: String, tfName: String): Operation = {
+    extractPlaceholder(df, colName, tfName, block = false)
   }
-
 
   // ******** Tensor Transformations ***********
 
@@ -115,6 +116,8 @@ package object dsl {
   def add(x: Operation, y: Operation): Operation =
     build("Add", parents=Seq(x, y), shapeInfer = broadcastShape)
 
+  def div(x: Operation, y: Operation): Operation =
+    build("Div", parents=Seq(x, y), shapeInfer = broadcastShape)
 
   // **** Reducers ******
 

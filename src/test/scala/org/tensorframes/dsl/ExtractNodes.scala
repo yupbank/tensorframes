@@ -35,8 +35,14 @@ object ExtractNodes extends ShouldMatchers with Logging {
         res = res + "\n" + str
       }
     }
+
+    p.waitFor()
+    assert(p.exitValue() === 0, (p.exitValue(),
+      {
+        println(content)
+        s"===========\n$content\n==========="
+      }))
     res.split(">>>>>").map(_.trim).filterNot(_.isEmpty).map { b =>
-//      logDebug(s">>$b<<")
       val zs = b.split("\n")
       val node = zs.head.dropRight(7)
       val rest = zs.tail
@@ -50,18 +56,19 @@ object ExtractNodes extends ShouldMatchers with Logging {
       n.getName -> n.toString.trim
     } .toMap
     val pym = executeCommand(py)
-    logDebug(s"m1 = '$m1'")
-    logDebug(s"pym = '$pym'")
-    if ((m1.keySet -- pym.keySet).nonEmpty) {
+    logTrace(s"m1 = '$m1'")
+    logTrace(s"pym = '$pym'")
+    assert((m1.keySet -- pym.keySet).nonEmpty, {
       val diff = (m1.keySet -- pym.keySet).toSeq.sorted
-      assert(false, s"Found extra nodes in scala: $diff")
-    }
-    if ((pym.keySet -- m1.keySet).nonEmpty) {
+      s"Found extra nodes in scala: $diff"
+    })
+    assert((pym.keySet -- m1.keySet).nonEmpty, {
       val diff = (pym.keySet -- m1.keySet).toSeq.sorted
-      assert(false, s"Found extra nodes in python: $diff")
-    }
+      s"Found extra nodes in python: $diff"
+    })
     for (k <- m1.keySet) {
-      assert(m1(k) === pym(k), k)
+      assert(m1(k) === pym(k),
+        s"scala=${m1(k)}\npython=${pym(k)}")
     }
   }
 }

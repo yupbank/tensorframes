@@ -11,15 +11,17 @@ class PerformanceSuite
   extends FunSuite with TensorFramesTestSparkContext with Logging {
   lazy val sql = sqlContext
 
-  ignore("Perf 1") {
+  test("Perf 1") {
     val df = sql.range(0L, 20000000L).toDF("x")
 
     for (_ <- 1 to 10) {
-      val x = placeholder[Long](Unknown) named "x"
-      val z = x + x named "z"
-      val df2 = df.mapBlocks(z).select("x", "z")
-      val res = df2.agg(sum("z")).collect()
-      println(s"!!! res = $res")
+      withGraph {
+        val x = df.block("x", "x")
+        val z = x + x named "z"
+        val df2 = df.mapBlocks(z).select("x", "z")
+        val res = df2.agg(sum("z")).collect()
+        println(s"!!! res = $res")
+      }
     }
   }
 }

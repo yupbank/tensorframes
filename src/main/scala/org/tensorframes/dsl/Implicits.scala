@@ -47,7 +47,21 @@ trait DFImplicits {
       ops.analyze(df)
     }
 
-    // TODO: add analysis
+    def row(columnName: String, tfName: String): Operation = {
+      dsl.row(df, columnName, tfName)
+    }
+
+    def row(columnName: String): Operation = {
+      dsl.row(df, columnName, columnName)
+    }
+
+    def block(columnName: String, tfName: String): Operation = {
+      dsl.block(df, columnName, tfName)
+    }
+
+    def block(columnName: String): Operation = {
+      dsl.block(df, columnName, columnName)
+    }
   }
 
   implicit class RichGroupedData(dg: GroupedData) {

@@ -2,11 +2,13 @@ package org.tensorframes.dsl
 
 import javax.annotation.Nullable
 
+import org.apache.spark.sql.DataFrame
+
 import scala.collection.mutable
 import org.apache.spark.Logging
 import org.apache.spark.sql.types.NumericType
 import org.tensorflow.framework.{TensorShapeProto, DataType, AttrValue, GraphDef}
-import org.tensorframes.Shape
+import org.tensorframes.{ColumnInformation, Shape}
 import org.tensorframes.impl.DenseTensor
 
 // This is a very brittle (static variables) implementation of the scoping.
@@ -77,10 +79,15 @@ private[dsl] object DslImpl extends Logging with DefaultConversions {
     AttrValue.newBuilder().setType(getDType(sqlType)).build()
   }
 
-
   def buildGraph(nodes: Seq[Node]): GraphDef = {
     logDebug("buildGraph: freezing nodes")
+    // This only uses the parents that are internally reachable
+    // TODO(tjh) this freezing business is not going to work.
+    // We need to store the creation order (and reconstruct it for subnodes using a creation tree)
     nodes.foreach(_.freeze())
+    // After that, we also need to freeze some constants and other elements around.
+    logDebug("buildGraph: Freezing everything")
+    nodes.foreach(_.freeze(everything=true))
     logDebug(s"buildGraph for nodes: ${nodes.map(_.name)}")
     var treated: Map[String, Node] = Map.empty
     nodes.foreach { n =>
@@ -123,6 +130,24 @@ private[dsl] object DslImpl extends Logging with DefaultConversions {
       extraAttrs = Map("shape" -> shape.toAttr))
   }
 
+  private[dsl] def extractPlaceholder(
+      df: DataFrame,
+      colName: String,
+      tfName: String,
+      block: Boolean): Operation = {
+    val schema = df.schema.find(_.name == colName).getOrElse {
+      throw new Exception(s"Cannot find column $colName, available columns" +
+        s" are ${df.schema.fieldNames.mkString(",")}")
+    }
+    // Get the shape and dtype
+    val stf = ColumnInformation(schema).stf.getOrElse {
+      throw new Exception(s"The datatype of column '$colName' could not be understood by" +
+        s"tensorframes: $schema")
+    }
+    val shape = if (block) { stf.shape } else { stf.shape.tail }
+    DslImpl.placeholder(stf.dataType, shape).named(tfName)
+  }
+
   private def commonShape(shapes: Seq[Shape]): Shape = {
     require(shapes.nonEmpty)
     require(shapes.forall(_ == shapes.head), s"$shapes")
@@ -153,7 +178,7 @@ private[dsl] object DslImpl extends Logging with DefaultConversions {
 
   private def commonType(dtypes: Seq[NumericType]): NumericType = {
     require(dtypes.nonEmpty)
-    require(dtypes.forall(_ == dtypes.head))
+    require(dtypes.forall(_ == dtypes.head), s"All these types should be the same: $dtypes")
     dtypes.head
   }
 
