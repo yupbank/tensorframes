@@ -4,13 +4,14 @@ import scala.collection.mutable
 import scala.reflect.ClassTag
 
 import org.bytedeco.javacpp.{tensorflow => jtf}
-import org.tensorframes.{ColumnInformation, Shape}
-import org.tensorframes.Shape.DimType
 
 import org.apache.spark.Logging
 import org.apache.spark.sql.Row
 import org.apache.spark.sql.catalyst.expressions.{GenericRow, GenericRowWithSchema}
 import org.apache.spark.sql.types.{NumericType, StructType}
+
+import org.tensorframes.{ColumnInformation, Shape}
+import org.tensorframes.Shape.DimType
 
 /**
   * Converts data between the C++ runtime of TensorFlow and the Spark runtime.
