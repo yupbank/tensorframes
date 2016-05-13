@@ -8,12 +8,12 @@ import org.tensorframes.impl.DebugRowOpsImpl
 import org.tensorframes.dsl._
 
 class DebugRowOpsSuite
-  extends FunSuite with TensorFramesTestSparkContext with Logging {
+  extends FunSuite with TensorFramesTestSparkContext with GraphScoping with Logging {
   lazy val sql = sqlContext
   import ColumnInformation.structField
   import Shape.Unknown
 
-  test("Simple identity") {
+  testGraph("Simple identity") {
     val rows = Array(Row(1.0))
     val input = StructType(Array(structField("x", DoubleType, Shape(Unknown))))
     val p2 = placeholder[Double](1) named "x"
@@ -25,7 +25,7 @@ class DebugRowOpsSuite
     assert(res === Array(Row(1.0, 1.0)))
   }
 
-  test("Simple add") {
+  testGraph("Simple add") {
     val rows = Array(Row(1.0))
     val input = StructType(Array(structField("x", DoubleType, Shape(Unknown))))
     val p2 = placeholder[Double](1) named "x"

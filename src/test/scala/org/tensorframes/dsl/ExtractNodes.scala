@@ -58,11 +58,11 @@ object ExtractNodes extends ShouldMatchers with Logging {
     val pym = executeCommand(py)
     logTrace(s"m1 = '$m1'")
     logTrace(s"pym = '$pym'")
-    assert((m1.keySet -- pym.keySet).nonEmpty, {
+    assert((m1.keySet -- pym.keySet).isEmpty, {
       val diff = (m1.keySet -- pym.keySet).toSeq.sorted
       s"Found extra nodes in scala: $diff"
     })
-    assert((pym.keySet -- m1.keySet).nonEmpty, {
+    assert((pym.keySet -- m1.keySet).isEmpty, {
       val diff = (pym.keySet -- m1.keySet).toSeq.sorted
       s"Found extra nodes in python: $diff"
     })
