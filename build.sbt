@@ -6,7 +6,7 @@ import Dependencies._
 
 name := "tensorframes"
 
-//scalaVersion := "2.10.5"
+scalaVersion := "2.10.5"
 
 //crossScalaVersions := Seq("2.11.7", "2.10.5")
 
@@ -59,6 +59,8 @@ libraryDependencies += "org.apache.spark" %% "spark-core" % targetSparkVersion %
 libraryDependencies += "org.apache.spark" %% "spark-sql" % targetSparkVersion % "provided"
 
 libraryDependencies += "org.scalatest" %% "scalatest" % "2.1.3" % "test"
+
+libraryDependencies += "org.apache.commons" % "commons-lang3" % "3.4"
 
 // Compilation of proto files
 

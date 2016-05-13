@@ -27,7 +27,7 @@ private[tensorframes] class DenseTensor private(
 }
 
 private[tensorframes] object DenseTensor {
-  def apply[T](x: T)(implicit ev1: Numeric[T], ev2: TypeTag[T]): DenseTensor = {
+  def apply[T](x: T)(implicit ev2: TypeTag[T]): DenseTensor = {
     val ops = SupportedOperations.getOps[T]()
     new DenseTensor(Shape.empty, ops.sqlType, convert(x))
   }
@@ -37,7 +37,7 @@ private[tensorframes] object DenseTensor {
     new DenseTensor(Shape(xs.size), ops.sqlType, convert(xs))
   }
 
-  private def convert[T](x: T)(implicit ev1: Numeric[T], ev2: TypeTag[T]): Array[Byte] = {
+  private def convert[T](x: T)(implicit ev2: TypeTag[T]): Array[Byte] = {
     val ops = SupportedOperations.getOps[T]()
     val conv = ops.tfConverter(Shape.empty, 1)
     conv.reserve()
