@@ -97,7 +97,7 @@ class TestCore(object):
             # The resulting dataframe
             df2 = tfs.map_blocks(z, df, trim=True)
         data2 = df2.collect()
-        assert data2[0].z == 3.0, data2
+        assert data2[0].z == 2, data2
 
 
 if __name__ == "__main__":
