@@ -198,12 +198,12 @@ private class DoubleTensorConverter(s: Shape, numCells: Int)
   assert(! s.hasUnknown, s"Shape $s has unknown values.")
 
   override def reserve(): Unit = {
-    logDebug(s"Reserving for $numCells units of shape $shape")
+    logTrace(s"Reserving for $numCells units of shape $shape")
     val s2 = s.prepend(numCells)
     val physicalShape = TensorFlowOps.shape(s2)
-    logDebug(s"s2=$s2 phys=${TensorFlowOps.jtfShape(physicalShape)}")
+    logTrace(s"s2=$s2 phys=${TensorFlowOps.jtfShape(physicalShape)}")
     _tensor = new jtf.Tensor(jtf.TF_DOUBLE, physicalShape)
-    logDebug(s"alloc=${TensorFlowOps.jtfShape(_tensor.shape())}")
+    logTrace(s"alloc=${TensorFlowOps.jtfShape(_tensor.shape())}")
     buffer = byteBuffer().asDoubleBuffer()
     buffer.rewind()
   }
@@ -227,11 +227,11 @@ private object DoubleOperations extends ScalarTypeOperation[Double] with Logging
     val dbuff = buff.asDoubleBuffer()
     dbuff.rewind()
     val numBufferElements = dbuff.limit() - dbuff.position()
-    logDebug(s"convertBuffer: dbuff: pos:${dbuff.position()}, cap:${dbuff.capacity()} " +
+    logTrace(s"convertBuffer: dbuff: pos:${dbuff.position()}, cap:${dbuff.capacity()} " +
       s"limit:${dbuff.limit()} expected=$numElements")
     val res: Array[Double] = Array.fill(numBufferElements)(Double.NaN)
     dbuff.get(res)
-    logDebug(s"Extracted from buffer: ${res.toSeq}")
+    logTrace(s"Extracted from buffer: ${res.toSeq}")
     res
 
   }
@@ -242,7 +242,7 @@ private object DoubleOperations extends ScalarTypeOperation[Double] with Logging
     val numBufferElements = dbuff.limit() - dbuff.position()
     val res: Array[Double] = Array.fill(numBufferElements)(Double.NaN)
     dbuff.get(res)
-    logDebug(s"Extracted from buffer: ${res.toSeq}")
+    logTrace(s"Extracted from buffer: ${res.toSeq}")
     res
   }
 }
@@ -257,12 +257,12 @@ private class IntTensorConverter(s: Shape, numCells: Int)
   assert(! s.hasUnknown, s"Shape $s has unknown values.")
 
   override def reserve(): Unit = {
-    logDebug(s"Reserving for $numCells units of shape $shape")
+    logTrace(s"Reserving for $numCells units of shape $shape")
     val s2 = s.prepend(numCells)
     val physicalShape = TensorFlowOps.shape(s2)
-    logDebug(s"s2=$s2 phys=${TensorFlowOps.jtfShape(physicalShape)}")
+    logTrace(s"s2=$s2 phys=${TensorFlowOps.jtfShape(physicalShape)}")
     _tensor = new jtf.Tensor(jtf.TF_INT32, physicalShape)
-    logDebug(s"alloc=${TensorFlowOps.jtfShape(_tensor.shape())}")
+    logTrace(s"alloc=${TensorFlowOps.jtfShape(_tensor.shape())}")
     buffer =byteBuffer().asIntBuffer()
     buffer.rewind()
   }
@@ -310,12 +310,12 @@ private class LongTensorConverter(s: Shape, numCells: Int)
   assert(! s.hasUnknown, s"Shape $s has unknown values.")
 
   override def reserve(): Unit = {
-    logDebug(s"Reserving for $numCells units of shape $shape")
+    logTrace(s"Reserving for $numCells units of shape $shape")
     val s2 = s.prepend(numCells)
     val physicalShape = TensorFlowOps.shape(s2)
-    logDebug(s"s2=$s2 phys=${TensorFlowOps.jtfShape(physicalShape)}")
+    logTrace(s"s2=$s2 phys=${TensorFlowOps.jtfShape(physicalShape)}")
     _tensor = new jtf.Tensor(jtf.TF_INT64, physicalShape)
-    logDebug(s"alloc=${TensorFlowOps.jtfShape(_tensor.shape())}")
+    logTrace(s"alloc=${TensorFlowOps.jtfShape(_tensor.shape())}")
     buffer = byteBuffer().asLongBuffer()
     buffer.rewind()
   }

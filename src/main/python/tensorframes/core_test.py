@@ -86,6 +86,20 @@ class TestCore(object):
             res = tfs.reduce_blocks(x, df)
         assert res == sum([r.x for r in data])
 
+    def test_map_blocks_trimmed_1(self):
+        data = [Row(x=float(x)) for x in range(3)]
+        df = self.sql.createDataFrame(data)
+        with tf.Graph().as_default() as g:
+            # The placeholder that corresponds to column 'x'
+            x = tf.placeholder(tf.double, shape=[None], name="x")
+            # The output discards the input and return a single row of data
+            z = tf.constant([2], name='z')
+            # The resulting dataframe
+            df2 = tfs.map_blocks(z, df, trim=True)
+        data2 = df2.collect()
+        assert data2[0].z == 2, data2
+
+
 if __name__ == "__main__":
     # Some testing stuff that should not be executed
     with tf.Graph().as_default() as g:

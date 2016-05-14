@@ -78,17 +78,17 @@ private[tensorframes] case class Node(
   private val creationStack = (new Exception).getStackTraceString
   private var frozenStack: String = null
 
-  logDebug(s"Created node $this")
+  logTrace(s"Created node $this")
 
   private def frozen = { _path != null }
 
   def freeze(everything: Boolean = false): Unit = {
-    logDebug(s"Calling freeze on $this with ${_path}")
+    logTrace(s"Calling freeze on $this with ${_path}")
     // May increment counter as a side effect here.
     if (! frozen) {
       val p = Paths.path(creationPath, requestedName, opName)
       _path = p
-      logDebug(s"freeze: Path $p for $this")
+      logTrace(s"freeze: Path $p for $this")
       frozenStack = (new Exception).getStackTraceString
       val diff = creationPath.filterNot(_.isEmpty).mkString("/")
       val suffix = p.drop(diff.length)

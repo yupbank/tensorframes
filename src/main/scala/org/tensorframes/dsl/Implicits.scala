@@ -42,6 +42,16 @@ trait DFImplicits {
       mapBlocks(g, Node.hints(seq))
     }
 
+    def mapBlocksTrimmed(graph: GraphDef, shapeHints: ShapeDescription): DataFrame = {
+      ops.mapBlocksTrimmed(df, graph, shapeHints)
+    }
+
+    def mapBlocksTrimmed(o0: Operation, os: Operation*): DataFrame = {
+      val seq = Seq(o0) ++ os
+      val g = DslImpl.buildGraph(Seq(o0) ++ os)
+      mapBlocksTrimmed(g, Node.hints(seq))
+    }
+
     def reduceRows(graph: GraphDef, shapeHints: ShapeDescription): Row = {
       ops.reduceRows(df, graph, shapeHints)
     }

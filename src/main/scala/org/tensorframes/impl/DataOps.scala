@@ -10,7 +10,7 @@ import org.apache.spark.sql.Row
 import org.apache.spark.sql.catalyst.expressions.{GenericRow, GenericRowWithSchema}
 import org.apache.spark.sql.types.{NumericType, StructType}
 
-import org.tensorframes.{ColumnInformation, Shape}
+import org.tensorframes.{InvalidDimensionException, ColumnInformation, Shape}
 import org.tensorframes.Shape.DimType
 
 /**
@@ -37,22 +37,42 @@ object DataOps extends Logging {
       tf_struct: StructType,
       input: Array[Row],
       input_struct: StructType,
+      appendInput: Boolean,
       fastPath: Boolean = true): Iterator[Row] = {
     // The structures should already have been validated.
     // Output has all the TF columns first, and then the other columns
     logDebug(s"convertBack: ${input.length} input rows, tf_struct=$tf_struct")
 
-    val tfIters = for ((t, idx) <- tf_struct.fields.zipWithIndex) yield {
+    val tfSizesAndIters = for ((t, idx) <- tf_struct.fields.zipWithIndex.toSeq) yield {
       val info = ColumnInformation(t).stf.getOrElse {
         throw new Exception(s"Missing info in field $t")
       }
       logDebug(s"convertBack: $t $info")
       // Drop the first cell, this is a block.
-      getColumn(tv, idx, info.dataType, info.shape.tail, input.length).iterator
+      val expLength = if (appendInput) { Some(input.length) } else { None }
+      val (numRows, iter) = getColumn(tv, idx, info.dataType, info.shape.tail, expLength)
+      numRows -> iter
     }
-    val outputSchema = StructType(tf_struct.fields ++ input_struct.fields)
+    val tfSizes = tfSizesAndIters.map(_._1)
+    val tfNumRows: Int = tfSizes.distinct match {
+      case Seq(x) => x
+      case Seq() =>
+        throw new Exception(s"Output cannot be empty. tf_struct=$tf_struct")
+      case _ =>
+        throw new Exception(s"Multiple number of rows detected. tf_struct=$tf_struct," +
+          s" tfSizes = $tfSizes")
+    }
+    assert((!appendInput) || tfNumRows == input.length,
+      s"Incompatible sizes detected: appendInput=$appendInput, tf num rows = $tfNumRows, " +
+        s"input num rows = ${input.length}")
+    val tfIters = tfSizesAndIters.map(_._2.iterator).toArray
+    val outputSchema = if (appendInput) {
+      StructType(tf_struct.fields ++ input_struct.fields)
+    } else {
+      StructType(tf_struct.fields)
+    }
     val res: Iterator[Row] = if (fastPath) {
-      convertBackFast0(input, tfIters, input_struct, outputSchema)
+      convertBackFast0(input, tfIters, tfNumRows, input_struct, outputSchema)
     } else {
       convertBackSlow0(input, tfIters, input_struct, outputSchema)
     }
@@ -61,6 +81,7 @@ object DataOps extends Logging {
     res
   }
 
+  // TODO(tjh) remove this method, it is buggy now for appendInput = false
   private[this] def convertBackSlow0(
       input: Array[Row],
       tfIters: Array[Iterator[Any]],
@@ -85,15 +106,24 @@ object DataOps extends Logging {
   private[this] def convertBackFast0(
       input: Array[Row],
       tfIters: Array[Iterator[Any]],
+      tfNumRows: Int,
       input_struct: StructType,
       outputSchema: StructType): Iterator[Row] = {
     val numOutCols = outputSchema.size
     val numInCols = input_struct.size
     val numTFCols = tfIters.length
-    assert(numOutCols == numInCols + numTFCols, (numOutCols, numInCols, numTFCols))
-    val res: Array[GenericRow] = new Array[GenericRow](input.length)
+    // We check if we need to append the input columns to the final output.
+    val appendInput = numOutCols == numInCols + numTFCols
+    assert(
+      numOutCols == numInCols + numTFCols || numOutCols == numTFCols,
+      (numOutCols, numInCols, numTFCols))
+    val numRowsToProcess = if (appendInput) {
+      assert(input.length == tfNumRows, (input.length, tfNumRows))
+      input.length
+    } else { tfNumRows }
+    val res: Array[GenericRow] = new Array[GenericRow](numRowsToProcess)
     var rowIdx = 0
-    while(rowIdx < input.length) {
+    while(rowIdx < numRowsToProcess) {
       val rowContent = new Array[Any](numOutCols)
       // Transfer the content of the TF outputs
       var tfColIdx = 0
@@ -101,12 +131,14 @@ object DataOps extends Logging {
         rowContent(tfColIdx) = tfIters(tfColIdx).next()
         tfColIdx += 1
       }
-      // Copy the existing row into the output row
-      val r = input(rowIdx)
-      var colIdx = 0
-      while (colIdx < numInCols) {
-        rowContent(numTFCols + colIdx) = r.get(colIdx)
-        colIdx += 1
+      if (appendInput) {
+        // Copy the existing row into the output row
+        val r = input(rowIdx)
+        var colIdx = 0
+        while (colIdx < numInCols) {
+          rowContent(numTFCols + colIdx) = r.get(colIdx)
+          colIdx += 1
+        }
       }
       res(rowIdx) = new GenericRow(rowContent)
       rowIdx += 1
@@ -270,6 +302,49 @@ object DataOps extends Logging {
     }
   }
 
+  @throws[IllegalArgumentException]("If the shape contains unknown and the expected number of " +
+    "rows is not provided")
+  private def inferPhysicalShape(
+      numScalars: Int,
+      expectedCellShape: Shape,
+      expectedNumRows: Option[Int]): (Int, Shape) = {
+    if (expectedCellShape.dims.count(_ == Shape.Unknown) > 1) {
+      throw new IllegalArgumentException(s"Shape has too many unkown values to perform inference: " +
+        s"$expectedCellShape")
+    }
+    val h = expectedCellShape.dims.takeWhile(_ >= 0)
+    val t = expectedCellShape.dims.dropWhile(_ >= 0) match {
+      case Seq() => Nil
+      case x: Seq[DimType] => x.tail
+    }
+    val p = h.product * t.product
+    expectedNumRows match {
+      case None if expectedCellShape.hasUnknown =>
+        // Underresolved
+        throw new IllegalArgumentException(s"Cannot infer the final cell shape: $expectedCellShape")
+      case Some(numRows) if ! expectedCellShape.hasUnknown =>
+        // Overresolved, just check everything is compatible.
+        if (numScalars != p * numRows) {
+          throw new IllegalArgumentException(s"Expected ${p * numRows} elements in the final " +
+            s"buffer," +
+            s"but got $numScalars instead. shape=$expectedCellShape, numRows=$numRows")
+        }
+        numRows -> expectedCellShape
+      case Some(numRows) =>
+        // Compute the missing shape value
+        val inferred = numScalars / (p * numRows)
+        val inferredShape = Shape(((h :+ inferred.toLong) ++ t).toArray)
+        assert(inferredShape.dims.product * numRows == numScalars,
+          s"Incompatible values: shape=$expectedCellShape numRows=$numRows numScalars=$numScalars")
+        numRows -> inferredShape
+      case None =>
+        val numRows = (numScalars / p).toInt
+        assert(expectedCellShape.dims.product * numRows == numScalars,
+          s"Incompatible values: shape=$expectedCellShape numRows=$numRows numScalars=$numScalars")
+        numRows -> expectedCellShape
+    }
+  }
+
   /**
    * Extracts the content of a column as objects amenable to SQL.
     *
@@ -277,52 +352,43 @@ object DataOps extends Logging {
    * @param position
    * @param scalaType the scalar type of the tensor
    * @param cellShape the shape of each cell of data
-   * @return
+   * @param expectedNumRows the expected number of rows in the output. Depending on the shape
+   *                        (which may have unknowns) and the expected number of rows (which may
+   *                        also be unknown), this function will try to compute both the physical
+   *                        shape and the actual number of rows based on the size of the
+   *                        flattened tensor.
+   * @return the number of rows and an iterable over the rows
    */
   private def getColumn(
       tv: jtf.TensorVector,
       position: Int,
       scalaType: NumericType,
       cellShape: Shape,
-      numRows: Int,
-      fastPath: Boolean = true): Iterable[Any] = {
+      expectedNumRows: Option[Int],
+      fastPath: Boolean = true): (Int, Iterable[Any]) = {
     val t = tv.get(position)
     logDebug(s"getColumn: shape: ${TensorFlowOps.jtfShape(t.shape())}  " +
-      s"cellShape:$cellShape numRows:$numRows")
+      s"cellShape:$cellShape numRows:$expectedNumRows")
     logDebug(s"getColumn: got tensor: ${t.DebugString().toString}")
     val rawBuff = t.tensor_data().asBuffer()
     val allDataBuffer: mutable.WrappedArray[_] =
       SupportedOperations.opsFor(scalaType).convertBuffer(rawBuff)
     val numData = allDataBuffer.size
     // Infer if necessary the reshaping size.
-    val reshapeShape = if (cellShape.hasUnknown) {
-      val numUnknowns = cellShape.dims.count(_.toInt == Shape.Unknown)
-      require(numUnknowns == 1, s"Shape $cellShape for position $position has too many unknowns")
-      val h = cellShape.dims.takeWhile(_ >= 0)
-      val t = cellShape.dims.dropWhile(_ >= 0).tail
-      val known = (numRows.toLong +: (h ++ t)).product.toInt
-      val inferred = numData / known
-      assert(known * inferred == numData,
-        s"Could not infer missing shape from $numRows rows with shape $cellShape " +
-          s"and $numData elements in buffer")
-      // Reconstruct the final shape
-      val s = Shape(((h :+ inferred.toLong) ++ t).toArray).prepend(numRows)
-      logDebug(s"Inferred shape: $cellShape -> ($h, $t) -> $s")
-      s
-    } else {
-      cellShape.prepend(numRows)
-    }
+    val (inferredNumRows, inferredShape) = inferPhysicalShape(numData, cellShape, expectedNumRows)
     logTrace(s"getColumn: databuffer = $allDataBuffer")
-    logDebug(s"getColumn: reshapeShape: $reshapeShape, numData: $numData")
+    logDebug(s"getColumn: infered cell shape: $inferredShape, numData: $numData," +
+      s" inferredNumRows: $inferredNumRows")
+    val reshapeShape = inferredShape.prepend(inferredNumRows)
     val res = if (fastPath) {
       getColumnFast0(reshapeShape, scalaType, allDataBuffer)
     } else {
       reshapeIter(allDataBuffer.asInstanceOf[mutable.WrappedArray[Any]],
-        reshapeShape.dims.toList)
+        inferredShape.dims.toList)
     }
     // The old implementation
     logTrace(s"getColumn: reshaped = $res")
-    res
+    inferredNumRows -> res
   }
 
   private[this] def getColumnFast0(
