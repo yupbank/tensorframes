@@ -40,8 +40,12 @@ private[tensorframes] trait PythonInterface { self: OperationsInterface with Exp
     }
   }
 
-  def map_blocks(dataframe: DataFrame): PythonOpBuilder = {
-    new PythonOpBuilder(this, MapBlock, dataframe)
+  def map_blocks(dataframe: DataFrame, trim: Boolean): PythonOpBuilder = {
+    if (trim) {
+      new PythonOpBuilder(this, MapBlockTrimmed, dataframe)
+    } else {
+      new PythonOpBuilder(this, MapBlock, dataframe)
+    }
   }
 
   def map_rows(dataFrame: DataFrame): PythonOpBuilder = {
@@ -120,6 +124,7 @@ class PythonOpBuilder(
 
   def buildDF(): DataFrame = op match {
     case MapBlock => interface.mapBlocks(df, _graph, _shapeHints)
+    case MapBlockTrimmed => interface.mapBlocksTrimmed(df, _graph, _shapeHints)
     case MapRow => interface.mapRows(df, _graph, _shapeHints)
     case AggregateBlock => interface.aggregate(groupedData, _graph, _shapeHints)
     case x =>
@@ -136,6 +141,7 @@ class PythonOpBuilder(
 private object PythonInterface {
   sealed trait Operation
   case object MapBlock extends Operation
+  case object MapBlockTrimmed extends Operation
   case object MapRow extends Operation
   case object ReduceBlock extends Operation
   case object ReduceRow extends Operation

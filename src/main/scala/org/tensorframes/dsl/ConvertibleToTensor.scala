@@ -41,7 +41,7 @@ trait DefaultConversions {
    * expresses the fact that a sequence of these objects is also convertible to a dense tensor of
    * greater order.
    */
-  implicit def sequenceVectorConversion[T : Numeric : TypeTag](
+  implicit def sequenceTensor1Conversion[T : Numeric : TypeTag](
       implicit ev: ConvertibleToDenseTensor[T]): ConvertibleToDenseTensor[Seq[T]] = {
     new ConvertibleToDenseTensor[Seq[T]] {
 
@@ -51,5 +51,19 @@ trait DefaultConversions {
     }
   }
 
+  /**
+   * Given a basic (numeric) type that is convertible to a dense tensor, this implicit transforms
+   * expresses the fact that a sequence of these objects is also convertible to a dense tensor of
+   * greater order.
+   */
+  implicit def sequenceTensor2Conversion[T : Numeric : TypeTag](
+      implicit ev: ConvertibleToDenseTensor[T]): ConvertibleToDenseTensor[Seq[Seq[T]]] = {
+    new ConvertibleToDenseTensor[Seq[Seq[T]]] {
+
+      override private[tensorframes] def tensor(data: Seq[Seq[T]]): DenseTensor = {
+        DenseTensor.matrix(data)
+      }
+    }
+  }
 }
 

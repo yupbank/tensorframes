@@ -34,7 +34,12 @@ private[tensorframes] object DenseTensor {
 
   def apply[T](xs: Seq[T])(implicit ev1: Numeric[T], ev2: TypeTag[T]): DenseTensor = {
     val ops = SupportedOperations.getOps[T]()
-    new DenseTensor(Shape(xs.size), ops.sqlType, convert(xs))
+    new DenseTensor(Shape(xs.size), ops.sqlType, convert1(xs))
+  }
+
+  def matrix[T](xs: Seq[Seq[T]])(implicit ev1: Numeric[T], ev2: TypeTag[T]): DenseTensor = {
+    val ops = SupportedOperations.getOps[T]()
+    new DenseTensor(Shape(xs.size, xs.head.size), ops.sqlType, convert2(xs))
   }
 
   private def convert[T](x: T)(implicit ev2: TypeTag[T]): Array[Byte] = {
@@ -45,11 +50,20 @@ private[tensorframes] object DenseTensor {
     conv.toByteArray()
   }
 
-  private def convert[T](xs: Seq[T])(implicit ev1: Numeric[T], ev2: TypeTag[T]): Array[Byte] = {
+  private def convert1[T](xs: Seq[T])(implicit ev1: Numeric[T], ev2: TypeTag[T]): Array[Byte] = {
     val ops = SupportedOperations.getOps[T]()
     val conv = ops.tfConverter(Shape.empty, xs.size)
     conv.reserve()
     xs.foreach(conv.appendRaw)
+    conv.toByteArray()
+  }
+
+  private def convert2[T](xs: Seq[Seq[T]])(
+      implicit ev1: Numeric[T], ev2: TypeTag[T]): Array[Byte] = {
+    val ops = SupportedOperations.getOps[T]()
+    val conv = ops.tfConverter(Shape.empty, xs.size * xs.head.size)
+    conv.reserve()
+    xs.foreach(_.foreach(conv.appendRaw))
     conv.toByteArray()
   }
 

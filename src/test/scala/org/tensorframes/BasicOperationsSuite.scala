@@ -1,9 +1,7 @@
 package org.tensorframes
 
-import scala.reflect.runtime.universe._
-
 import org.scalatest.FunSuite
-import org.tensorframes.impl.{SupportedOperations, ScalarTypeOperation, DebugRowOps}
+import org.tensorframes.impl.DebugRowOps
 import org.tensorframes.test.dsl._
 
 import org.apache.spark.Logging
