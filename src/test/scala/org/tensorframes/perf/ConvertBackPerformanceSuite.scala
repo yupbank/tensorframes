@@ -45,7 +45,8 @@ class ConvertBackPerformanceSuite
     val start = System.nanoTime()
     val numIters = 1000
     for (_ <- 1 to numIters) {
-      DataOps.convertBack(tensor, tfSchema, rows, schema, fastPath = true).reduce(f)
+      DataOps.convertBack(tensor, tfSchema, rows, schema, appendInput = true, fastPath = true)
+        .reduce(f)
     }
     val end = System.nanoTime()
     val tIter = (end - start) / (1e9 * numIters)
@@ -69,7 +70,7 @@ class ConvertBackPerformanceSuite
     val start = System.nanoTime()
     val numIters = 100
     for (_ <- 1 to numIters) {
-      DataOps.convertBack(tensor, tfSchema, rows, schema, fastPath = true)
+      DataOps.convertBack(tensor, tfSchema, rows, schema, appendInput = true, fastPath = true)
     }
     val end = System.nanoTime()
     val tIter = (end - start) / (1e9 * numIters)

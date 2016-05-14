@@ -72,7 +72,7 @@ private[impl] trait SchemaTransforms extends Logging {
    *         requested inputs, which may be a subset of the input.
    */
   // TODO(tjh) all the inputs and outputs are created by hashmaps, which makes their order not
-  // deterministick. Change that.
+  // deterministic. Change that.
   def reduceBlocksSchema(
       schema: StructType,
       graph: GraphDef,
@@ -270,6 +270,22 @@ class DebugRowOps
       dataframe: DataFrame,
       graph: GraphDef,
       shapeHints: ShapeDescription): DataFrame = {
+    mapBlocks(dataframe, graph, shapeHints, appendInput = true)
+  }
+
+
+  override def mapBlocksTrimmed(
+      dataframe: DataFrame,
+      graph: GraphDef,
+      shapeHints: ShapeDescription): DataFrame = {
+    mapBlocks(dataframe, graph, shapeHints, appendInput = false)
+  }
+
+  private def mapBlocks(
+      dataframe: DataFrame,
+      graph: GraphDef,
+      shapeHints: ShapeDescription,
+      appendInput: Boolean): DataFrame = {
     val sc = dataframe.sqlContext.sparkContext
     val summary = TensorFlowOps.analyzeGraph(graph, shapeHints)
       .map(x => x.name -> x).toMap
@@ -327,8 +343,10 @@ class DebugRowOps
     }
     // Full output schema, including data being passed through and validated for duplicates.
     // The first columns are the TF columns, followed by all the other columns.
-    val outputSchema: StructType = {
+    val outputSchema: StructType = if (appendInput) {
       StructType(outputTFSchema ++ dataframe.schema.fields)
+    } else {
+      StructType(outputTFSchema)
     }
 
     logDebug(s"mapBlocks: TF input schema = $inputSchema, complete output schema = $outputSchema")
@@ -343,13 +361,15 @@ class DebugRowOps
           inputSchema,
           requestedTFInput,
           gProto.value,
-          outputTFSchema).toIterator
+          outputTFSchema,
+          appendInput)
       } else {
         mutable.Iterable.empty.iterator
       }
     }
     dataframe.sqlContext.createDataFrame(transformRdd, outputSchema)
   }
+
 
   override def mapRows(
       dataframe: DataFrame,
@@ -719,7 +739,8 @@ object DebugRowOpsImpl extends Logging {
       inputSchema: StructType,
       inputTFCols: Array[Int],
       graphDef: Array[Byte],
-      tfOutputSchema: StructType): Iterator[Row] = {
+      tfOutputSchema: StructType,
+      appendInput: Boolean): Iterator[Row] = {
     logDebug(s"performMap: inputSchema=$inputSchema, tfschema=$tfOutputSchema," +
       s" ${input.length} rows, input cols: ${inputTFCols.toSeq}")
     // Some partitions may be empty
@@ -748,7 +769,7 @@ object DebugRowOpsImpl extends Logging {
       logDebug(s"performMap: TF run finished")
       assert(s3.ok(), s3.error_message().getString)
       logDebug(s"performMap: converting back")
-      val res = DataOps.convertBack(outputs, tfOutputSchema, input, inputSchema)
+      val res = DataOps.convertBack(outputs, tfOutputSchema, input, inputSchema, appendInput)
       logDebug(s"performMap: done")
       res
     }
@@ -763,7 +784,7 @@ object DebugRowOpsImpl extends Logging {
       outputSchema: StructType): Array[Row] = {
     // Do a defensive copy of the content of the iterator, as the object may be reused.
     performMap(input, inputSchema, inputTFCols,
-      TensorFlowOps.graphSerial(graphDef), outputSchema).map { row =>
+      TensorFlowOps.graphSerial(graphDef), outputSchema, appendInput = true).map { row =>
       SerializationUtils.clone(row)
     } .toSeq.toArray
   }
@@ -791,7 +812,8 @@ object DebugRowOpsImpl extends Logging {
         val skipped = new jtf.StringVector()
         val s3 = tfLock.synchronized { session.Run(stpv, requested, skipped, outputs) }
         assert(s3.ok(), s3.error_message().getString)
-        val it = DataOps.convertBack(outputs, tfOutputSchema, Array(row), inputSchema)
+        val it = DataOps.convertBack(outputs, tfOutputSchema, Array(row), inputSchema,
+          appendInput = true)
         assert(it.hasNext)
         val r = it.next()
         assert(!it.hasNext)
@@ -834,7 +856,7 @@ object DebugRowOpsImpl extends Logging {
       val s3 = tfLock.synchronized { session.Run(stpv, requested, skipped, outputs) }
       assert(s3.ok(), s3.error_message().getString)
       val emptyRows = Array.fill(1)(emptyRow)
-      val it = DataOps.convertBack(outputs, schema, emptyRows, emptySchema)
+      val it = DataOps.convertBack(outputs, schema, emptyRows, emptySchema, appendInput = false)
       assert(it.hasNext)
       val r = it.next()
       r
@@ -882,7 +904,7 @@ object DebugRowOpsImpl extends Logging {
         assert(s3.ok(), s3.error_message().getString)
         // Fill in with an empty row, because we are not passing the rest of of the data.
         val emptyRows = Array.fill(1)(emptyRow)
-        val it = DataOps.convertBack(outputs, schema, emptyRows, emptySchema)
+        val it = DataOps.convertBack(outputs, schema, emptyRows, emptySchema, appendInput = false)
         assert(it.hasNext)
         result = it.next()
         assert(!it.hasNext)

@@ -22,6 +22,11 @@ object Ops extends OperationsInterface with DslOperations with ExperimentalOpera
       graph: GraphDef,
       shapeHints: ShapeDescription): DataFrame = ops.mapBlocks(dataframe, graph, shapeHints)
 
+  override def mapBlocksTrimmed(
+      dataframe: DataFrame,
+      graph: GraphDef,
+      shapeHints: ShapeDescription): DataFrame = ops.mapBlocksTrimmed(dataframe, graph, shapeHints)
+
   override def reduceRows(
       dataFrame: DataFrame,
       graph: GraphDef,

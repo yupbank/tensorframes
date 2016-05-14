@@ -37,6 +37,7 @@ object DataOps extends Logging {
       tf_struct: StructType,
       input: Array[Row],
       input_struct: StructType,
+      appendInput: Boolean,
       fastPath: Boolean = true): Iterator[Row] = {
     // The structures should already have been validated.
     // Output has all the TF columns first, and then the other columns
@@ -50,7 +51,11 @@ object DataOps extends Logging {
       // Drop the first cell, this is a block.
       getColumn(tv, idx, info.dataType, info.shape.tail, input.length).iterator
     }
-    val outputSchema = StructType(tf_struct.fields ++ input_struct.fields)
+    val outputSchema = if (appendInput) {
+      StructType(tf_struct.fields ++ input_struct.fields)
+    } else {
+      StructType(tf_struct.fields)
+    }
     val res: Iterator[Row] = if (fastPath) {
       convertBackFast0(input, tfIters, input_struct, outputSchema)
     } else {
@@ -90,7 +95,11 @@ object DataOps extends Logging {
     val numOutCols = outputSchema.size
     val numInCols = input_struct.size
     val numTFCols = tfIters.length
-    assert(numOutCols == numInCols + numTFCols, (numOutCols, numInCols, numTFCols))
+    // We check if we need to append the input columns to the final output.
+    val appendInput = numOutCols == numInCols + numTFCols
+    assert(
+      numOutCols == numInCols + numTFCols || numOutCols == numTFCols,
+      (numOutCols, numInCols, numTFCols))
     val res: Array[GenericRow] = new Array[GenericRow](input.length)
     var rowIdx = 0
     while(rowIdx < input.length) {
@@ -101,12 +110,14 @@ object DataOps extends Logging {
         rowContent(tfColIdx) = tfIters(tfColIdx).next()
         tfColIdx += 1
       }
-      // Copy the existing row into the output row
-      val r = input(rowIdx)
-      var colIdx = 0
-      while (colIdx < numInCols) {
-        rowContent(numTFCols + colIdx) = r.get(colIdx)
-        colIdx += 1
+      if (appendInput) {
+        // Copy the existing row into the output row
+        val r = input(rowIdx)
+        var colIdx = 0
+        while (colIdx < numInCols) {
+          rowContent(numTFCols + colIdx) = r.get(colIdx)
+          colIdx += 1
+        }
       }
       res(rowIdx) = new GenericRow(rowContent)
       rowIdx += 1
