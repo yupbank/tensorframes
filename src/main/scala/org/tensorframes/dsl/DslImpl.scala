@@ -36,18 +36,18 @@ private[dsl] object DslImpl extends Logging with DefaultConversions {
   }
 
   def buildGraph(nodes: Seq[Node]): GraphDef = {
-    logDebug("buildGraph: freezing nodes")
+    logTrace("buildGraph: freezing nodes")
     // This only uses the parents that are internally reachable
     // TODO(tjh) this freezing business is not going to work.
     // We need to store the creation order (and reconstruct it for subnodes using a creation tree)
     nodes.foreach(_.freeze())
     // After that, we also need to freeze some constants and other elements around.
-    logDebug("buildGraph: Freezing everything")
+    logTrace("buildGraph: Freezing everything")
     nodes.foreach(_.freeze(everything=true))
-    logDebug(s"buildGraph for nodes: ${nodes.map(_.name)}")
+    logTrace(s"buildGraph for nodes: ${nodes.map(_.name)}")
     var treated: Map[String, Node] = Map.empty
     nodes.foreach { n =>
-      logDebug(s"call: n=${n.name}, treated=${treated.keySet}")
+      logTrace(s"call: n=${n.name}, treated=${treated.keySet}")
       treated = getClosure(n, treated)
     }
     val b = GraphDef.newBuilder()
@@ -60,7 +60,7 @@ private[dsl] object DslImpl extends Logging with DefaultConversions {
   }
 
   private def getClosure(node: Node, treated: Map[String, Node]): Map[String, Node] = {
-    logDebug(s"closure: n=${node.name}, parents=${node.parents.map(_.name)}," +
+    logTrace(s"closure: n=${node.name}, parents=${node.parents.map(_.name)}," +
       s" treated=${treated.keySet}")
     val explored = node.parents
       .filterNot(n => treated.contains(n.name))

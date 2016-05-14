@@ -83,8 +83,8 @@ object TensorFlowOps extends Logging {
       graphDef: GraphDef,
       shapeHints: ShapeDescription = ShapeDescription.empty): Seq[GraphNodeSummary] = {
     initTensorFlow()
-    logDebug(s"analyzeGraph: shapeHints=$shapeHints")
-    logDebug(s"analyzeGraph: graph=$graphDef")
+    logTrace(s"analyzeGraph: shapeHints=$shapeHints")
+    logTrace(s"analyzeGraph: graph=$graphDef")
 
     val nodes = graphDef.getNodeList.asScala
     val inputs: Set[String] = nodes
@@ -131,7 +131,7 @@ object TensorFlowOps extends Logging {
     }
     nodes.flatMap { n =>
       val name = n.getName
-      logDebug(s"Node $name")
+      logTrace(s"Node $name")
       val isInput = inputs.contains(name)
       val isOutput = outputs.contains(name)
       if (isInput || isOutput) {
@@ -148,7 +148,7 @@ object TensorFlowOps extends Logging {
             None
           }
         }
-        logDebug(s"shape = $shapeOpt")
+        logTrace(s"shape = $shapeOpt")
         val shape = shapeOpt.getOrElse {
           throw new Exception(s"Could not get the shape of node $name from the graph definition or from the shape hints")
         }
