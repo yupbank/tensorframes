@@ -171,7 +171,6 @@ object DataOps extends Logging {
       val ci = ColumnInformation(f).stf.getOrElse {
         throw new Exception(s"Could not column information for column $f")
       }
-      logDebug(s"convert: $f -> $ci")
       val leadDim = ci.shape.dims.headOption.getOrElse {
         throw new Exception(s"Column $f found to be scalar, but its dimensions should be >= 1")
       } .toInt
