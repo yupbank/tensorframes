@@ -11,9 +11,9 @@ import org.tensorframes.Shape.DimType
  * @param ds
  */
 class Shape private (private val ds: Array[DimType]) extends Serializable {
-  val dims: IndexedSeq[DimType] = ds
+  final val dims: IndexedSeq[DimType] = ds
 
-  def numDims = ds.length
+  final def numDims = ds.length
 
   def hasUnknown: Boolean = ds.contains(Shape.UNKNOWN)
 

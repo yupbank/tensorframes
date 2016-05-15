@@ -25,9 +25,11 @@ import scala.reflect.runtime.universe.TypeTag
  * @tparam T
  */
 // TODO PERF: investigate the use of @specialized
-private[tensorframes] sealed abstract class TensorConverter[T : TypeTag : ClassTag] (
+private[tensorframes] sealed abstract class TensorConverter[@specialized(Double, Int, Long) T] (
     val shape: Shape,
-    val numCells: Int) extends Logging {
+    val numCells: Int)
+  (implicit ev1: TypeTag[T], ev2: ClassTag[T]) extends Logging {
+  final val empty = Array.empty[T]
   /**
    * Creates memory space for a given number of units of the given shape.
    *
@@ -37,8 +39,7 @@ private[tensorframes] sealed abstract class TensorConverter[T : TypeTag : ClassT
 
   def appendRaw(t: T): Unit
 
-  private[this] def appendArray(wa: MWrappedArray[T]): Unit = {
-    val arr = wa.toArray
+  private[impl] final def appendArray(arr: MWrappedArray[T]): Unit = {
     var idx = 0
     while (idx < arr.length) {
       appendRaw(arr(idx))
@@ -46,36 +47,39 @@ private[tensorframes] sealed abstract class TensorConverter[T : TypeTag : ClassT
     }
   }
 
-  def append(row: Row, position: Int): Unit = {
-    shape.numDims match {
-      case 0 =>
-        appendRaw(row.getAs[T](position))
-      case 1 =>
-        row.getSeq[T](position) match {
-          case wa : MWrappedArray[T @unchecked] =>
-            // Faster path
-            appendArray(wa)
-          case seq: Seq[T @unchecked] =>
-            // Slow path
-            seq.foreach(appendRaw)
-        }
-      case 2 =>
-        row.getSeq[Seq[T]](position) match {
-          case wa : MWrappedArray[Seq[T] @unchecked] =>
-            wa.foreach {
-              case wa0: MWrappedArray[T @unchecked] =>
-                appendArray(wa0)
-              case x: Any =>
-                throw new Exception(s"Type ${x.getClass} not understood")
-            }
-          case seq: Seq[Seq[T] @unchecked] =>
-            // Slow path
-            throw new Exception(s"Type ${seq.getClass} is a slow path")
-//            seq.foreach(appendRaw)
-        }
-      case x =>
-        throw new Exception(s"Higher order dimension $x from shape $shape is not supported")
+  // The data returned in row objects is boxed, there is not much we can do here...
+  private[impl] final def appendSeq(data: Seq[T]): Unit = {
+    data match {
+      case wa : MWrappedArray[T @unchecked] =>
+        // Faster path
+        appendArray(wa)
+      case seq: Any =>
+        throw new Exception(s"Type ${seq.getClass} is a slow path")
     }
+  }
+
+  private[impl] final def appendSeqSeq(data: Seq[Seq[T]]): Unit = {
+    data match {
+      case wa : MWrappedArray[Seq[T] @unchecked] =>
+        wa.foreach(appendSeq)
+      case seq: Any =>
+        throw new Exception(s"Type ${seq.getClass} is a slow path")
+    }
+  }
+
+  // The return element is just here so that the method gets specialized (otherwise it would not).
+  final def append(row: Row, position: Int): Array[T] = {
+    val d = shape.numDims
+    if (d == 0) {
+      appendRaw(row.getAs[T](position))
+    } else if (d == 1) {
+      appendSeq(row.getSeq[T](position))
+    } else if (d == 2) {
+      appendSeqSeq(row.getSeq[Seq[T]](position))
+    } else if (d > 2 || d < 0) {
+      throw new Exception(s"Higher order dimension $d from shape $shape is not supported")
+    }
+    empty
   }
 
   def tensor(): jtf.Tensor
@@ -101,7 +105,8 @@ private[tensorframes] sealed abstract class TensorConverter[T : TypeTag : ClassT
  * It does not support TF's rich type collection (uint16, float128, etc.). These have to be handled
  * internally through casting.
  */
-private[tensorframes] sealed abstract class ScalarTypeOperation[T : TypeTag : ClassTag] {
+private[tensorframes] sealed abstract class ScalarTypeOperation[@specialized(Int, Long, Double) T]
+  (implicit ev1: TypeTag[T], ev2: ClassTag[T]) {
   /**
    * The SQL type associated with the given type.
    */
@@ -236,7 +241,7 @@ private[tensorframes] object SupportedOperations {
 
 // ********** DOUBLES ************
 
-private class DoubleTensorConverter(s: Shape, numCells: Int)
+private[impl] class DoubleTensorConverter(s: Shape, numCells: Int)
   extends TensorConverter[Double](s, numCells) with Logging {
   private var _tensor: jtf.Tensor = null
   private var buffer: DoubleBuffer = null
@@ -263,7 +268,7 @@ private class DoubleTensorConverter(s: Shape, numCells: Int)
   override def byteBuffer(): ByteBuffer =  _tensor.tensor_data().asByteBuffer()
 }
 
-private object DoubleOperations extends ScalarTypeOperation[Double] with Logging {
+private[impl] object DoubleOperations extends ScalarTypeOperation[Double] with Logging {
   override val sqlType = DoubleType
   override val tfType = DataType.DT_DOUBLE
   final override val zero = 0.0
@@ -295,7 +300,7 @@ private object DoubleOperations extends ScalarTypeOperation[Double] with Logging
 
 // ********** INT32 ************
 
-private class IntTensorConverter(s: Shape, numCells: Int)
+private[impl] class IntTensorConverter(s: Shape, numCells: Int)
   extends TensorConverter[Int](s, numCells) with Logging {
   private var _tensor: jtf.Tensor = null
   private var buffer: IntBuffer = null
@@ -322,7 +327,7 @@ private class IntTensorConverter(s: Shape, numCells: Int)
   override def byteBuffer(): ByteBuffer =  _tensor.tensor_data().asByteBuffer()
 }
 
-private object IntOperations extends ScalarTypeOperation[Int] with Logging {
+private[impl] object IntOperations extends ScalarTypeOperation[Int] with Logging {
   override val sqlType = IntegerType
   override val tfType = DataType.DT_INT32
   final override val zero = 0
@@ -348,7 +353,7 @@ private object IntOperations extends ScalarTypeOperation[Int] with Logging {
 
 // ****** INT64 (LONG) ******
 
-private class LongTensorConverter(s: Shape, numCells: Int)
+private[impl] class LongTensorConverter(s: Shape, numCells: Int)
   extends TensorConverter[Long](s, numCells) with Logging {
   private var _tensor: jtf.Tensor = null
   private var buffer: LongBuffer = null
@@ -375,7 +380,7 @@ private class LongTensorConverter(s: Shape, numCells: Int)
   override def byteBuffer(): ByteBuffer =  _tensor.tensor_data().asByteBuffer()
 }
 
-private object LongOperations extends ScalarTypeOperation[Long] with Logging {
+private[impl] object LongOperations extends ScalarTypeOperation[Long] with Logging {
   override val sqlType = LongType
   override val tfType = DataType.DT_INT64
   final override val zero = 0L

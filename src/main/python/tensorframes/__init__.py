@@ -30,4 +30,7 @@ Each method contains extensive documentation about their usage. More documentati
 on the project wiki.
 
 """
+
+__version__ = "2.0.0"
+
 from core import *

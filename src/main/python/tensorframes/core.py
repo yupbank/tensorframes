@@ -1,8 +1,5 @@
-from tensorframes.shape_infer import *
-
 import tensorflow as tf
 import numpy as np
-
 import logging
 
 from pyspark import RDD, SparkContext
