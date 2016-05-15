@@ -9,7 +9,7 @@ import org.bytedeco.javacpp.{tensorflow => jtf}
 import org.tensorflow.framework.DataType
 import org.tensorframes.Shape
 
-import scala.collection.mutable
+import scala.collection.mutable.{WrappedArray => MWrappedArray}
 import scala.reflect.ClassTag
 import scala.reflect.runtime.universe.TypeTag
 
@@ -25,9 +25,11 @@ import scala.reflect.runtime.universe.TypeTag
  * @tparam T
  */
 // TODO PERF: investigate the use of @specialized
-private[tensorframes] sealed abstract class TensorConverter[T : TypeTag] (
+private[tensorframes] sealed abstract class TensorConverter[@specialized(Double, Int, Long) T] (
     val shape: Shape,
-    val numCells: Int) extends Logging {
+    val numCells: Int)
+  (implicit ev1: TypeTag[T], ev2: ClassTag[T]) extends Logging {
+  final val empty = Array.empty[T]
   /**
    * Creates memory space for a given number of units of the given shape.
    *
@@ -37,30 +39,47 @@ private[tensorframes] sealed abstract class TensorConverter[T : TypeTag] (
 
   def appendRaw(t: T): Unit
 
-  def append(row: Row, position: Int): Unit = {
-    require(shape.dims.size <= 1)
-    shape.numDims match {
-      case 0 =>
-        appendRaw(row.getAs[T](position))
-      case 1 =>
-        // TODO PERF: we know this is going to be a wrapped array -> we should should specialize
-        // the calls to array calls
-        row.getSeq[T](position) match {
-          case wa : mutable.WrappedArray[T @unchecked] =>
-            // Faster path
-            val arr = wa.toArray
-            var idx = 0
-            while (idx < arr.length) {
-              appendRaw(arr(idx))
-              idx += 1
-            }
-          case seq: Seq[T @unchecked] =>
-            // Slow path
-            seq.foreach(appendRaw)
-        }
-      case x =>
-        throw new Exception(s"Higher order dimension $x from shape $shape is not supported")
+  private[impl] final def appendArray(arr: MWrappedArray[T]): Unit = {
+    var idx = 0
+    while (idx < arr.length) {
+      appendRaw(arr(idx))
+      idx += 1
     }
+  }
+
+  // The data returned in row objects is boxed, there is not much we can do here...
+  private[impl] final def appendSeq(data: Seq[T]): Unit = {
+    data match {
+      case wa : MWrappedArray[T @unchecked] =>
+        // Faster path
+        appendArray(wa)
+      case seq: Any =>
+        throw new Exception(s"Type ${seq.getClass} is a slow path")
+    }
+  }
+
+  private[impl] final def appendSeqSeq(data: Seq[Seq[T]]): Unit = {
+    data match {
+      case wa : MWrappedArray[Seq[T] @unchecked] =>
+        wa.foreach(appendSeq)
+      case seq: Any =>
+        throw new Exception(s"Type ${seq.getClass} is a slow path")
+    }
+  }
+
+  // The return element is just here so that the method gets specialized (otherwise it would not).
+  final def append(row: Row, position: Int): Array[T] = {
+    val d = shape.numDims
+    if (d == 0) {
+      appendRaw(row.getAs[T](position))
+    } else if (d == 1) {
+      appendSeq(row.getSeq[T](position))
+    } else if (d == 2) {
+      appendSeqSeq(row.getSeq[Seq[T]](position))
+    } else if (d > 2 || d < 0) {
+      throw new Exception(s"Higher order dimension $d from shape $shape is not supported")
+    }
+    empty
   }
 
   def tensor(): jtf.Tensor
@@ -86,7 +105,8 @@ private[tensorframes] sealed abstract class TensorConverter[T : TypeTag] (
  * It does not support TF's rich type collection (uint16, float128, etc.). These have to be handled
  * internally through casting.
  */
-private[tensorframes] sealed abstract class ScalarTypeOperation[T : TypeTag : ClassTag] {
+private[tensorframes] sealed abstract class ScalarTypeOperation[@specialized(Int, Long, Double) T]
+  (implicit ev1: TypeTag[T], ev2: ClassTag[T]) {
   /**
    * The SQL type associated with the given type.
    */
@@ -121,7 +141,7 @@ private[tensorframes] sealed abstract class ScalarTypeOperation[T : TypeTag : Cl
    * @param buff
    * @return
    */
-  def convertBuffer(buff: ByteBuffer): mutable.WrappedArray[T]
+  def convertBuffer(buff: ByteBuffer): MWrappedArray[T]
 
   final def convertBuffer1(b0: Array[_], dim1: Int): Array[T] = {
     val b = b0.asInstanceOf[Array[T]]
@@ -129,7 +149,7 @@ private[tensorframes] sealed abstract class ScalarTypeOperation[T : TypeTag : Cl
     b
   }
 
-  final def convertBuffer2(b0: Array[_], dim1: Int, dim2: Int): Array[Array[T]] = {
+  final def convertBuffer2(b0: Array[_], dim1: Int, dim2: Int): Array[MWrappedArray[T]] = {
     val b = b0.asInstanceOf[Array[T]]
     assert(b.length == dim1 * dim2, (b.length, dim1, dim2))
     val res = Array.fill(dim1){ new Array[T](dim2) }
@@ -143,7 +163,38 @@ private[tensorframes] sealed abstract class ScalarTypeOperation[T : TypeTag : Cl
       }
       idx1 += 1
     }
-    res
+    res.map(conv)
+  }
+
+  // Necessary hack to have proper scala sequences. Spark's Row object does not like basic arrays.
+  private def conv[X](m: Array[X]): MWrappedArray[X] = {
+    m.toSeq.asInstanceOf[MWrappedArray[X]]
+  }
+
+  final def convertBuffer3(
+      b0: Array[_],
+      dim1: Int,
+      dim2: Int,
+      dim3: Int): Array[MWrappedArray[MWrappedArray[T]]] = {
+    val b = b0.asInstanceOf[Array[T]]
+    assert(b.length == dim1 * dim2 * dim3, (b.length, dim1, dim2, dim3))
+    val res = Array.fill(dim1) { Array.fill(dim2) { new Array[T](dim3) } }
+    var idx1 = 0
+    while (idx1 < dim1) {
+      var idx2 = 0
+      while(idx2 < dim2) {
+        var idx3 = 0
+        while (idx3 < dim3) {
+          // TODO(tjh) check math
+          res(idx1)(idx2)(idx3) = b(idx3 + dim3 * idx2 + dim3 * dim2 * idx1)
+          idx3 += 1
+        }
+        idx2 += 1
+      }
+      idx1 += 1
+    }
+    // Because rows cannot deal with primitive arrays, some weird conversions need to be done.
+    res.map { arr => conv(arr.map(conv)) }
   }
 
   def tag: TypeTag[_] = implicitly[TypeTag[T]]
@@ -190,7 +241,7 @@ private[tensorframes] object SupportedOperations {
 
 // ********** DOUBLES ************
 
-private class DoubleTensorConverter(s: Shape, numCells: Int)
+private[impl] class DoubleTensorConverter(s: Shape, numCells: Int)
   extends TensorConverter[Double](s, numCells) with Logging {
   private var _tensor: jtf.Tensor = null
   private var buffer: DoubleBuffer = null
@@ -217,7 +268,7 @@ private class DoubleTensorConverter(s: Shape, numCells: Int)
   override def byteBuffer(): ByteBuffer =  _tensor.tensor_data().asByteBuffer()
 }
 
-private object DoubleOperations extends ScalarTypeOperation[Double] with Logging {
+private[impl] object DoubleOperations extends ScalarTypeOperation[Double] with Logging {
   override val sqlType = DoubleType
   override val tfType = DataType.DT_DOUBLE
   final override val zero = 0.0
@@ -236,7 +287,7 @@ private object DoubleOperations extends ScalarTypeOperation[Double] with Logging
 
   }
 
-  override def convertBuffer(buff: ByteBuffer): mutable.WrappedArray[Double] = {
+  override def convertBuffer(buff: ByteBuffer): MWrappedArray[Double] = {
     val dbuff = buff.asDoubleBuffer()
     dbuff.rewind()
     val numBufferElements = dbuff.limit() - dbuff.position()
@@ -249,7 +300,7 @@ private object DoubleOperations extends ScalarTypeOperation[Double] with Logging
 
 // ********** INT32 ************
 
-private class IntTensorConverter(s: Shape, numCells: Int)
+private[impl] class IntTensorConverter(s: Shape, numCells: Int)
   extends TensorConverter[Int](s, numCells) with Logging {
   private var _tensor: jtf.Tensor = null
   private var buffer: IntBuffer = null
@@ -276,7 +327,7 @@ private class IntTensorConverter(s: Shape, numCells: Int)
   override def byteBuffer(): ByteBuffer =  _tensor.tensor_data().asByteBuffer()
 }
 
-private object IntOperations extends ScalarTypeOperation[Int] with Logging {
+private[impl] object IntOperations extends ScalarTypeOperation[Int] with Logging {
   override val sqlType = IntegerType
   override val tfType = DataType.DT_INT32
   final override val zero = 0
@@ -290,7 +341,7 @@ private object IntOperations extends ScalarTypeOperation[Int] with Logging {
     res
   }
 
-  override def convertBuffer(buff: ByteBuffer): mutable.WrappedArray[Int] = {
+  override def convertBuffer(buff: ByteBuffer): MWrappedArray[Int] = {
     val dbuff = buff.asIntBuffer()
     dbuff.rewind()
     val numBufferElements = dbuff.limit() - dbuff.position()
@@ -302,7 +353,7 @@ private object IntOperations extends ScalarTypeOperation[Int] with Logging {
 
 // ****** INT64 (LONG) ******
 
-private class LongTensorConverter(s: Shape, numCells: Int)
+private[impl] class LongTensorConverter(s: Shape, numCells: Int)
   extends TensorConverter[Long](s, numCells) with Logging {
   private var _tensor: jtf.Tensor = null
   private var buffer: LongBuffer = null
@@ -329,7 +380,7 @@ private class LongTensorConverter(s: Shape, numCells: Int)
   override def byteBuffer(): ByteBuffer =  _tensor.tensor_data().asByteBuffer()
 }
 
-private object LongOperations extends ScalarTypeOperation[Long] with Logging {
+private[impl] object LongOperations extends ScalarTypeOperation[Long] with Logging {
   override val sqlType = LongType
   override val tfType = DataType.DT_INT64
   final override val zero = 0L
@@ -343,7 +394,7 @@ private object LongOperations extends ScalarTypeOperation[Long] with Logging {
     logTrace(s"Extracted from buffer: ${res.toSeq}")
     res
   }
-  override def convertBuffer(buff: ByteBuffer): mutable.WrappedArray[Long] = {
+  override def convertBuffer(buff: ByteBuffer): MWrappedArray[Long] = {
     val dbuff = buff.asLongBuffer()
     dbuff.rewind()
     val numBufferElements = dbuff.limit() - dbuff.position()
