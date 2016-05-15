@@ -7,7 +7,7 @@ TensorFrames (TensorFlow on Spark Dataframes) lets you manipulate Apache Spark's
 TensorFlow programs.
 
 > This package is experimental and is provided as a technical preview only. While the 
-> interfaces are all implemented and working, performance is not a goal at this point.
+> interfaces are all implemented and working, there are still some areas of low performance.
 
 
 > This package only supports linux 64bit platforms as a target. Contributions are welcome for other platforms.
@@ -42,7 +42,7 @@ Additionally, if you want to run unit tests for python, you need the following d
 Assuming that `SPARK_HOME` is set, you can use PySpark like any other Spark package.
 
 ```bash
-IPYTHON=1 $SPARK_HOME/bin/pyspark --packages tjhunter:tensorframes:0.1.1
+$SPARK_HOME/bin/pyspark --packages tjhunter:tensorframes:0.2.0
 ```
 
 Here is a small program that uses Tensorflow to add 3 to an existing column.
@@ -55,8 +55,9 @@ from pyspark.sql import Row
 data = [Row(x=float(x)) for x in range(10)]
 df = sqlContext.createDataFrame(data)
 with tf.Graph().as_default() as g:
-    # The placeholder that corresponds to column 'x'
-    x = tf.placeholder(tf.double, shape=[None], name="x")
+    # The TensorFlow placeholder that corresponds to column 'x'.
+    # The shape of the placeholder is automatically inferred from the DataFrame.
+    x = tfs.block(name="x")
     # The output that adds 3 to x
     z = tf.add(x, 3, name='z')
     # The resulting dataframe
@@ -101,14 +102,15 @@ tfs.print_schema(df2)
 # First, let's make a copy of the 'y' column. This will be very cheap in Spark 2.0+
 df3 = df2.select(df2.y, df2.y.alias("z"))
 with tf.Graph().as_default() as g:
-    # The placeholder that corresponds to column 'y'. Note the special name:
-    y_input = tf.placeholder(tf.double, shape=[None, 2], name="y_input")
-    z_input = tf.placeholder(tf.double, shape=[None, 2], name="z_input")
+    # The placeholders. Note the special name that end with '_input':
+    y_input = tfs.block(name='y', tf_name="y_input")
+    z_input = tfs.block(name='z', tf_name="z_input")
     y = tf.reduce_sum(y_input, [0], name='y')
     z = tf.reduce_min(z_input, [0], name='z')
     # The resulting dataframe
     (data_sum, data_min) = tfs.reduce_blocks([y, z], df3)
 
+# The final results are numpy arrays:
 print data_sum
 # [45.0, -45.0]
 print data_min
@@ -123,7 +125,7 @@ DataFrame column to feed to TensorFrames based on the placeholders of the graph.
  
 For small tensors (scalars and vectors), TensorFrames usually infers the shapes of the 
 tensors without requiring a preliminary analysis. If it cannot do it, an error message will 
-indicate it.
+indicate that you need to run the DataFrame through `tfs.analyze()` first.
 
 Look at the python documentation of the TensorFrames package to see what methods are available.
 
@@ -132,29 +134,31 @@ Look at the python documentation of the TensorFrames package to see what methods
 
 The scala support is a bit more limited than python. In scala, operations can be loaded from 
  an existing graph defined in the ProtocolBuffers format, or using a simple scala DSL. The
- Scala DSL only features a very limited subset of TensorFlow transforms. It is very easy to extend
- though, so other transforms could be added without much effort in the future.
+ Scala DSL only features a subset of TensorFlow transforms. It is very easy to extend
+ though, so other transforms will be added without much effort in the future.
 
 You simply use the published package:
 
 ```bash
-$SPARK_HOME/bin/spark-shell --packages tjhunter:tensorframes:0.1.1
+$SPARK_HOME/bin/spark-shell --packages tjhunter:tensorframes:0.2.0
 ```
 
-Here is a simple program to add two columns together:
+Here is the same program as before:
 
 ```scala
-import org.tensorframes.test.dsl._
-import org.tensorframes.impl.{DebugRowOps => ops}
-import org.tensorframes._
-import org.apache.spark.sql.types._
+import org.tensorframes.{dsl => tf}
+import org.tensorframes.dsl.Implicits._
 
 val df = sqlContext.createDataFrame(Seq(1.0->1.1, 2.0->2.2)).toDF("a", "b")
 
-val a = placeholder[Double]() named "a"
-val b = placeholder[Double]() named "b"
-val out = a + b named "out"
-val df2 = ops.mapRows(df, out).select("a", "b","out")
+// As in Python, scoping is recommended to prevent name collisions.
+val df2: DataFrame = tf.withGraph {
+    val a = df.block("a")
+    // Unlike python, the scala syntax is more flexible:
+    val out = a + 3.0 named "out"
+    // The 'mapBlocks' method is added using implicits to dataframes.
+    df.mapBlocks(out).select("a", "out")
+}
 
 // The transform is all lazy at this point, let's execute it with collect:
 df2.collect()
