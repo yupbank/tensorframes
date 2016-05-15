@@ -197,7 +197,7 @@ class BasicOperationsSuite
     val r = df.reduceBlocks(x)
     assert(r === Row(3.0))
   }
-  
+
   testGraph("Aggregate over rows") {
     val df = sql.createDataFrame(Seq(
       (1, 1.0),
@@ -208,5 +208,32 @@ class BasicOperationsSuite
     val df2 = df.groupBy("key").aggregate(x).select("key", "x")
     df2.printSchema()
     assert(df2.collect() === Array(Row(1, 2.1), Row(2, 2.0)))
+  }
+
+  testGraph("2-tensors - 1") {
+    val df = make1(Seq(Seq(Seq(1.0))), "x").analyze()
+    val x = df.block("x")
+    val y = identity(x) named "y"
+    val df2 = df.mapBlocks(y).select("y")
+    assert(df2.collect() === Array(Row(Seq(Seq(1.0)))))
+  }
+
+  testGraph("2-tensors - 2") {
+    val df = make1(Seq(Seq(Seq(1.0, 2.0))), "x").analyze()
+    val x = df.block("x")
+    val y = identity(x) named "y"
+    val df2 = df.mapBlocks(y).select("y")
+    assert(df2.collect() === Array(Row(Seq(Seq(1.0, 2.0)))))
+  }
+
+  testGraph("2-tensors - 3") {
+    val m = Seq(
+      Seq(1.0, 2.0),
+      Seq(3.0, 4.0))
+    val df = make1(Seq(m), "x").analyze()
+    val x = df.block("x")
+    val y = identity(x) named "y"
+    val df2 = df.mapBlocks(y).select("y")
+    assert(df2.collect() === Array(Row(m)))
   }
 }

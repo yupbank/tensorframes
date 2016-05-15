@@ -25,7 +25,7 @@ import scala.reflect.runtime.universe.TypeTag
  * @tparam T
  */
 // TODO PERF: investigate the use of @specialized
-private[tensorframes] sealed abstract class TensorConverter[T : TypeTag] (
+private[tensorframes] sealed abstract class TensorConverter[T : TypeTag : ClassTag] (
     val shape: Shape,
     val numCells: Int) extends Logging {
   /**
@@ -37,26 +37,41 @@ private[tensorframes] sealed abstract class TensorConverter[T : TypeTag] (
 
   def appendRaw(t: T): Unit
 
+  private[this] def appendArray(wa: mutable.WrappedArray[T]): Unit = {
+    val arr = wa.toArray
+    var idx = 0
+    while (idx < arr.length) {
+      appendRaw(arr(idx))
+      idx += 1
+    }
+  }
+
   def append(row: Row, position: Int): Unit = {
-    require(shape.dims.size <= 1)
     shape.numDims match {
       case 0 =>
         appendRaw(row.getAs[T](position))
       case 1 =>
-        // TODO PERF: we know this is going to be a wrapped array -> we should should specialize
-        // the calls to array calls
         row.getSeq[T](position) match {
           case wa : mutable.WrappedArray[T @unchecked] =>
             // Faster path
-            val arr = wa.toArray
-            var idx = 0
-            while (idx < arr.length) {
-              appendRaw(arr(idx))
-              idx += 1
-            }
+            appendArray(wa)
           case seq: Seq[T @unchecked] =>
             // Slow path
             seq.foreach(appendRaw)
+        }
+      case 2 =>
+        row.getSeq[Seq[T]](position) match {
+          case wa : mutable.WrappedArray[Seq[T] @unchecked] =>
+            wa.foreach {
+              case wa0: mutable.WrappedArray[T @unchecked] =>
+                appendArray(wa0)
+              case x: Any =>
+                throw new Exception(s"Type ${x.getClass} not understood")
+            }
+          case seq: Seq[Seq[T] @unchecked] =>
+            // Slow path
+            throw new Exception(s"Type ${seq.getClass} is a slow path")
+//            seq.foreach(appendRaw)
         }
       case x =>
         throw new Exception(s"Higher order dimension $x from shape $shape is not supported")

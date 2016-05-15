@@ -46,6 +46,7 @@ case class ReduceBlockSchema(
   * After calling these methods, the implementation can assume the schemas are valid and complete enough.
   */
 // Implementation is separated for python accessors
+// TODO: these methods are pretty complicated, add more documentation!
 private[impl] trait SchemaTransforms extends Logging {
   def get[A](x: Option[A], msg: String) = x.getOrElse {
     throw new Exception(msg)
