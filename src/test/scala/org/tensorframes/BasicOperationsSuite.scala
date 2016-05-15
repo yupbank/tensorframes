@@ -242,9 +242,7 @@ class BasicOperationsSuite
     val df = make1(Seq(1), "x").analyze()
     val x = df.block("x")
     val y = constant(m) named "y"
-    println(s">>>>> ${y}")
     val df2 = df.mapRows(y).select("y")
-    println(s">>>>> ${df2.explainTensors}")
     assert(df2.collect() === Array(Row(m)))
   }
 

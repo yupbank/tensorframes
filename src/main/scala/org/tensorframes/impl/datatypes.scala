@@ -47,8 +47,6 @@ private[tensorframes] sealed abstract class TensorConverter[T : TypeTag : ClassT
   }
 
   def append(row: Row, position: Int): Unit = {
-    println(s"append: $this position=$position shape=$shape numDims=${shape.numDims}" +
-      s" row=$row")
     shape.numDims match {
       case 0 =>
         appendRaw(row.getAs[T](position))
