@@ -146,6 +146,28 @@ private[tensorframes] sealed abstract class ScalarTypeOperation[T : TypeTag : Cl
     res
   }
 
+  final def convertBuffer3(
+      b0: Array[_], dim1: Int, dim2: Int, dim3: Int): Array[Array[Array[T]]] = {
+    val b = b0.asInstanceOf[Array[T]]
+    assert(b.length == dim1 * dim2 * dim3, (b.length, dim1, dim2, dim3))
+    val res = Array.fill(dim1) { Array.fill(dim2) { new Array[T](dim3) } }
+    var idx1 = 0
+    while (idx1 < dim1) {
+      var idx2 = 0
+      while(idx2 < dim2) {
+        var idx3 = 0
+        while (idx3 < dim3) {
+          // TODO(tjh) check math
+          res(idx1)(idx2)(idx3) = b(idx3 + dim3 * idx2 + dim3 * dim2 * idx1)
+          idx3 += 1
+        }
+        idx2 += 1
+      }
+      idx1 += 1
+    }
+    res
+  }
+
   def tag: TypeTag[_] = implicitly[TypeTag[T]]
 }
 

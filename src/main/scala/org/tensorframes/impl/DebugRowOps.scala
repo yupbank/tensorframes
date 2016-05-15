@@ -126,36 +126,43 @@ private[impl] trait SchemaTransforms extends Logging {
       // Take the tail, we only compare cells
       val cellShape = stf.shape.tail
       check(out.shape.checkMorePreciseThan(cellShape),
-        s"Output '${f.name}' has shape ${out.shape}, not compatible with the shapes" +
+        s"Output '${f.name}' has shape ${out.shape}, not compatible with the shape " +
           s"of field elements $cellShape")
+      // The input block may be too precise with respect to the lead dimension (number of rows),
+      // which is usually incorrect when pairwise reductions are performed.
+      // Always assume they are unknown for now.
+      val shape = cellShape.prepend(Shape.Unknown)
+      val inputStf = stf.copy(shape = shape)
 
       val inputName = f.name + suffix
       val in = get(summary.get(inputName),
         s"The graph needs to have a placeholder input called $inputName.")
       assert(in.isPlaceholder, s"Node $inputName should be a placeholder")
       assert(in.isInput, s"Node $inputName should be an input")
-      check(stf.shape.checkMorePreciseThan(in.shape),
-        s"The data column '${f.name}' has shape ${stf.shape}, not compatible with shape" +
+      check(inputStf.shape.checkMorePreciseThan(in.shape),
+        s"The data column '${f.name}' has shape ${inputStf.shape}, not compatible with shape" +
           s" ${in.shape} requested by the TF graph")
-      check(stf.dataType == in.scalarType,
-        s"The type of node '${in.name}' (${stf.dataType}) is not compatible with the data" +
+      check(inputStf.dataType == in.scalarType,
+        s"The type of node '${in.name}' (${inputStf.dataType}) is not compatible with the data" +
           s" type of the column (${in.scalarType})")
-      ColumnInformation(f, stf).merged
+      val m = ColumnInformation(f, inputStf).merged
+      logDebug(s">>> $m -> ${ColumnInformation(m).stf}")
+      m
     }
     val outputSchema = StructType(fields.toArray)
     // The input schema is simply the block schema, with a different name for the variables.
     // We still pass all the variables because the filtering is done on the indices selected.
     val inputSchema = StructType(schema.map { f =>
       if (outputs.contains(f.name)) {
-        f.copy(name = f.name + "_input")
+        widenLeadDim(f.copy(name = f.name + "_input"))
       } else { f }
     })
     val inputReduceSchema = StructType(schema
       .filter(f => outputs.contains(f.name))
-      .map(f => f.copy(name=f.name + "_input")))
+      .map(f => widenLeadDim(f.copy(name=f.name + "_input"))))
     val requestedIndexes = schema.zipWithIndex
         .filter { case (f, idx) => outputs.contains(f.name)}
-        .map(_._2)   .toList
+        .map(_._2) .toList
     ReduceBlockSchema(inputSchema, requestedIndexes, outputSchema, inputReduceSchema)
   }
 
@@ -250,6 +257,16 @@ private[impl] trait SchemaTransforms extends Logging {
     // Same schema as output
     schema
   }
+
+  // Sets the lead column to Unknown
+  private def widenLeadDim(f: StructField): StructField = {
+    ColumnInformation(f).stf match {
+      case Some(ci) if ci.shape.numDims >= 1 =>
+        val s = ci.shape.tail.prepend(Shape.Unknown)
+        ColumnInformation(f, ci.copy(shape = s)).merged
+      case _ => f // Nothing to do
+    }
+  }
 }
 
 object SchemaTransforms extends SchemaTransforms
@@ -332,6 +349,7 @@ class DebugRowOps
           throw new Exception(s"TF graph has an output node called '${out.name}'," +
             s" but this column already exists. Input columns: ${cols}")
         }
+        logInfo(s"mapBlocks: out = $out")
         ColumnInformation.structField(out.name, out.scalarType, out.shape)
       }
       StructType(fields.toArray)

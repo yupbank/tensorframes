@@ -56,8 +56,20 @@ trait DFImplicits {
       ops.reduceRows(df, graph, shapeHints)
     }
 
+    def reduceRows(o0: Operation, os: Operation*): Row = {
+      val seq = Seq(o0) ++ os
+      val g = DslImpl.buildGraph(Seq(o0) ++ os)
+      reduceRows(g, Node.hints(seq))
+    }
+
     def reduceBlocks(graph: GraphDef, shapeHints: ShapeDescription): Row = {
       ops.reduceBlocks(df, graph, shapeHints)
+    }
+
+    def reduceBlocks(o0: Operation, os: Operation*): Row = {
+      val seq = Seq(o0) ++ os
+      val g = DslImpl.buildGraph(Seq(o0) ++ os)
+      reduceBlocks(g, Node.hints(seq))
     }
 
     def explainTensors: String = ops.explain(df)
@@ -93,6 +105,11 @@ trait DFImplicits {
   implicit class RichGroupedData(dg: GroupedData) {
     def aggregate(graphDef: GraphDef, shapeDescription: ShapeDescription): DataFrame = {
       ops.aggregate(dg, graphDef, shapeDescription)
+    }
+    def aggregate(o0: Operation, os: Operation*): DataFrame = {
+      val seq = Seq(o0) ++ os
+      val g = DslImpl.buildGraph(Seq(o0) ++ os)
+      aggregate(g, Node.hints(seq))
     }
   }
 

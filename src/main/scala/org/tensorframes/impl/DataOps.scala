@@ -163,20 +163,22 @@ object DataOps extends Logging {
       fastPath: Boolean = true): jtf.StringTensorPairVector = {
     // This is a very simple and very inefficient implementation. It should be kept
     // as is for correctness checks.
+    val fields = requestedTFCols.map(struct.fields(_))
     logDebug(s"Calling convert on ${it.length} rows with struct: $struct " +
       s"and indices: ${requestedTFCols.toSeq}")
-    val fields = requestedTFCols.map(struct.fields(_))
     val converters = fields.map { f =>
       // Extract and check the shape
       val ci = ColumnInformation(f).stf.getOrElse {
         throw new Exception(s"Could not column information for column $f")
       }
+      logDebug(s"convert: $f -> $ci")
       val leadDim = ci.shape.dims.headOption.getOrElse {
         throw new Exception(s"Column $f found to be scalar, but its dimensions should be >= 1")
       } .toInt
       if (leadDim != Shape.Unknown && leadDim != it.length) {
         throw new Exception(s"Lead dimension for column $f (found to be $leadDim)" +
-          s" is not compatible with a block of lize ${it.length}")
+          s" is not compatible with a block of size ${it.length}. " +
+          s"Expected block structure: $struct, meta info = $ci")
       }
       SupportedOperations.opsFor(ci.dataType).tfConverter(ci.shape.tail, it.length)
     }
@@ -396,11 +398,20 @@ object DataOps extends Logging {
       scalaType: NumericType,
       allDataBuffer: mutable.WrappedArray[_]): Iterable[Any] = {
     reshapeShape.dims match {
+      case Seq() =>
+        throw new AssertionError(s"dims should not be empty")
       case Seq(dim1) =>
-        SupportedOperations.opsFor(scalaType).convertBuffer1(allDataBuffer.array, dim1.toInt)
+        SupportedOperations.opsFor(scalaType)
+          .convertBuffer1(allDataBuffer.array, dim1.toInt)
       case Seq(dim1, dim2) =>
-        SupportedOperations.opsFor(scalaType).convertBuffer2(allDataBuffer.array, dim1.toInt, dim2.toInt)
-      case x: Any => throw new NoSuchElementException(x.toString())
+        SupportedOperations.opsFor(scalaType)
+          .convertBuffer2(allDataBuffer.array, dim1.toInt, dim2.toInt)
+      case Seq(dim1, dim2, dim3) =>
+        SupportedOperations.opsFor(scalaType)
+          .convertBuffer3(allDataBuffer.array, dim1.toInt, dim2.toInt, dim3.toInt)
+      case x: Seq[_] =>
+        throw new IllegalArgumentException(s"Operations for tensors of order ${x.size}" +
+          s" are not supported")
     }
   }
 

@@ -74,6 +74,10 @@ object TensorFlowOps extends Logging {
     s
   }
 
+  override def logDebug(s: => String): Unit = {
+    java.lang.System.out.println(s)
+  }
+
 
   /**
    * Performs some analysis over the TF graph, by loading it into the TF runtime and extracting
@@ -83,8 +87,8 @@ object TensorFlowOps extends Logging {
       graphDef: GraphDef,
       shapeHints: ShapeDescription = ShapeDescription.empty): Seq[GraphNodeSummary] = {
     initTensorFlow()
-    logTrace(s"analyzeGraph: shapeHints=$shapeHints")
-    logTrace(s"analyzeGraph: graph=$graphDef")
+    logDebug(s"analyzeGraph: shapeHints=$shapeHints")
+    logDebug(s"analyzeGraph: graph=$graphDef")
 
     val nodes = graphDef.getNodeList.asScala
     val inputs: Set[String] = nodes
@@ -92,6 +96,7 @@ object TensorFlowOps extends Logging {
       .map(_.getName).toSet
     // We identify a node with its output tensor.
     val outputs = shapeHints.requestedFetches.map(_.stripSuffix(":0")).toSet
+    logDebug(s"Inputs: $inputs")
     logDebug(s"Outputs: ${outputs}")
 
     withSession { session =>
@@ -131,7 +136,7 @@ object TensorFlowOps extends Logging {
     }
     nodes.flatMap { n =>
       val name = n.getName
-      logTrace(s"Node $name")
+      logDebug(s"Node $name")
       val isInput = inputs.contains(name)
       val isOutput = outputs.contains(name)
       if (isInput || isOutput) {
@@ -148,7 +153,7 @@ object TensorFlowOps extends Logging {
             None
           }
         }
-        logTrace(s"shape = $shapeOpt")
+        logDebug(s"shape = $shapeOpt")
         val shape = shapeOpt.getOrElse {
           throw new Exception(s"Could not get the shape of node $name from the graph definition or from the shape hints")
         }
