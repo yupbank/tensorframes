@@ -5,6 +5,8 @@ Given a set of feature vectors, this algorithm runs the K-Means clustering algor
 from a given set of centroids.
 """
 
+%autoindent
+
 import tensorflow as tf
 import tensorframes as tfs
 import numpy as np
@@ -134,24 +136,16 @@ def run_one_step2(dataframe, start_centers):
         count_input = tf.placeholder(tf.int32, shape=[None, num_centroids], name='agg_counts_input')
         md_input = tf.placeholder(tf.double, shape=[None],
                                   name='agg_distances_input')
-        # x_input = tfs.block(df2, "agg_points", tf_name="agg_points_input")
-        # count_input = tfs.block(df2, "agg_counts", tf_name="agg_counts_input")
-        # md_input = tfs.block(df2, "agg_distances", tf_name="agg_distances_input")
         # Each operation is just the sum.
         x = tf.reduce_sum(x_input, [0], name='agg_points')
         count = tf.reduce_sum(count_input, [0], name='agg_counts')
         min_distances = tf.reduce_sum(md_input, [0], name='agg_distances')
-        df3 = tfs.reduce_blocks([x, count, min_distances], df2)
-    # Get the new centroids
-    df3_c = df3.collect()
-    # The new centroids.
-    new_centers = np.array([np.array(row.agg_points) / row.agg_counts for row in df3_c])
-    total_distances = np.sum([row['agg_distances'] for row in df3_c])
+        (x_, count_, total_distances) = tfs.reduce_blocks([x, count, min_distances], df2)
+    new_centers = (x_.T / count_).T
     return (new_centers, total_distances)
 
 
-
-def kmeans(dataframe, init_centers, num_iters = 50):
+def kmeans(dataframe, init_centers, num_iters = 5):
     """
     Runs the K-Means algorithm on a set of feature points.
 
@@ -167,7 +161,7 @@ def kmeans(dataframe, init_centers, num_iters = 50):
     d = np.Inf
     ds = []
     for i in range(num_iters):
-        (c1, d1) = run_one_step(dataframe, c)
+        (c1, d1) = run_one_step2(dataframe, c)
         print "Step =", i, ", overall distance = ", d1
         c = c1
         if d == d1:
@@ -197,10 +191,12 @@ df = sqlContext.createDataFrame(data).toDF("features")
 # multiple runs on the dataset.
 df0 = tfs.analyze(df).cache()
 
-np.random.seed(1)
+np.random.seed(2)
 init_centers = np.random.randn(k, num_features)
 start_centers = init_centers
 dataframe = df0
 
+#(c1, d1) = run_one_step(dataframe, start_centers)
+#(c2, d2) = run_one_step2(dataframe, start_centers)
 (centers, agg_distances) = kmeans(df0, init_centers)
 

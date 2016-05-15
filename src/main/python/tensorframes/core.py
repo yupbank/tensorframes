@@ -1,6 +1,7 @@
 from tensorframes.shape_infer import *
 
 import tensorflow as tf
+import numpy as np
 
 import logging
 
@@ -77,10 +78,18 @@ def _get_graph(fetches):
         raise ValueError("Could not infer a list of unique names for the columns: %s" % str(fetch_names))
     return graph
 
-def _unpack_row(jdf):
+def _unpack_row(jdf, fetches):
     df = DataFrame(jdf, _sql)
     row = df.first()
-    l = list(row)
+    def f(fetch):
+        name = fetch.name.replace(":0", "")
+        x = row[name]
+        ndims = fetch.get_shape().ndims
+        if ndims > 0:
+            return np.array(x)
+        else:
+            return x
+    l = [f(fetch) for fetch in fetches]
     if len(l) == 1:
         return l[0]
     return l
@@ -121,7 +130,7 @@ def reduce_rows(fetches, dframe):
     _add_graph(graph, builder)
     _add_shapes(graph, builder, fetches)
     df = builder.buildRow()
-    return _unpack_row(df)
+    return _unpack_row(df, fetches)
 
 def map_rows(fetches, dframe):
     """ Transforms a DataFrame into another DataFrame row by row, by adding new fields for each fetch.
@@ -247,7 +256,7 @@ def reduce_blocks(fetches, dframe):
     _add_graph(graph, builder)
     _add_shapes(graph, builder, fetches)
     df = builder.buildRow()
-    return _unpack_row(df)
+    return _unpack_row(df, fetches)
 
 def print_schema(dframe):
     """

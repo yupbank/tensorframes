@@ -9,7 +9,7 @@ import org.bytedeco.javacpp.{tensorflow => jtf}
 import org.tensorflow.framework.DataType
 import org.tensorframes.Shape
 
-import scala.collection.mutable
+import scala.collection.mutable.{WrappedArray => MWrappedArray}
 import scala.reflect.ClassTag
 import scala.reflect.runtime.universe.TypeTag
 
@@ -37,7 +37,7 @@ private[tensorframes] sealed abstract class TensorConverter[T : TypeTag : ClassT
 
   def appendRaw(t: T): Unit
 
-  private[this] def appendArray(wa: mutable.WrappedArray[T]): Unit = {
+  private[this] def appendArray(wa: MWrappedArray[T]): Unit = {
     val arr = wa.toArray
     var idx = 0
     while (idx < arr.length) {
@@ -47,12 +47,14 @@ private[tensorframes] sealed abstract class TensorConverter[T : TypeTag : ClassT
   }
 
   def append(row: Row, position: Int): Unit = {
+    println(s"append: $this position=$position shape=$shape numDims=${shape.numDims}" +
+      s" row=$row")
     shape.numDims match {
       case 0 =>
         appendRaw(row.getAs[T](position))
       case 1 =>
         row.getSeq[T](position) match {
-          case wa : mutable.WrappedArray[T @unchecked] =>
+          case wa : MWrappedArray[T @unchecked] =>
             // Faster path
             appendArray(wa)
           case seq: Seq[T @unchecked] =>
@@ -61,9 +63,9 @@ private[tensorframes] sealed abstract class TensorConverter[T : TypeTag : ClassT
         }
       case 2 =>
         row.getSeq[Seq[T]](position) match {
-          case wa : mutable.WrappedArray[Seq[T] @unchecked] =>
+          case wa : MWrappedArray[Seq[T] @unchecked] =>
             wa.foreach {
-              case wa0: mutable.WrappedArray[T @unchecked] =>
+              case wa0: MWrappedArray[T @unchecked] =>
                 appendArray(wa0)
               case x: Any =>
                 throw new Exception(s"Type ${x.getClass} not understood")
@@ -136,7 +138,7 @@ private[tensorframes] sealed abstract class ScalarTypeOperation[T : TypeTag : Cl
    * @param buff
    * @return
    */
-  def convertBuffer(buff: ByteBuffer): mutable.WrappedArray[T]
+  def convertBuffer(buff: ByteBuffer): MWrappedArray[T]
 
   final def convertBuffer1(b0: Array[_], dim1: Int): Array[T] = {
     val b = b0.asInstanceOf[Array[T]]
@@ -144,7 +146,7 @@ private[tensorframes] sealed abstract class ScalarTypeOperation[T : TypeTag : Cl
     b
   }
 
-  final def convertBuffer2(b0: Array[_], dim1: Int, dim2: Int): Array[Array[T]] = {
+  final def convertBuffer2(b0: Array[_], dim1: Int, dim2: Int): Array[MWrappedArray[T]] = {
     val b = b0.asInstanceOf[Array[T]]
     assert(b.length == dim1 * dim2, (b.length, dim1, dim2))
     val res = Array.fill(dim1){ new Array[T](dim2) }
@@ -158,11 +160,19 @@ private[tensorframes] sealed abstract class ScalarTypeOperation[T : TypeTag : Cl
       }
       idx1 += 1
     }
-    res
+    res.map(conv)
+  }
+
+  // Necessary hack to have proper scala sequences. Spark's Row object does not like basic arrays.
+  private def conv[X](m: Array[X]): MWrappedArray[X] = {
+    m.toSeq.asInstanceOf[MWrappedArray[X]]
   }
 
   final def convertBuffer3(
-      b0: Array[_], dim1: Int, dim2: Int, dim3: Int): Array[Array[Array[T]]] = {
+      b0: Array[_],
+      dim1: Int,
+      dim2: Int,
+      dim3: Int): Array[MWrappedArray[MWrappedArray[T]]] = {
     val b = b0.asInstanceOf[Array[T]]
     assert(b.length == dim1 * dim2 * dim3, (b.length, dim1, dim2, dim3))
     val res = Array.fill(dim1) { Array.fill(dim2) { new Array[T](dim3) } }
@@ -180,7 +190,8 @@ private[tensorframes] sealed abstract class ScalarTypeOperation[T : TypeTag : Cl
       }
       idx1 += 1
     }
-    res
+    // Because rows cannot deal with primitive arrays, some weird conversions need to be done.
+    res.map { arr => conv(arr.map(conv)) }
   }
 
   def tag: TypeTag[_] = implicitly[TypeTag[T]]
@@ -273,7 +284,7 @@ private object DoubleOperations extends ScalarTypeOperation[Double] with Logging
 
   }
 
-  override def convertBuffer(buff: ByteBuffer): mutable.WrappedArray[Double] = {
+  override def convertBuffer(buff: ByteBuffer): MWrappedArray[Double] = {
     val dbuff = buff.asDoubleBuffer()
     dbuff.rewind()
     val numBufferElements = dbuff.limit() - dbuff.position()
@@ -327,7 +338,7 @@ private object IntOperations extends ScalarTypeOperation[Int] with Logging {
     res
   }
 
-  override def convertBuffer(buff: ByteBuffer): mutable.WrappedArray[Int] = {
+  override def convertBuffer(buff: ByteBuffer): MWrappedArray[Int] = {
     val dbuff = buff.asIntBuffer()
     dbuff.rewind()
     val numBufferElements = dbuff.limit() - dbuff.position()
@@ -380,7 +391,7 @@ private object LongOperations extends ScalarTypeOperation[Long] with Logging {
     logTrace(s"Extracted from buffer: ${res.toSeq}")
     res
   }
-  override def convertBuffer(buff: ByteBuffer): mutable.WrappedArray[Long] = {
+  override def convertBuffer(buff: ByteBuffer): MWrappedArray[Long] = {
     val dbuff = buff.asLongBuffer()
     dbuff.rewind()
     val numBufferElements = dbuff.limit() - dbuff.position()

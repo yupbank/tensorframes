@@ -110,9 +110,8 @@ private[impl] trait SchemaTransforms extends Logging {
         s"Dataframe columns: $fieldNameList")
 
     // Check that for each output, the field is present with the right schema.
-    val fields = for (fname <- outputs.keys) yield {
-      // Already checked before
-      val f = schema(fname)
+    // WARNING: keeping the order of the fields is important -> do not iterate over the outputs.
+    val fields = schema.filter(f => outputs.contains(f.name)).map { f =>
       val ci = ColumnInformation(f)
       val stf = get(ci.stf,
         s"Data column '${f.name}' has not been analyzed yet, cannot run TF on this dataframe")
@@ -509,6 +508,7 @@ class DebugRowOps
         Array(row).iterator
       }
     }
+    // TODO: it would be nice to respect the output order here?
     transformRdd.reduce(DebugRowOpsImpl.reducePairBlock(
       allSchema.reduceInput, allSchema.output, gProto))
   }
