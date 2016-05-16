@@ -6,6 +6,7 @@
 .history
 .lib/
 dist/*
+build/*.jar
 target/
 lib_managed/
 src_managed/
@@ -21,3 +22,7 @@ project/plugins/project/
 *.pyc
 
 sbtcredentials
+
+.DS_Store
+.idea_modules/
+projectFilesBackup/

@@ -13,6 +13,8 @@ scalaVersion := "2.10.6"
 // Don't forget to set the version
 version := "0.2.0"
 
+classpathTypes += "maven-plugin"
+
 // ******* Spark-packages settings **********
 
 spName := "tjhunter/tensorframes"
@@ -72,11 +74,15 @@ libraryDependencies += "org.apache.commons" % "commons-lang3" % "3.4"
 
 libraryDependencies += "com.google.protobuf" % "protobuf-java" % "3.0.0-beta-1"
 
-libraryDependencies += "org.tensorframes" % "javacpp" % jcppVersion
+libraryDependencies += "org.bytedeco" % "javacpp" % "1.2"
 
-libraryDependencies += "org.tensorframes" % "tensorflow" % jcppVersion
+libraryDependencies += "org.bytedeco.javacpp-presets" % "tensorflow" % "0.8.0-1.2"
 
-libraryDependencies += "org.tensorframes" % "tensorflow-linux-x86_64" % jcppVersion
+// Add other platforms here if necessary.
+
+libraryDependencies += "org.bytedeco.javacpp-presets" % "tensorflow" % "0.8.0-1.2" classifier "linux-x86_64"
+
+libraryDependencies += "org.bytedeco.javacpp-presets" % "tensorflow" % "0.8.0-1.2" classifier "macosx-x86_64"
 
 version in protobufConfig := "3.0.0-beta-1"
 
