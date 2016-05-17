@@ -42,7 +42,7 @@ Additionally, if you want to run unit tests for python, you need the following d
 Assuming that `SPARK_HOME` is set, you can use PySpark like any other Spark package.
 
 ```bash
-$SPARK_HOME/bin/pyspark --packages tjhunter:tensorframes:0.2.0
+$SPARK_HOME/bin/pyspark --packages tjhunter:tensorframes:0.2.1
 ```
 
 Here is a small program that uses Tensorflow to add 3 to an existing column.
@@ -140,7 +140,7 @@ The scala support is a bit more limited than python. In scala, operations can be
 You simply use the published package:
 
 ```bash
-$SPARK_HOME/bin/spark-shell --packages tjhunter:tensorframes:0.2.0
+$SPARK_HOME/bin/spark-shell --packages tjhunter:tensorframes:0.2.1
 ```
 
 Here is the same program as before:
