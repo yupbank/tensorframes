@@ -26,3 +26,4 @@ sbtcredentials
 .DS_Store
 .idea_modules/
 projectFilesBackup/
+lib/javacpp-*

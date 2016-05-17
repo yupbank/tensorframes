@@ -22,6 +22,7 @@ spName := "tjhunter/tensorframes"
 sparkVersion := targetSparkVersion
 
 // We need to manually build the artifact
+// TODO: check if this is still required
 //sparkComponents ++= Seq("core", "sql")
 
 spIncludeMaven := false
@@ -49,12 +50,9 @@ credentials += Credentials(credentialPath)
 
 spIgnoreProvided := true
 
+spAppendScalaVersion := true
+
 // *********** Regular settings ***********
-
-// Using a custom resolver to host the TF artifacts, before publication
-resolvers += 
-  "Tensorframes-artifacts" at "https://github.com/tjhunter/tensorframes-artifacts/raw/master/deploy"
-
 
 libraryDependencies += "org.apache.spark" %% "spark-core" % targetSparkVersion % "provided"
 
@@ -74,15 +72,9 @@ libraryDependencies += "org.apache.commons" % "commons-lang3" % "3.4"
 
 libraryDependencies += "com.google.protobuf" % "protobuf-java" % "3.0.0-beta-1"
 
-libraryDependencies += "org.bytedeco" % "javacpp" % "1.2"
+libraryDependencies += "org.bytedeco" % "javacpp" % targetJCPPVersion
 
-libraryDependencies += "org.bytedeco.javacpp-presets" % "tensorflow" % "0.8.0-1.2"
-
-// Add other platforms here if necessary.
-
-libraryDependencies += "org.bytedeco.javacpp-presets" % "tensorflow" % "0.8.0-1.2" classifier "linux-x86_64"
-
-libraryDependencies += "org.bytedeco.javacpp-presets" % "tensorflow" % "0.8.0-1.2" classifier "macosx-x86_64"
+customTF()
 
 version in protobufConfig := "3.0.0-beta-1"
 
@@ -96,31 +88,13 @@ assemblyShadeRules in assembly := Seq(
 
 assemblyOption in assembly := (assemblyOption in assembly).value.copy(includeScala = false)
 
-assemblyExcludedJars in assembly := {
-  val cp = (fullClasspath in assembly).value
-  val excludes = Set(
-    "javacpp-1.2-SNAPSHOT-javadoc.jar",
-    //"javacpp-tensorflow-linux-x86_64.jar", // This is too big to be included in the assembly
-    "tensorflow-spark-tf-1.2-SNAPSHOT-javadoc.jar")
-  cp filter { s => excludes.contains(s.data.getName) }
-}
-
 // Just add the python files in the final binary for now.
 
 unmanagedResourceDirectories in Compile += {
   baseDirectory.value / "src/main/python/"
 }
 
-// Because of shading, sbt freaks out
-
 addCommandAlias("doit", ";clean;compile;assembly")
-
-// Remove all the dependencies from the pom because TF is packaged as a fat jar.
-// See this stackoverflow question:
-// http://stackoverflow.com/questions/24807875/how-to-remove-projectdependencies-from-pom
-makePomConfiguration := makePomConfiguration.value.copy(process = dependenciesFilter)
 
 // Spark packages messes this part
 test in assembly := {}
-
-Seq(tfPackageTask)
