@@ -42,7 +42,7 @@ Additionally, if you want to run unit tests for python, you need the following d
 Assuming that `SPARK_HOME` is set, you can use PySpark like any other Spark package.
 
 ```bash
-$SPARK_HOME/bin/pyspark --packages tjhunter:tensorframes:0.2.1
+$SPARK_HOME/bin/pyspark --packages tjhunter:tensorframes:0.2.2-s_2.10
 ```
 
 Here is a small program that uses Tensorflow to add 3 to an existing column.
@@ -140,7 +140,7 @@ The scala support is a bit more limited than python. In scala, operations can be
 You simply use the published package:
 
 ```bash
-$SPARK_HOME/bin/spark-shell --packages tjhunter:tensorframes:0.2.1
+$SPARK_HOME/bin/spark-shell --packages tjhunter:tensorframes:0.2.2
 ```
 
 Here is the same program as before:
@@ -177,14 +177,14 @@ build/sbt assembly
 Assuming that SPARK_HOME is set and that you are in the root directory of the project:
 
 ```bash
-$SPARK_HOME/bin/spark-shell --jars $PWD/target/scala-2.11/tensorframes-assembly-0.1.1.jar
+$SPARK_HOME/bin/spark-shell --jars $PWD/target/scala-2.10/tensorframes-assembly-0.2.2.jar
 ```
 
 If you want to run the python version:
  
 ```bash
-PYTHONPATH=$PWD/target/scala-2.11/tensorframes-assembly-0.1.1.jar IPYTHON=1 \
-$SPARK_HOME/bin/pyspark --jars $PWD/target/scala-2.11/tensorframes-assembly-0.1.1.jar
+PYTHONPATH=$PWD/target/scala-2.10/tensorframes-assembly-0.2.2.jar IPYTHON=1 \
+$SPARK_HOME/bin/pyspark --jars $PWD/target/scala-2.10/tensorframes-assembly-0.2.2.jar
 ```
 
 

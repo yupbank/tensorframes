@@ -1,11 +1,11 @@
 import sbt._
-import java.nio.file.{Files, Paths}
-import java.io.File
 import sbtsparkpackage.SparkPackagePlugin
 import sbtsparkpackage.SparkPackagePlugin.{autoImport => sp}
 import Keys._
+
+import java.io.File
+import java.nio.file.{Files, Paths}
 import java.util.Locale
-import scala.io.Source._
 
 import xml.{NodeSeq, Node => XNode, Elem}
 import xml.transform.{RuleTransformer, RewriteRule}
@@ -43,14 +43,6 @@ object Dependencies {
     }
   }
 
-//  lazy val rewrittenPomFile = TaskKey[File]("tf-rewrite-pom",
-//    "Rewrites the POM file to remove deps")
-
-//  lazy val rewrittenPomFileTask = rewrittenPomFile := {
-//    val f: File = SparkPackagePlugin.autoImport.spMakePom.value
-//    f
-//  }
-
   val tfPackage = TaskKey[File]("tfPackage", "Packages TensorFrames")
 
   val tfPackageTask = tfPackage := {
@@ -79,9 +71,21 @@ object Dependencies {
     zipFile
   }
 
+  // These dependencies are explicitly bundled with the spark package, because they are pretty
+  // hard to get right: protobuf3 needs to be shaded, and some environments like databricks do
+  // not load dependencies with profiles.
+  // The org.bytedeco could probably be removed.
+  val blacklistedGroupIds = Set(
+    "com.google.protobuf",
+    "org.bytedeco",
+    "org.bytedeco.javacpp-presets"
+  )
+
   def dependenciesFilter(n: XNode) = new RuleTransformer(new RewriteRule {
     override def transform(n: XNode): NodeSeq = n match {
-      case e: Elem if e.label == "dependencies" => NodeSeq.Empty
+      case e: Elem if e.label == "dependency" &&
+        blacklistedGroupIds.contains((e \ "groupId").text.trim) =>
+        NodeSeq.Empty
       case other => other
     }
   }).transform(n).head
@@ -98,6 +102,5 @@ object Dependencies {
   }
 
   private def normalizeName(s: String) = s.toLowerCase(Locale.ENGLISH).replaceAll( """\W+""", "-")
-
 
 }
