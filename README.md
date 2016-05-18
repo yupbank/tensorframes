@@ -9,10 +9,15 @@ TensorFlow programs.
 > This package is experimental and is provided as a technical preview only. While the 
 > interfaces are all implemented and working, there are still some areas of low performance.
 
+Supported platforms:
 
-> This package only supports linux 64bit platforms as a target. Contributions are welcome for other platforms.
+> This package only officially supports linux 64bit platforms as a target.
+> Contributions are welcome for other platforms.
 
-Officially supported Spark versions: 1.6+
+See the file `project/Dependencies.scala` for adding your own platform.
+
+Officially supported Spark versions: 1.6 and Scala version 2.10. It is also known to work with 
+Spark 2.0 (pre-released) and Scala 2.11.
 
 See the [user guide](https://github.com/tjhunter/tensorframes/wiki/TensorFrames-user-guide) for
  extensive information about the API.
@@ -26,7 +31,8 @@ TensorFrames is available as a
 
  - java version >= 7
  
- - python >= 2.7 . Python 3+ should work but it has not been tested.
+ - (Optional) python >= 2.7 if you want to use the python interface. Python 3+ should work but it 
+ has not been tested.
  
  - (Optional) the python TensorFlow package if you want to use the python interface. See the 
  [official instructions](https://www.tensorflow.org/versions/r0.7/get_started/os_setup.html#download-and-setup)
@@ -57,7 +63,7 @@ df = sqlContext.createDataFrame(data)
 with tf.Graph().as_default() as g:
     # The TensorFlow placeholder that corresponds to column 'x'.
     # The shape of the placeholder is automatically inferred from the DataFrame.
-    x = tfs.block(name="x")
+    x = tfs.block(df, "x")
     # The output that adds 3 to x
     z = tf.add(x, 3, name='z')
     # The resulting dataframe
@@ -103,8 +109,8 @@ tfs.print_schema(df2)
 df3 = df2.select(df2.y, df2.y.alias("z"))
 with tf.Graph().as_default() as g:
     # The placeholders. Note the special name that end with '_input':
-    y_input = tfs.block(name='y', tf_name="y_input")
-    z_input = tfs.block(name='z', tf_name="z_input")
+    y_input = tfs.block(df3, 'y', tf_name="y_input")
+    z_input = tfs.block(df3, 'z', tf_name="z_input")
     y = tf.reduce_sum(y_input, [0], name='y')
     z = tf.reduce_min(z_input, [0], name='z')
     # The resulting dataframe
@@ -152,7 +158,7 @@ import org.tensorframes.dsl.Implicits._
 val df = sqlContext.createDataFrame(Seq(1.0->1.1, 2.0->2.2)).toDF("a", "b")
 
 // As in Python, scoping is recommended to prevent name collisions.
-val df2: DataFrame = tf.withGraph {
+val df2 = tf.withGraph {
     val a = df.block("a")
     // Unlike python, the scala syntax is more flexible:
     val out = a + 3.0 named "out"
@@ -193,7 +199,11 @@ $SPARK_HOME/bin/pyspark --jars $PWD/target/scala-2.10/tensorframes-assembly-0.2.
 By default, TensorFrames features a relatively stable version of TensorFlow that is optimized 
 for build sizes and for CPUs. If you want to change the internal version being used, you should
 check the [tensorframes-artifacts](https://github.com/tjhunter/tensorframes-artifacts) project. 
-That project contains scripts to build the proper jar files. 
+That project contains scripts to build the proper jar files.
+
+It is also possible to drop in some precompiled versions of javacpp and tensorflow into the `lib`
+ directory; they will be picked up in the compilation and the assembly. Ask the developers if you
+ have more questions.
 
 ## Acknowledgements
 
