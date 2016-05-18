@@ -11,7 +11,7 @@ scalaVersion := "2.10.6"
 //crossScalaVersions := Seq("2.11.7", "2.10.6")
 
 // Don't forget to set the version
-version := "0.2.1"
+version := "0.2.2"
 
 classpathTypes += "maven-plugin"
 
@@ -82,6 +82,14 @@ parallelExecution := false
 
 javaOptions in run += "-Xmx6G"
 
+assemblyExcludedJars in assembly := {
+  val cp = (fullClasspath in assembly).value
+  val excludes = Set(
+    "tensorflow-0.8.0-1.2-macosx-x86_64.jar" // This is not the main target, excluding
+  )
+  cp filter { s => excludes.contains(s.data.getName) }
+}
+
 assemblyShadeRules in assembly := Seq(
   ShadeRule.rename("com.google.protobuf.**" -> "org.tensorframes.protobuf3shade.@1").inAll
 )
@@ -98,3 +106,8 @@ addCommandAlias("doit", ";clean;compile;assembly")
 
 // Spark packages messes this part
 test in assembly := {}
+
+makePomConfiguration := makePomConfiguration.value.copy(process = dependenciesFilter)
+
+Seq(tfPackageTask)
+
