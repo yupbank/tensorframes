@@ -1,6 +1,6 @@
 package org.tensorframes
 
-import org.apache.spark.sql.{GroupedData, Row, DataFrame}
+import org.apache.spark.sql.{RelationalGroupedDataset, Row, DataFrame}
 import org.tensorflow.framework.GraphDef
 
 
@@ -123,13 +123,26 @@ trait OperationsInterface {
    * @param shapeHints some hints for the shape.
    * @return
    */
-  def aggregate(data: GroupedData, graph: GraphDef, shapeHints: ShapeDescription): DataFrame
+  def aggregate(data: RelationalGroupedDataset, graph: GraphDef, shapeHints: ShapeDescription): DataFrame
 
   /**
    * A string that contains detailed information about a dataframe, in particular relevant information
    * with respect to TensorFlow.
+ *
    * @param df
    * @return
    */
   def explain(df: DataFrame): String
+}
+
+object OperationsInterface {
+  // Developer API that may get removed in the future.
+  // If true, will try to use Catalyst hooks to accelerate data transfers between Spark and
+  // TensorFlow. This is highly experimental and may not work for all tensor shapes.
+  // Only use it if you are developing the Catalyst integration.
+  def enableCatalystOptimizations(set: Boolean): Unit = {
+    enableCatalystHook = set
+  }
+
+  private[tensorframes] var enableCatalystHook: Boolean = false
 }

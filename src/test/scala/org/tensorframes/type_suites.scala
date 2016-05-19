@@ -182,7 +182,8 @@ trait BasicMonoidTests[T] { self: CommonOperationsSuite[T] =>
     val x1 = placeholder(dtype, Shape(Shape.Unknown)) named "x_input"
     val x = reduce_sum(x1, Seq(0)) named "x"
     val df2 = ops.aggregate(df.groupBy("key"), x).select("key", "x")
-    assert(df2.collect() === Seq(Row("a", 21.0), Row("b", 20.0)).u)
+    val rows = df2.collect().sortBy { case Row(s: String, _) => s }
+    assert(rows === Seq(Row("a", 21.0), Row("b", 20.0)).u)
   }
 }
 

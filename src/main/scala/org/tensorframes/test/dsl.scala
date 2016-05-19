@@ -2,7 +2,7 @@ package org.tensorframes.test
 
 import java.nio.file.{Files, Paths}
 
-import org.apache.spark.Logging
+import org.apache.spark.{LoggingWrapper => Logging}
 import org.apache.spark.sql.types.{DoubleType, NumericType}
 import org.tensorflow.framework._
 import org.tensorframes.Shape

@@ -6,7 +6,7 @@ import org.tensorframes.dsl._
 import org.tensorframes.dsl.Implicits._
 import org.tensorframes.impl.DebugRowOps
 
-import org.apache.spark.Logging
+import org.apache.spark.{LoggingWrapper => Logging}
 import org.apache.spark.sql.Row
 
 // Some basic operations that stress shape transforms mostly.
@@ -207,7 +207,8 @@ class BasicOperationsSuite
     val x = reduce_sum(x1, Seq(0)) named "x"
     val df2 = df.groupBy("key").aggregate(x).select("key", "x")
     df2.printSchema()
-    assert(df2.collect() === Array(Row(1, 2.1), Row(2, 2.0)))
+    val rows = df2.collect().sortBy { case Row(x: Int, _) => x }
+    assert(rows === Array(Row(1, 2.1), Row(2, 2.0)))
   }
 
   testGraph("2-tensors - 1") {

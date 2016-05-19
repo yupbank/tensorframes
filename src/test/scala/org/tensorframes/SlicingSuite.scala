@@ -6,7 +6,7 @@ import org.tensorframes.impl.DebugRowOps
 import org.tensorframes.{dsl => tf}
 import org.tensorframes.dsl.Implicits._
 
-import org.apache.spark.Logging
+import org.apache.spark.{LoggingWrapper => Logging}
 import org.apache.spark.sql.Row
 import org.apache.spark.sql.types.{DoubleType, IntegerType}
 

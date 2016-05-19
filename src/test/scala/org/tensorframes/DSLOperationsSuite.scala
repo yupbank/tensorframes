@@ -4,7 +4,7 @@ import org.scalatest.FunSuite
 import org.tensorframes.dsl._
 import org.tensorframes.dsl.Implicits._
 
-import org.apache.spark.Logging
+import org.apache.spark.{LoggingWrapper => Logging}
 import org.apache.spark.sql.Row
 
 class DSLOperationsSuite

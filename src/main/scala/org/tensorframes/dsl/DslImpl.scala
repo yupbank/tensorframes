@@ -3,7 +3,7 @@ package org.tensorframes.dsl
 import javax.annotation.Nullable
 import org.tensorflow.framework.{AttrValue, DataType, GraphDef, TensorShapeProto}
 
-import org.apache.spark.Logging
+import org.apache.spark.{LoggingWrapper => Logging}
 import org.apache.spark.sql.DataFrame
 import org.apache.spark.sql.types.NumericType
 

@@ -5,7 +5,7 @@ import java.util
 import scala.collection.JavaConverters._
 
 import org.apache.log4j.PropertyConfigurator
-import org.apache.spark.sql.{GroupedData, DataFrame, Row}
+import org.apache.spark.sql.{RelationalGroupedDataset, DataFrame, Row}
 import org.apache.spark.sql.types.StructType
 import org.tensorflow.framework.GraphDef
 import org.tensorframes._
@@ -60,7 +60,7 @@ private[tensorframes] trait PythonInterface { self: OperationsInterface with Exp
     new PythonOpBuilder(this, ReduceRow, dataFrame)
   }
 
-  def aggregate_blocks(groupedData: GroupedData): PythonOpBuilder = {
+  def aggregate_blocks(groupedData: RelationalGroupedDataset): PythonOpBuilder = {
     new PythonOpBuilder(this, AggregateBlock, null, groupedData)
   }
 
@@ -84,7 +84,7 @@ class PythonOpBuilder(
     interface: OperationsInterface with ExperimentalOperations,
     op: PythonInterface.Operation,
     df: DataFrame = null,
-    groupedData: GroupedData = null) {
+    groupedData: RelationalGroupedDataset = null) {
   import PythonInterface._
   private var _shapeHints: ShapeDescription = ShapeDescription.empty
   private var _graph: GraphDef = null

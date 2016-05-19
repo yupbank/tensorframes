@@ -2,7 +2,7 @@ package org.tensorframes.dsl
 
 import scala.languageFeature.implicitConversions
 
-import org.apache.spark.sql.{GroupedData, Row, DataFrame}
+import org.apache.spark.sql.{RelationalGroupedDataset, Row, DataFrame}
 import org.tensorflow.framework.GraphDef
 import org.tensorframes.{ExperimentalOperations, OperationsInterface, ShapeDescription, dsl}
 
@@ -102,7 +102,7 @@ trait DFImplicits {
    *
    * This is useful for aggregation.
    */
-  implicit class RichGroupedData(dg: GroupedData) {
+  implicit class RichGroupedData(dg: RelationalGroupedDataset) {
     def aggregate(graphDef: GraphDef, shapeDescription: ShapeDescription): DataFrame = {
       ops.aggregate(dg, graphDef, shapeDescription)
     }

@@ -1,6 +1,6 @@
 package org.tensorframes.perf
 
-import org.apache.spark.Logging
+import org.apache.spark.{LoggingWrapper => Logging}
 import org.apache.spark.sql.functions._
 import org.scalatest.FunSuite
 import org.tensorframes.TensorFramesTestSparkContext
