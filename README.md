@@ -19,11 +19,11 @@ See the file `project/Dependencies.scala` for adding your own platform.
 Officially supported Spark versions: 1.6 and Scala version 2.10. It is also known to work with 
 Spark 2.0 (pre-released) and Scala 2.11.
 
-See the [user guide](https://github.com/tjhunter/tensorframes/wiki/TensorFrames-user-guide) for
+See the [user guide](https://github.com/databricks/tensorframes/wiki/TensorFrames-user-guide) for
  extensive information about the API.
  
 TensorFrames is available as a
- [Spark package](http://spark-packages.org/package/tjhunter/tensorframes).
+ [Spark package](http://spark-packages.org/package/databricks/tensorframes).
 
 ## Requirements
 
@@ -48,7 +48,7 @@ Additionally, if you want to run unit tests for python, you need the following d
 Assuming that `SPARK_HOME` is set, you can use PySpark like any other Spark package.
 
 ```bash
-$SPARK_HOME/bin/pyspark --packages tjhunter:tensorframes:0.2.3-s_2.10
+$SPARK_HOME/bin/pyspark --packages databricks:tensorframes:0.2.3-s_2.10
 ```
 
 Here is a small program that uses Tensorflow to add 3 to an existing column.

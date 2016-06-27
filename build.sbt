@@ -17,7 +17,7 @@ classpathTypes += "maven-plugin"
 
 // ******* Spark-packages settings **********
 
-spName := "tjhunter/tensorframes"
+spName := "databricks/tensorframes"
 
 sparkVersion := targetSparkVersion
 
