@@ -41,7 +41,7 @@ PROJECT_HOME="$DIR/../"
 
 
 # Tests run with scala-2.10 because the binaries are distributed in scala 2.10 for now.
-JAR_PATH="$PROJECT_HOME/target/scala-$SCALA_BINARY_VERSION/tensorframes-assembly-0.2.2.jar"
+JAR_PATH="$PROJECT_HOME/target/scala-$SCALA_BINARY_VERSION/tensorframes-assembly-0.2.3.jar"
 
 export PYSPARK_SUBMIT_ARGS="--jars $JAR_PATH pyspark-shell"
 

@@ -11,13 +11,13 @@ scalaVersion := "2.10.6"
 //crossScalaVersions := Seq("2.11.7", "2.10.6")
 
 // Don't forget to set the version
-version := "0.2.2"
+version := "0.2.3"
 
 classpathTypes += "maven-plugin"
 
 // ******* Spark-packages settings **********
 
-spName := "tjhunter/tensorframes"
+spName := "databricks/tensorframes"
 
 sparkVersion := targetSparkVersion
 
