@@ -178,6 +178,8 @@ df2.collect()
 
 ```bash
 build/sbt assembly
+# Builds the spack package:
+build/sbt tfPackage
 ```
 
 Assuming that SPARK_HOME is set and that you are in the root directory of the project:
