@@ -18,6 +18,7 @@ cache:
     - $HOME/.sbt/boot/scala-2.10.4/
     - $HOME/.sbt/boot/scala-2.10.5/
     - $HOME/.sbt/boot/scala-2.10.6/
+    - $HOME/.sbt/boot/scala-2.11.8/
 
 env:
   matrix:
