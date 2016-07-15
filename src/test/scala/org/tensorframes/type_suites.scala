@@ -34,7 +34,7 @@ trait BasicIdentityTests[T] { self: CommonOperationsSuite[T] =>
     val p1 = placeholder(dtype, Shape(1)) named "in"
     val out = op_id(p1) named "out"
     val df2 = ops.mapRows(adf, out).select("in", "out")
-    assert(df2.collect() === Seq(
+    compareRows(df2.collect(), Seq(
       Row(Seq(1.0), Seq(1.0)),
       Row(Seq(20.0), Seq(20.0))).u)
   }
@@ -47,7 +47,7 @@ trait BasicIdentityTests[T] { self: CommonOperationsSuite[T] =>
     val p1 = placeholder(dtype, Shape(Shape.Unknown)) named "in"
     val out = op_id(p1) named "out"
     val df2 = ops.mapRows(adf, out).select("in", "out")
-    assert(df2.collect() === Seq(
+    compareRows(df2.collect(), Seq(
       Row(Seq(1.0), Seq(1.0)),
       Row(Seq(20.0), Seq(20.0))).u)
   }
@@ -60,7 +60,7 @@ trait BasicIdentityTests[T] { self: CommonOperationsSuite[T] =>
     val p1 = placeholder(dtype, Shape(Shape.Unknown)) named "in"
     val out = op_id(p1) named "out"
     val df2 = ops.mapRows(adf, out).select("in", "out")
-    assert(df2.collect() === Seq(
+    compareRows(df2.collect(), Seq(
       Row(Seq(1.0), Seq(1.0)),
       Row(Seq(20.0, 21.0), Seq(20.0, 21.0))).u)
   }
@@ -77,7 +77,7 @@ trait BasicMonoidTests[T] { self: CommonOperationsSuite[T] =>
     val b = placeholder(dtype, Shape(Unknown)) named "b"
     val out = a + b named "out"
     val df2 = ops.mapBlocks(df, out).select("a", "b","out")
-    assert(df2.collect() === Seq(Row(10.0, 11.0, 21.0), Row(20.0, 22.0, 42.0)).u)
+    compareRows(df2.collect(), Seq(Row(10.0, 11.0, 21.0), Row(20.0, 22.0, 42.0)).u)
   }
 
   test(s"Simple add - 1 dim $dtname") {
@@ -90,7 +90,7 @@ trait BasicMonoidTests[T] { self: CommonOperationsSuite[T] =>
       Seq(20.0)->Seq(22.0)).u).toDF("a", "b")
     val adf = ops.analyze(df)
     val df2 = ops.mapBlocks(adf, out).select("a", "b","out")
-    assert(df2.collect() === Seq(
+    compareRows(df2.collect(), Seq(
       Row(Seq(10.0), Seq(11.0), Seq(21.0)),
       Row(Seq(20.0), Seq(22.0), Seq(42.0))).u)
   }
@@ -109,7 +109,7 @@ trait BasicMonoidTests[T] { self: CommonOperationsSuite[T] =>
     val p1 = placeholder(dtype, Shape.empty) named "in"
     val out = op_id(p1) named "out"
     val df2 = ops.mapRows(df, out).select("in", "out")
-    assert(df2.collect() === Seq(Row(1.0, 1.0), Row(20.0, 20.0)).u)
+    compareRows(df2.collect(), Seq(Row(1.0, 1.0), Row(20.0, 20.0)).u)
   }
 
   test(s"Simple add - one row $dtname") {
@@ -120,7 +120,7 @@ trait BasicMonoidTests[T] { self: CommonOperationsSuite[T] =>
     val b = placeholder(dtype, Shape.empty) named "b"
     val out = a + b named "out"
     val df2 = ops.mapRows(df, out).select("a", "b","out")
-    assert(df2.collect() === Seq(
+    compareRows(df2.collect(), Seq(
       Row(10.0, 11.0, 21.0),
       Row(20.0, 22.0, 42.0)).u)
   }
@@ -135,7 +135,7 @@ trait BasicMonoidTests[T] { self: CommonOperationsSuite[T] =>
       Seq(20.0)->Seq(22.0)).u).toDF("a", "b")
     val adf = ops.analyze(df)
     val df2 = ops.mapRows(adf, out).select("a", "b","out")
-    assert(df2.collect() === Seq(
+    compareRows(df2.collect(), Seq(
       Row(Seq(10.0), Seq(11.0), Seq(21.0)),
       Row(Seq(20.0), Seq(22.0), Seq(42.0))).u)
   }
@@ -150,7 +150,7 @@ trait BasicMonoidTests[T] { self: CommonOperationsSuite[T] =>
       Seq(20.0)->Seq(22.0)).u).toDF("a", "b")
     val adf = ops.analyze(df)
     val df2 = ops.mapRows(adf, out).select("a", "b","out")
-    assert(df2.collect() === Seq(
+    compareRows(df2.collect(), Seq(
       Row(Seq(10.0, 10.0), Seq(11.0, 11.0), Seq(21.0, 21.0)),
       Row(Seq(20.0), Seq(22.0), Seq(42.0))).u)
   }
@@ -182,7 +182,7 @@ trait BasicMonoidTests[T] { self: CommonOperationsSuite[T] =>
     val x1 = placeholder(dtype, Shape(Shape.Unknown)) named "x_input"
     val x = reduce_sum(x1, Seq(0)) named "x"
     val df2 = ops.aggregate(df.groupBy("key"), x).select("key", "x")
-    assert(df2.collect() === Seq(Row("a", 21.0), Row("b", 20.0)).u)
+    compareRows(df2.collect(), Seq(Row("a", 21.0), Row("b", 20.0)).u)
   }
 }
 

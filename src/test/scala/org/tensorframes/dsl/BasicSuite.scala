@@ -1,6 +1,6 @@
 package org.tensorframes.dsl
 
-import org.apache.spark.Logging
+import org.tensorframes.Logging
 import org.scalatest.FunSuite
 import org.tensorframes.{dsl => tf}
 import org.tensorframes.dsl.Implicits._

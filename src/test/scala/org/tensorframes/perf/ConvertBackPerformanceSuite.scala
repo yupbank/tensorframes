@@ -5,7 +5,7 @@ import org.scalatest.FunSuite
 import org.tensorframes.{ColumnInformation, Shape, TensorFramesTestSparkContext}
 import org.tensorframes.impl.{DataOps, SupportedOperations}
 
-import org.apache.spark.Logging
+import org.tensorframes.Logging
 import org.apache.spark.sql.Row
 import org.apache.spark.sql.types._
 

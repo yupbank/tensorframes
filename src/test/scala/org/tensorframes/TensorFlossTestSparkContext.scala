@@ -2,12 +2,12 @@ package org.tensorframes
 
 import scala.reflect.runtime.universe._
 
-import org.scalatest.{BeforeAndAfterAll, Suite}
+import org.scalatest.{FunSuite, BeforeAndAfterAll}
 
 import org.apache.spark.{SparkConf, SparkContext}
-import org.apache.spark.sql.{DataFrame, SQLContext}
+import org.apache.spark.sql.{Row, DataFrame, SQLContext}
 
-trait TensorFramesTestSparkContext extends BeforeAndAfterAll { self: Suite =>
+trait TensorFramesTestSparkContext extends BeforeAndAfterAll { self: FunSuite =>
   @transient var sc: SparkContext = _
   @transient var sqlContext: SQLContext = _
 
@@ -32,6 +32,12 @@ trait TensorFramesTestSparkContext extends BeforeAndAfterAll { self: Suite =>
 
   def make1[T : TypeTag](xs: Seq[T], col: String): DataFrame = {
     sqlContext.createDataFrame(xs.map(Tuple1.apply)).toDF(col)
+  }
+
+  def compareRows(r1: Array[Row], r2: Seq[Row]): Unit = {
+    val a = r1.sortBy(_.toString())
+    val b = r2.sortBy(_.toString())
+    assert(a === b)
   }
 
 

@@ -3,7 +3,7 @@ package org.tensorframes.dsl
 import java.io.{BufferedReader, InputStreamReader, File}
 import java.nio.file.Files
 import java.nio.charset.StandardCharsets
-import org.apache.spark.Logging
+import org.tensorframes.Logging
 import org.scalatest.ShouldMatchers
 
 import scala.collection.JavaConverters._

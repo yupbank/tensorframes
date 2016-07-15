@@ -21,17 +21,18 @@ cache:
 
 env:
   matrix:
-    - SCALA_BINARY_VERSION="2.10" SPARK_VERSION=1.6.0 SPARK_BUILD="spark-1.6.0-bin-hadoop2.6" SPARK_BUILD_URL="http://d3kbcqa49mib13.cloudfront.net/spark-1.6.0-bin-hadoop2.6.tgz"
+    - SCALA_BINARY_VERSION="2.10.6" SPARK_VERSION=1.6.0 SPARK_BUILD="spark-1.6.0-bin-hadoop2.6" SPARK_BUILD_URL="http://d3kbcqa49mib13.cloudfront.net/spark-1.6.0-bin-hadoop2.6.tgz"
+    - SCALA_BINARY_VERSION="2.11.8" SPARK_VERSION=2.0.0RC4 SPARK_BUILD="spark-2.0.0-bin-hadoop2.7" SPARK_BUILD_URL="http://people.apache.org/~pwendell/spark-releases/spark-2.0.0-rc4-bin/spark-2.0.0-bin-hadoop2.7.tgz"
 
 before_install:
  - ./bin/download_travis_dependencies.sh
 
 install:
  - pip install --user -r ./python/requirements.txt
- - pip install --user --upgrade https://storage.googleapis.com/tensorflow/linux/cpu/tensorflow-0.7.1-cp27-none-linux_x86_64.whl
+ - pip install --user --upgrade https://storage.googleapis.com/tensorflow/linux/cpu/tensorflow-0.9.0-cp27-none-linux_x86_64.whl
 
 script:
- - sbt -Dspark.version=$SPARK_VERSION "set scalaVersion := \"$TRAVIS_SCALA_VERSION\"" "set test in assembly := {}" assembly
- - sbt -Dspark.version=$SPARK_VERSION "set scalaVersion := \"$TRAVIS_SCALA_VERSION\"" test
+ - sbt -Dspark.version=$SPARK_VERSION "set scalaVersion := \"$SCALA_BINARY_VERSION\"" "set test in assembly := {}" assembly
+ - sbt -Dspark.version=$SPARK_VERSION "set scalaVersion := \"$SCALA_BINARY_VERSION\"" test
  - SPARK_HOME=$HOME/.cache/spark-versions/$SPARK_BUILD ./python/run-tests.sh
 
