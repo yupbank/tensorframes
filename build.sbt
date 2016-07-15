@@ -85,6 +85,8 @@ javaOptions in run += "-Xmx6G"
 assemblyExcludedJars in assembly := {
   val cp = (fullClasspath in assembly).value
   val excludes = Set(
+    "tensorflow-sources.jar",
+    "tensorflow-javadoc.jar",
     "tensorflow-0.8.0-1.2-macosx-x86_64.jar" // This is not the main target, excluding
   )
   cp filter { s => excludes.contains(s.data.getName) }
