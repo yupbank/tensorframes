@@ -1,9 +1,8 @@
 package org.tensorframes.dsl
 
-import org.apache.spark.Logging
 import org.apache.spark.sql.types.NumericType
 import org.tensorflow.framework.{NodeDef, AttrValue}
-import org.tensorframes.{dsl => tf, ShapeDescription, Shape}
+import org.tensorframes.{dsl => tf, Logging, ShapeDescription, Shape}
 import scala.collection.JavaConverters._
 
 /**

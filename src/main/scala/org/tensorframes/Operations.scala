@@ -1,6 +1,6 @@
 package org.tensorframes
 
-import org.apache.spark.sql.{GroupedData, Row, DataFrame}
+import org.apache.spark.sql.{RelationalGroupedDataset, Row, DataFrame}
 import org.tensorflow.framework.GraphDef
 
 
@@ -123,7 +123,7 @@ trait OperationsInterface {
    * @param shapeHints some hints for the shape.
    * @return
    */
-  def aggregate(data: GroupedData, graph: GraphDef, shapeHints: ShapeDescription): DataFrame
+  def aggregate(data: RelationalGroupedDataset, graph: GraphDef, shapeHints: ShapeDescription): DataFrame
 
   /**
    * A string that contains detailed information about a dataframe, in particular relevant information

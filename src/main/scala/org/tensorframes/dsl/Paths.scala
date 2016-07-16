@@ -2,7 +2,7 @@ package org.tensorframes.dsl
 
 import scala.collection.mutable
 
-import org.apache.spark.Logging
+import org.tensorframes.Logging
 
 /**
  * Operations that try to give a convenient way to express paths in expressions.

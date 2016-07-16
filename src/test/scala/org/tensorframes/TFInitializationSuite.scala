@@ -1,6 +1,6 @@
 package org.tensorframes
 
-import org.apache.spark.Logging
+import org.tensorframes.Logging
 import org.scalatest.FunSuite
 import org.tensorframes.impl.TensorFlowOps
 

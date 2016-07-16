@@ -1,13 +1,12 @@
 package org.tensorframes.impl
 
 import org.apache.commons.lang3.SerializationUtils
-import org.apache.spark.Logging
 import org.apache.spark.broadcast.Broadcast
 import org.apache.spark.sql.catalyst.expressions.{MutableRow, GenericRowWithSchema}
 import org.apache.spark.sql.expressions.{MutableAggregationBuffer, UserDefinedAggregateFunction}
 import org.apache.spark.sql.types._
 import org.apache.spark.sql.functions.col
-import org.apache.spark.sql.{GroupedData, DataFrame, Row}
+import org.apache.spark.sql.{RelationalGroupedDataset, DataFrame, Row}
 import org.bytedeco.javacpp.{tensorflow => jtf}
 import org.tensorflow.framework.GraphDef
 import org.tensorframes._
@@ -532,7 +531,7 @@ class DebugRowOps
   }
 
   override def aggregate(
-      data: GroupedData,
+      data: RelationalGroupedDataset,
       graph: GraphDef,
       shapeHints: ShapeDescription): DataFrame = {
     // The constraints on the graph are the same as blocked data.
@@ -691,7 +690,7 @@ object DebugRowOpsImpl extends Logging {
    * @param groupedData the grouped data
    * @return the dataframe, if it succeeded.
    */
-  def backingDF(groupedData: GroupedData): Try[DataFrame] = {
+  def backingDF(groupedData: RelationalGroupedDataset): Try[DataFrame] = {
       Try {
         groupedData.getClass.getDeclaredMethods.foreach { m =>
           logDebug(s"method: ${m.getName}")

@@ -1,6 +1,6 @@
 package org.tensorframes.dsl
 
-import org.apache.spark.sql.{GroupedData, Row, DataFrame}
+import org.apache.spark.sql.{RelationalGroupedDataset, Row, DataFrame}
 import org.tensorflow.framework.GraphDef
 import org.tensorframes.{ExperimentalOperations, ShapeDescription, OperationsInterface}
 import org.tensorframes.impl.DebugRowOps
@@ -40,7 +40,7 @@ object Ops extends OperationsInterface with DslOperations with ExperimentalOpera
   }
 
   override def aggregate(
-      data: GroupedData,
+      data: RelationalGroupedDataset,
       graph: GraphDef,
       shapeHints: ShapeDescription): DataFrame = {
     ops.aggregate(data, graph, shapeHints)

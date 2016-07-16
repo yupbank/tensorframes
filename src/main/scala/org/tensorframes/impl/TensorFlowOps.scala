@@ -1,11 +1,10 @@
 package org.tensorframes.impl
 
-import org.apache.spark.Logging
 import org.apache.spark.sql.types.NumericType
 import org.bytedeco.javacpp.{BytePointer, tensorflow => jtf}
 import org.tensorflow.framework.GraphDef
 import org.tensorframes.test.ProtoConversions
-import org.tensorframes.{Shape, ShapeDescription}
+import org.tensorframes.{Logging, Shape, ShapeDescription}
 
 import scala.collection.JavaConverters._
 
