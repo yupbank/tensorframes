@@ -25,9 +25,11 @@ if [ -z "$SPARK_HOME" ]; then
 fi
 
 if [ -z "$SCALA_BINARY_VERSION" ]; then
-    echo 'You need to set $SCALA_BINARY_VERSION (2.10, 2.11, ...) to run these tests.' >&2
+    echo 'You need to set $SCALA_BINARY_VERSION (2.10.6, 2.11.8, ...) to run these tests.' >&2
     exit 1
 fi
+
+SCALA_SHORT_BINARY_VERSION=${SCALA_BINARY_VERSION:0:4}
 
 
 LIBS=""
@@ -39,9 +41,7 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 PROJECT_HOME="$DIR/../"
 
-
-# Tests run with scala-2.10 because the binaries are distributed in scala 2.10 for now.
-JAR_PATH="$PROJECT_HOME/target/scala-$SCALA_BINARY_VERSION/tensorframes-assembly-0.2.3.jar"
+JAR_PATH="$PROJECT_HOME/target/scala-$SCALA_SHORT_BINARY_VERSION/tensorframes-assembly-0.2.4.jar"
 
 export PYSPARK_SUBMIT_ARGS="--jars $JAR_PATH pyspark-shell"
 

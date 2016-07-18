@@ -5,12 +5,11 @@ import scala.reflect.ClassTag
 
 import org.bytedeco.javacpp.{tensorflow => jtf}
 
-import org.apache.spark.Logging
 import org.apache.spark.sql.Row
 import org.apache.spark.sql.catalyst.expressions.{GenericRow, GenericRowWithSchema}
 import org.apache.spark.sql.types.{NumericType, StructType}
 
-import org.tensorframes.{InvalidDimensionException, ColumnInformation, Shape}
+import org.tensorframes.{ColumnInformation, Shape, Logging}
 import org.tensorframes.Shape.DimType
 
 /**

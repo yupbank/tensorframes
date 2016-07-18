@@ -4,14 +4,16 @@
 //import sbtprotobuf.{ProtobufPlugin=>PB}
 import Dependencies._
 
+resolvers += "ASF repository" at "http://repository.apache.org/snapshots"
+
 name := "tensorframes"
 
-scalaVersion := "2.10.6"
+scalaVersion := "2.11.8"
 
 //crossScalaVersions := Seq("2.11.7", "2.10.6")
 
 // Don't forget to set the version
-version := "0.2.3"
+version := "0.2.4"
 
 classpathTypes += "maven-plugin"
 
@@ -61,6 +63,13 @@ libraryDependencies += "org.apache.spark" %% "spark-sql" % targetSparkVersion % 
 libraryDependencies += "org.scalatest" %% "scalatest" % "2.1.3" % "test"
 
 libraryDependencies += "org.apache.commons" % "commons-lang3" % "3.4"
+
+// These versions are ancient, but they cross-compile around scala 2.10 and 2.11.
+// Update them when dropping support for scala 2.10
+
+libraryDependencies += "com.typesafe.scala-logging" %% "scala-logging-api" % "2.1.2"
+
+libraryDependencies += "com.typesafe.scala-logging" %% "scala-logging-slf4j" % "2.1.2"
 
 // Compilation of proto files
 

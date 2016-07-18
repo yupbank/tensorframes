@@ -2,10 +2,9 @@ package org.tensorframes.test
 
 import java.nio.file.{Files, Paths}
 
-import org.apache.spark.Logging
 import org.apache.spark.sql.types.{DoubleType, NumericType}
 import org.tensorflow.framework._
-import org.tensorframes.Shape
+import org.tensorframes.{Logging, Shape}
 import org.tensorframes.impl.{DenseTensor, SupportedOperations}
 
 import scala.collection.JavaConverters._
