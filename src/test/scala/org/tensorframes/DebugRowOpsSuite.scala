@@ -1,6 +1,5 @@
 package org.tensorframes
 
-import org.tensorframes.Logging
 import org.apache.spark.sql.Row
 import org.apache.spark.sql.types.{DoubleType, StructType}
 import org.scalatest.FunSuite

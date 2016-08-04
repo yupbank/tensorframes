@@ -1,6 +1,5 @@
 package org.tensorframes
 
-import org.tensorframes.Logging
 import org.apache.spark.sql.Row
 import org.scalatest.FunSuite
 import org.tensorframes.impl.{SupportedOperations, ScalarTypeOperation, DebugRowOps}
