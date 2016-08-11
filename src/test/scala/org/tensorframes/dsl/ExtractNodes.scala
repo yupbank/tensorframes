@@ -4,11 +4,11 @@ import java.io.{BufferedReader, InputStreamReader, File}
 import java.nio.file.Files
 import java.nio.charset.StandardCharsets
 import org.tensorframes.Logging
-import org.scalatest.ShouldMatchers
+import org.scalatest.Matchers
 
 import scala.collection.JavaConverters._
 
-object ExtractNodes extends ShouldMatchers with Logging {
+object ExtractNodes extends Matchers with Logging {
 
   def executeCommand(py: String): Map[String, String] = {
     val content =

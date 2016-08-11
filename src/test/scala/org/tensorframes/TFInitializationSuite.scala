@@ -1,6 +1,5 @@
 package org.tensorframes
 
-import org.tensorframes.Logging
 import org.scalatest.FunSuite
 import org.tensorframes.impl.TensorFlowOps
 
