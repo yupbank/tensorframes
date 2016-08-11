@@ -1,3 +1,5 @@
+![build](https://travis-ci.org/databricks/tensorframes.svg)
+
 # TensorFrames
 
 Experimental [TensorFlow](https://www.tensorflow.org/) binding for Scala and 
