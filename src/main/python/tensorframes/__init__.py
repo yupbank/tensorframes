@@ -30,7 +30,8 @@ Each method contains extensive documentation about their usage. More documentati
 on the project wiki.
 
 """
+from __future__ import absolute_import
 
 __version__ = "2.0.0"
 
-from core import *
+from .core import *
