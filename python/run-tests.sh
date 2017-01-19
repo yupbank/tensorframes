@@ -62,8 +62,10 @@ echo "LIBS=$LIBS"
 
 # The current directory of the script.
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+PROJECT_HOME="$DIR/../"
 
 echo "DIR=$DIR"
+echo "PROJECT_HOME=$PROJECT_HOME"
 
 echo "List of assembly jars found, the last one will be used:"
 assembly_path="$DIR/../target/scala-$SCALA_SHORT_VERSION"
