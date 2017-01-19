@@ -10,6 +10,11 @@ import scala.collection.JavaConverters._
 
 object ExtractNodes extends Matchers with Logging {
 
+  lazy val pythonBin = sys.env.get("python.version").getOrElse {
+    logger.info("Using the default python binary")
+    "python"
+  }
+
   def executeCommand(py: String): Map[String, String] = {
     val content =
       s"""
@@ -23,7 +28,7 @@ object ExtractNodes extends Matchers with Logging {
     val f = File.createTempFile("pythonTest", ".py")
     logTrace(s"Created temp file ${f.getAbsolutePath}")
     Files.write(f.toPath, content.getBytes(StandardCharsets.UTF_8))
-    val p = new ProcessBuilder("python", f.getAbsolutePath).start()
+    val p = new ProcessBuilder(pythonBin, f.getAbsolutePath).start()
     val s = p.getInputStream
     val isr = new InputStreamReader(s)
     val br = new BufferedReader(isr)
