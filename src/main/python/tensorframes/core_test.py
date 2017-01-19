@@ -1,3 +1,6 @@
+
+from __future__ import print_function
+
 from pyspark import SparkContext
 from pyspark.sql import DataFrame, SQLContext
 from pyspark.sql import Row
@@ -10,7 +13,7 @@ class TestCore(object):
 
     @classmethod
     def setup_class(cls):
-        print "setup ", cls
+        print("setup ", cls)
         cls.sc = SparkContext('local[1]', cls.__name__)
 
     @classmethod
@@ -22,11 +25,11 @@ class TestCore(object):
         self.sql = SQLContext(TestCore.sc)
         self.api = _java_api()
         self.api.initialize_logging()
-        print "setup"
+        print("setup")
 
 
     def teardown(self):
-        print "teardown"
+        print("teardown")
 
     def test_schema(self):
         data = [Row(x=float(x)) for x in range(100)]
