@@ -12,7 +12,7 @@ import xml.transform.{RuleTransformer, RewriteRule}
 
 object Dependencies {
   // The spark version
-  val targetSparkVersion = "2.0.0-SNAPSHOT"
+  val targetSparkVersion = "2.0.0"
 
   val targetJCPPVersion = "1.2"
 

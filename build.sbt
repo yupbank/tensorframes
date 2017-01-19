@@ -1,7 +1,3 @@
-// Your sbt build file. Guides on how to write one can be found at
-// http://www.scala-sbt.org/0.13/docs/index.html
-
-//import sbtprotobuf.{ProtobufPlugin=>PB}
 import Dependencies._
 
 resolvers += "ASF repository" at "http://repository.apache.org/snapshots"
@@ -31,14 +27,14 @@ spIncludeMaven := false
 
 licenses := Seq("Apache-2.0" -> url("http://opensource.org/licenses/Apache-2.0"))
 
-spShortDescription := "Tensorflow wrapper for DataFrames on Apache Spark"
+spShortDescription := "TensorFlow wrapper for DataFrames on Apache Spark"
 
 spDescription := {
-  """TensorFrames (TensorFlow on Spark Dataframes) lets you manipulate Spark's DataFrames with
+  """TensorFrames (TensorFlow on Spark DataFrames) lets you manipulate Spark's DataFrames with
     | TensorFlow programs.
     |
     |This package provides a small runtime to express and run TensorFlow computation graphs.
-    |Tensorflow programs can be interpreted from:
+    |TensorFlow programs can be interpreted from:
     | - the official Python API
     | - the semi-official protocol buffer graph description format
     | - the Scala DSL embedded with TensorFrames (experimental)
@@ -60,7 +56,8 @@ libraryDependencies += "org.apache.spark" %% "spark-core" % targetSparkVersion %
 
 libraryDependencies += "org.apache.spark" %% "spark-sql" % targetSparkVersion % "provided"
 
-libraryDependencies += "org.scalatest" %% "scalatest" % "2.1.3" % "test"
+libraryDependencies += "org.scalactic" %% "scalactic" % "3.0.0"
+libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.0" % "test"
 
 libraryDependencies += "org.apache.commons" % "commons-lang3" % "3.4"
 
@@ -79,7 +76,7 @@ libraryDependencies += "com.typesafe.scala-logging" %% "scala-logging-slf4j" % "
 
 // Could not get protobuf to work -> manually adding it
 
-libraryDependencies += "com.google.protobuf" % "protobuf-java" % "3.0.0-beta-1"
+libraryDependencies += "com.google.protobuf" % "protobuf-java" % "3.0.0"
 
 libraryDependencies += "org.bytedeco" % "javacpp" % targetJCPPVersion
 
