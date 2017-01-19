@@ -115,7 +115,7 @@ addCommandAlias("doit", ";clean;compile;assembly")
 // Spark packages messes this part
 test in assembly := {}
 
-makePomConfiguration := makePomConfiguration.value.copy(process = dependenciesFilter)
+spShade := true
 
-Seq(tfPackageTask)
+assembly in spPackage := assembly.value
 
