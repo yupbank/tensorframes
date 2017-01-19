@@ -29,6 +29,7 @@ env:
 
 before_install:
  - python --version
+ - python3 --version
  - ./bin/download_travis_dependencies.sh
 
 install:
