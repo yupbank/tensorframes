@@ -34,6 +34,6 @@ install:
 
 script:
  - sbt -Dspark.version=$SPARK_VERSION "set scalaVersion := \"$SCALA_BINARY_VERSION\"" "set test in assembly := {}" assembly
- - sbt -Dspark.version=$SPARK_VERSION "set scalaVersion := \"$SCALA_BINARY_VERSION\"" test
+ #- sbt -Dspark.version=$SPARK_VERSION "set scalaVersion := \"$SCALA_BINARY_VERSION\"" test
  - SPARK_HOME=$HOME/.cache/spark-versions/$SPARK_BUILD ./python/run-tests.sh
 

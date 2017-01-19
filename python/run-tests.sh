@@ -31,6 +31,18 @@ if [ -z "$SPARK_HOME" ]; then
     exit 1
 fi
 
+# The scala version must be set
+if [ -z "$SCALA_BINARY_VERSION" ]; then
+    echo 'You need to set $SCALA_BINARY_VERSION (2.10.6, 2.11.8, ...) to run these tests.' >&2
+    exit 1
+fi
+
+a=( ${SCALA_BINARY_VERSION//./ } )
+SCALA_SHORT_VERSION="${a[0]}.${a[1]}"
+
+echo "scala version=$SCALA_BINARY_VERSION short=$SCALA_SHORT_VERSION"
+
+
 # Honor the choice of python driver
 if [ -z "$PYSPARK_PYTHON" ]; then
     PYSPARK_PYTHON=`which python`
@@ -39,21 +51,22 @@ fi
 export PYSPARK_DRIVER_PYTHON=$PYSPARK_PYTHON
 python_major=$($PYSPARK_PYTHON -c 'import sys; print(".".join(map(str, sys.version_info[:1])))')
 
-echo "pyver="
-echo $pyver
+echo "python_major=${python_major}"
 
 LIBS=""
 for lib in "$SPARK_HOME/python/lib"/*zip ; do
   LIBS=$LIBS:$lib
 done
 
+echo "LIBS=$LIBS"
+
 # The current directory of the script.
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-a=( ${SCALA_VERSION//./ } )
-scala_version_major_minor="${a[0]}.${a[1]}"
+echo "DIR=$DIR"
+
 echo "List of assembly jars found, the last one will be used:"
-assembly_path="$DIR/../target/scala-$scala_version_major_minor"
+assembly_path="$DIR/../target/scala-$SCALA_SHORT_VERSION"
 echo `ls $assembly_path/tensorframes-assembly*.jar`
 JAR_PATH=""
 for assembly in $assembly_path/tensorframes-assembly*.jar ; do
@@ -89,8 +102,6 @@ test ${PIPESTATUS[0]} -eq 0 || exit 1;
 
 cd "$DIR"
 
-#$PYSPARK_PYTHON -u ./tensorframes/graphframe.py "$@"
-nosetests -v --all-modules -w "$PROJECT_HOME/src/main/python"
 
 
 #
@@ -100,10 +111,6 @@ nosetests -v --all-modules -w "$PROJECT_HOME/src/main/python"
 #    exit 1
 #fi
 #
-#if [ -z "$SCALA_BINARY_VERSION" ]; then
-#    echo 'You need to set $SCALA_BINARY_VERSION (2.10.6, 2.11.8, ...) to run these tests.' >&2
-#    exit 1
-#fi
 #
 #SCALA_SHORT_BINARY_VERSION=${SCALA_BINARY_VERSION:0:4}
 #
