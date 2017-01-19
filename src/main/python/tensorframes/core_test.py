@@ -18,7 +18,7 @@ class TestCore(object):
 
     @classmethod
     def teardown_class(cls):
-        print "teardown ", cls
+        print("teardown ", cls)
         cls.sc.stop()
 
     def setUp(self):
