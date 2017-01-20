@@ -18,41 +18,84 @@
 #
 
 
+
+
+#
+
+# Return on any failure
+set -e
+
 # assumes run from python/ directory
 if [ -z "$SPARK_HOME" ]; then
     echo 'You need to set $SPARK_HOME to run these tests.' >&2
     exit 1
 fi
 
+# The scala version must be set
 if [ -z "$SCALA_BINARY_VERSION" ]; then
     echo 'You need to set $SCALA_BINARY_VERSION (2.10.6, 2.11.8, ...) to run these tests.' >&2
     exit 1
 fi
 
-SCALA_SHORT_BINARY_VERSION=${SCALA_BINARY_VERSION:0:4}
+a=( ${SCALA_BINARY_VERSION//./ } )
+SCALA_SHORT_VERSION="${a[0]}.${a[1]}"
 
+echo "scala version=$SCALA_BINARY_VERSION short=$SCALA_SHORT_VERSION"
+
+
+# Honor the choice of python driver
+if [ -z "$PYSPARK_PYTHON" ]; then
+    PYSPARK_PYTHON=`which python`
+fi
+# Override the python driver version as well to make sure we are in sync in the tests.
+export PYSPARK_DRIVER_PYTHON=$PYSPARK_PYTHON
+python_major=$($PYSPARK_PYTHON -c 'import sys; print(".".join(map(str, sys.version_info[:1])))')
+
+echo "python_major=${python_major}"
 
 LIBS=""
 for lib in "$SPARK_HOME/python/lib"/*zip ; do
   LIBS=$LIBS:$lib
 done
 
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+echo "LIBS=$LIBS"
 
+# The current directory of the script.
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 PROJECT_HOME="$DIR/../"
 
-JAR_PATH="$PROJECT_HOME/target/scala-$SCALA_SHORT_BINARY_VERSION/tensorframes-assembly-0.2.4.jar"
+echo "DIR=$DIR"
+echo "PROJECT_HOME=$PROJECT_HOME"
 
-export PYSPARK_SUBMIT_ARGS="--jars $JAR_PATH pyspark-shell"
+echo "List of assembly jars found, the last one will be used:"
+assembly_path="$DIR/../target/scala-$SCALA_SHORT_VERSION"
+echo `ls $assembly_path/tensorframes-assembly*.jar`
+JAR_PATH=""
+for assembly in $assembly_path/tensorframes-assembly*.jar ; do
+  JAR_PATH=$assembly
+done
+
+export PYSPARK_SUBMIT_ARGS="--driver-memory 2g --executor-memory 2g --jars $JAR_PATH pyspark-shell "
 
 export PYTHONPATH=$PYTHONPATH:$SPARK_HOME/python:$LIBS:.
 
-export PYTHONPATH=$PYTHONPATH:"$PROJECT_HOME/src/main/python/"
+export PYTHONPATH=$PYTHONPATH:tensorframes
+
 
 # Run test suites
 
-nosetests -v --all-modules -w "$PROJECT_HOME/src/main/python"
+if [[ "$python_major" == "2" ]]; then
 
+  # Horrible hack for spark 1.x: we manually remove some log lines to stay below the 4MB log limit on Travis.
+  $PYSPARK_DRIVER_PYTHON `which nosetests` -v --all-modules -w "$PROJECT_HOME/src/main/python" 2>&1 | grep -vE "INFO (ParquetOutputFormat|SparkContext|ContextCleaner|ShuffleBlockFetcherIterator|MapOutputTrackerMaster|TaskSetManager|Executor|MemoryStore|CacheManager|BlockManager|DAGScheduler|PythonRDD|TaskSchedulerImpl|ZippedPartitionsRDD2)";
 
-# Run doc tests
-# No run of doc tests for now
+else
+
+  $PYSPARK_DRIVER_PYTHON -m "nose" -v --all-modules -w "$PROJECT_HOME/src/main/python" 2>&1 | grep -vE "INFO (ParquetOutputFormat|SparkContext|ContextCleaner|ShuffleBlockFetcherIterator|MapOutputTrackerMaster|TaskSetManager|Executor|MemoryStore|CacheManager|BlockManager|DAGScheduler|PythonRDD|TaskSchedulerImpl|ZippedPartitionsRDD2)";
+
+fi
+
+# Exit immediately if the tests fail.
+# Since we pipe to remove the output, we need to use some horrible BASH features:
+# http://stackoverflow.com/questions/1221833/bash-pipe-output-and-capture-exit-status
+test ${PIPESTATUS[0]} -eq 0 || exit 1;

@@ -1,3 +1,6 @@
+
+from __future__ import print_function
+
 from pyspark import SparkContext
 from pyspark.sql import DataFrame, SQLContext
 from pyspark.sql import Row
@@ -10,23 +13,23 @@ class TestCore(object):
 
     @classmethod
     def setup_class(cls):
-        print "setup ", cls
+        print("setup ", cls)
         cls.sc = SparkContext('local[1]', cls.__name__)
 
     @classmethod
     def teardown_class(cls):
-        print "teardown ", cls
+        print("teardown ", cls)
         cls.sc.stop()
 
     def setUp(self):
         self.sql = SQLContext(TestCore.sc)
         self.api = _java_api()
         self.api.initialize_logging()
-        print "setup"
+        print("setup")
 
 
     def teardown(self):
-        print "teardown"
+        print("teardown")
 
     def test_schema(self):
         data = [Row(x=float(x)) for x in range(100)]
@@ -105,16 +108,16 @@ if __name__ == "__main__":
     with tf.Graph().as_default() as g:
         x_input = tf.placeholder(tf.double, shape=[2, 3], name="x_input")
         x = tf.reduce_sum(x_input, [0], name='x')
-        print g.as_graph_def()
+        print(g.as_graph_def())
 
     with tf.Graph().as_default() as g:
         x = tf.constant([1, 1], name="x")
         y = tf.reduce_sum(x, [0], name='y')
-        print g.as_graph_def()
+        print(g.as_graph_def())
 
     with tf.Graph().as_default() as g:
         tf.constant(1, name="x1")
         tf.constant(1.0, name="x2")
         tf.constant([1.0], name="x3")
         tf.constant([1.0, 2.0], name="x4")
-        print g.as_graph_def()
+        print(g.as_graph_def())
