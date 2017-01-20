@@ -31,6 +31,9 @@ before_install:
 install:
  - $PIP_BIN install --user -r ./python/requirements.txt
  - $PIP_BIN install --user --upgrade https://storage.googleapis.com/tensorflow/linux/cpu/$TF_BUILD
+ # We also install a python 2 version of Tensorflow. It is used in the Scala tests to make sure that
+ # the protos produced by scala and python are binary identical.
+ - pip install --user --upgrade https://storage.googleapis.com/tensorflow/linux/cpu/tensorflow-0.10.0-cp27-none-linux_x86_64.whl
 
 script:
  - sbt -Dspark.version=$SPARK_VERSION "set scalaVersion := \"$SCALA_BINARY_VERSION\"" "set test in assembly := {}" assembly
