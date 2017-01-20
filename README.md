@@ -187,14 +187,14 @@ build/sbt tfPackage
 Assuming that SPARK_HOME is set and that you are in the root directory of the project:
 
 ```bash
-$SPARK_HOME/bin/spark-shell --jars $PWD/target/scala-2.10/tensorframes-assembly-0.2.3.jar
+$SPARK_HOME/bin/spark-shell --jars $PWD/target/scala-2.11/tensorframes-assembly-0.2.4.jar
 ```
 
 If you want to run the python version:
  
 ```bash
-PYTHONPATH=$PWD/target/scala-2.10/tensorframes-assembly-0.2.3.jar IPYTHON=1 \
-$SPARK_HOME/bin/pyspark --jars $PWD/target/scala-2.10/tensorframes-assembly-0.2.3.jar
+PYTHONPATH=$PWD/target/scala-2.11/tensorframes-assembly-0.2.4.jar \
+$SPARK_HOME/bin/pyspark --jars $PWD/target/scala-2.11/tensorframes-assembly-0.2.4.jar
 ```
 
 
