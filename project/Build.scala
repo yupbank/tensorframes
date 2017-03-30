@@ -11,7 +11,7 @@ object Shading extends Build {
 
 
   lazy val commonSettings = Seq(
-    version := "0.2.5-rc1",
+    version := "0.2.5-rc2",
     name := "tensorframes",
     scalaVersion := sys.props.getOrElse("scala.version", "2.11.8"),
     organization := "databricks",
@@ -74,7 +74,7 @@ object Shading extends Build {
     libraryDependencies ++= sparkDependencies.map(_ % "provided"),
     libraryDependencies ++= shadedDependencies,
     libraryDependencies ++= testDependencies,
-    libraryDependencies ++= linuxPlatformDependencies,
+    libraryDependencies ++= allPlatformDependencies,
     assemblyShadeRules in assembly := Seq(
       ShadeRule.rename("com.google.protobuf.**" -> "org.tensorframes.protobuf3shade.@1").inAll
     ),
