@@ -6,13 +6,14 @@ import org.apache.spark.sql.catalyst.expressions.GenericRowWithSchema
 import org.apache.spark.sql.expressions.{MutableAggregationBuffer, UserDefinedAggregateFunction}
 import org.apache.spark.sql.types._
 import org.apache.spark.sql.functions.col
-import org.apache.spark.sql.{RelationalGroupedDataset, DataFrame, Row}
-import org.bytedeco.javacpp.{tensorflow => jtf}
+import org.apache.spark.sql.{DataFrame, RelationalGroupedDataset, Row}
 import org.tensorflow.framework.GraphDef
+import org.tensorflow.{Session, Tensor}
 import org.tensorframes._
 import org.tensorframes.test.DslOperations
 
 import scala.collection.mutable
+import scala.collection.JavaConverters._
 import scala.util.{Failure, Success, Try}
 
 /**
@@ -77,7 +78,7 @@ private[impl] trait SchemaTransforms extends Logging {
       schema: StructType,
       graph: GraphDef,
       shapeHints: ShapeDescription): ReduceBlockSchema = {
-    val summary = TensorFlowOps.analyzeGraph(graph, shapeHints)
+    val summary = TensorFlowOps.analyzeGraphTF(graph, shapeHints)
       .map(x => x.name -> x).toMap
     val fieldsByName = schema.fields.map(f => f.name -> f).toMap
     val fieldNameList = fieldsByName.keySet.toSeq.sorted.mkString(", ")
@@ -169,7 +170,7 @@ private[impl] trait SchemaTransforms extends Logging {
       schema: StructType,
       graph: GraphDef,
       shapeHints: ShapeDescription): StructType = {
-    val summary = TensorFlowOps.analyzeGraph(graph, shapeHints)
+    val summary = TensorFlowOps.analyzeGraphTF(graph, shapeHints)
       .map(x => x.name -> x).toMap
     val fieldsByName = schema.fields.map(f => f.name -> f).toMap
     val fieldNameList = fieldsByName.keySet.toSeq.sorted.mkString(", ")
@@ -278,6 +279,7 @@ class DebugRowOps
   extends OperationsInterface
     with ExperimentalOperations with DslOperations with PythonInterface with Logging {
 
+
   import SchemaTransforms._
 
   override def toString: String = "DebugRowOps"
@@ -303,7 +305,7 @@ class DebugRowOps
       shapeHints: ShapeDescription,
       appendInput: Boolean): DataFrame = {
     val sc = dataframe.sqlContext.sparkContext
-    val summary = TensorFlowOps.analyzeGraph(graph, shapeHints)
+    val summary = TensorFlowOps.analyzeGraphTF(graph, shapeHints)
       .map(x => x.name -> x).toMap
     val inputs = summary.filter(_._2.isInput)
     val outputs = summary.filter(_._2.isOutput)
@@ -393,7 +395,7 @@ class DebugRowOps
       graph: GraphDef,
       shapeHints: ShapeDescription): DataFrame = {
     val sc = dataframe.sqlContext.sparkContext
-    val summary = TensorFlowOps.analyzeGraph(graph, shapeHints)
+    val summary = TensorFlowOps.analyzeGraphTF(graph, shapeHints)
       .map(x => x.name -> x).toMap
     val inputs = summary.filter(_._2.isInput)
     val outputs = summary.filter(_._2.isOutput)
@@ -458,6 +460,7 @@ class DebugRowOps
     val schema = dataframe.schema // Classic rookie mistake...
     logTrace(s"mapRows: input schema = $schema, requested cols: ${requestedTFInput.toSeq}" +
       s" complete output schema = $outputSchema")
+    // TODO: this is leaking the file.
     val gProto = sc.broadcast(TensorFlowOps.graphSerial(graph))
     val transformRdd = dataframe.rdd.mapPartitions { it =>
       DebugRowOpsImpl.performMapRows(
@@ -594,7 +597,7 @@ class DebugRowOps
 class TensorFlowUDAF(
     val rowSchema: StructType,
     val tfInputSchema: StructType,
-    val gProto: Broadcast[Array[Byte]],
+    val gProto: Broadcast[SerializedGraph],
     val bufferSize: Int) extends UserDefinedAggregateFunction with Logging {
 
   private val COUNT = 0
@@ -727,7 +730,7 @@ object DebugRowOpsImpl extends Logging {
 
   private[impl] def reducePair(
       schema: StructType,
-      gbc: Broadcast[Array[Byte]]): (Row, Row) => Row = {
+      gbc: Broadcast[SerializedGraph]): (Row, Row) => Row = {
     def f(row1: Row, row2: Row): Row = {
       performReducePairwise(Array(row1, row2), schema, gbc.value)
     }
@@ -737,7 +740,7 @@ object DebugRowOpsImpl extends Logging {
   def reducePairBlock(
       inputSchema: StructType,
       outputSchema: StructType,
-      gbc: Broadcast[Array[Byte]]): (Row, Row) => Row = {
+      gbc: Broadcast[SerializedGraph]): (Row, Row) => Row = {
     def f(row1: Row, row2: Row): Row = {
       performReduceBlock(Array(row1, row2), inputSchema, inputSchema.indices.toArray, outputSchema,
         gbc.value)
@@ -763,7 +766,7 @@ object DebugRowOpsImpl extends Logging {
       input: Array[Row],
       inputSchema: StructType,
       inputTFCols: Array[Int],
-      graphDef: Array[Byte],
+      graphDef: SerializedGraph,
       tfOutputSchema: StructType,
       appendInput: Boolean): Iterator[Row] = {
     logDebug(s"performMap: inputSchema=$inputSchema, tfschema=$tfOutputSchema," +
@@ -773,29 +776,27 @@ object DebugRowOpsImpl extends Logging {
     if (input.length == 0) {
       return Iterator.empty
     }
-    val stpv = DataOps.convert(input, inputSchema, inputTFCols)
-    logDebug(s"performMap: converting the graphDef")
-    val g = TensorFlowOps.readGraph(graphDef)
-    logDebug(s"performMap: entering session")
-    TensorFlowOps.withSession { session =>
-      logDebug(s"performMap: entered session session")
-      logDebug(s"performMap: extending the graph")
-      val s1 = session.Extend(g)
-      assert(s1.ok(), s1.error_message().getString)
+    // Force the content to be sent to disk. This happens in the workers, so it should be a safe operation.
+    graphDef.evictContent()
 
-      val outputs = new jtf.TensorVector()
-      val requested = TensorFlowOps.stringVector(tfOutputSchema.map(_.name))
-      val skipped = new jtf.StringVector()
-      logDebug(s"performMap: waiting for TF lock")
-      val s3 = tfLock.synchronized {
-        logDebug(s"performMap: TF lock acquired, running...")
-        session.Run(stpv, requested, skipped, outputs)
+    TensorFlowOps.withSession(graphDef) { session =>
+      val inputTensors = TFDataOps.convert(input, inputSchema, inputTFCols)
+      logDebug(s"performMap:inputTensors=$inputTensors")
+      val requested = tfOutputSchema.map(_.name)
+      var runner = session.runner()
+      for (req <- requested) {
+        runner = runner.fetch(req)
       }
-      logDebug(s"performMap: TF run finished")
-      assert(s3.ok(), s3.error_message().getString)
-      logDebug(s"performMap: converting back")
-      val res = DataOps.convertBack(outputs, tfOutputSchema, input, inputSchema, appendInput)
-      logDebug(s"performMap: done")
+      for ((inputName, inputTensor) <- inputTensors) {
+        runner = runner.feed(inputName, inputTensor)
+      }
+      val outs = runner.run().asScala
+      logDebug(s"performMap:outs=$outs")
+      // Close the inputs
+      inputTensors.map(_._2).foreach(_.close())
+      val res = TFDataOps.convertBack(outs, tfOutputSchema, input, inputSchema, appendInput)
+      // Close the outputs
+      outs.foreach(_.close())
       res
     }
   }
@@ -818,30 +819,37 @@ object DebugRowOpsImpl extends Logging {
       input: Array[Row],
       inputSchema: StructType,
       inputTFCols: Array[(NodePath, Int)],
-      graphDef: Array[Byte],
+      graphDef: SerializedGraph,
       tfOutputSchema: StructType): Array[Row] = {
     // Some partitions may be empty
     if (input.length == 0) {
       return Array.empty
     }
-    // We read the graph once, and within the same session we run each row after the other.
-    val g = TensorFlowOps.readGraph(graphDef)
-    TensorFlowOps.withSession { session =>
-      val s1 = session.Extend(g)
-      assert(s1.ok(), s1.error_message().getString)
-      val requested = TensorFlowOps.stringVector(tfOutputSchema.map(_.name))
+    // Force the content to be sent to disk. This happens in the workers, so it should be a safe operation.
+    graphDef.evictContent()
 
+    TensorFlowOps.withSession(graphDef) { session =>
       input.map { row =>
-        val stpv = DataOps.convert(row, inputSchema, inputTFCols)
-        val outputs = new jtf.TensorVector()
-        val skipped = new jtf.StringVector()
-        val s3 = tfLock.synchronized { session.Run(stpv, requested, skipped, outputs) }
-        assert(s3.ok(), s3.error_message().getString)
-        val it = DataOps.convertBack(outputs, tfOutputSchema, Array(row), inputSchema,
-          appendInput = true)
-        assert(it.hasNext)
-        val r = it.next()
-        assert(!it.hasNext)
+        val inputTensors = TFDataOps.convert(row, inputSchema, inputTFCols)
+        logDebug(s"performMap:inputTensors=$inputTensors")
+        val requested = tfOutputSchema.map(_.name)
+        var runner = session.runner()
+        for (req <- requested) {
+          runner = runner.fetch(req)
+        }
+        for ((inputName, inputTensor) <- inputTensors) {
+          runner = runner.feed(inputName, inputTensor)
+        }
+        val outs = runner.run().asScala
+        logDebug(s"performMap:outs=$outs")
+        // Close the inputs
+        inputTensors.map(_._2).foreach(_.close())
+        val res = TFDataOps.convertBack(outs, tfOutputSchema, Array(row), inputSchema, appendInput = true)
+        // Close the outputs
+        outs.foreach(_.close())
+        assert(res.hasNext)
+        val r = res.next()
+        assert(!res.hasNext)
         r
       }
     }
@@ -865,27 +873,46 @@ object DebugRowOpsImpl extends Logging {
       inputSchema: StructType,
       inputTFCols: Seq[Int],
       schema: StructType,
-      graphDef: Array[Byte]): Row = {
+      graphDef: SerializedGraph): Row = {
     logDebug(s"performReduceBlock: schema=$schema inputSchema=$inputSchema with ${input.length} rows")
     // The input schema and the actual data representation depend on the block operation.
 
-    val stpv = DataOps.convert(input, inputSchema, inputTFCols.toArray)
-    val g = TensorFlowOps.readGraph(graphDef)
-    TensorFlowOps.withSession { session =>
-      val s1 = session.Extend(g)
-      assert(s1.ok(), s1.error_message().getString)
-
-      val outputs = new jtf.TensorVector()
-      val requested = TensorFlowOps.stringVector(schema.map(_.name))
-      val skipped = new jtf.StringVector()
-      val s3 = tfLock.synchronized { session.Run(stpv, requested, skipped, outputs) }
-      assert(s3.ok(), s3.error_message().getString)
+    // Evict the graph to disk to free up some memory.
+    TensorFlowOps.withSession(graphDef) { session =>
+      val inputTensors = TFDataOps.convert(input, inputSchema, inputTFCols.toArray)
+      logDebug(s"performReduceBlocks: inputTensors=$inputTensors")
+      val requested = schema.map(_.name)
+      val outputs = performRunner(session, requested, inputTensors)
       val emptyRows = Array.fill(1)(emptyRow)
-      val it = DataOps.convertBack(outputs, schema, emptyRows, emptySchema, appendInput = false)
+      val it = TFDataOps.convertBack(outputs, schema, emptyRows, emptySchema, appendInput = false)
       assert(it.hasNext)
       val r = it.next()
+      assert(!it.hasNext, it.next())
+      outputs.foreach(_.close())
       r
     }
+  }
+
+  /**
+    * Performs a run, and deallocates the inputs, regardless of the success of the run.
+    */
+  private def performRunner(
+      session: Session,
+      requested: Seq[String],
+      inputs: Seq[(String, Tensor)]): Seq[Tensor] = {
+    var runner = session.runner()
+    for (req <- requested) {
+      runner = runner.fetch(req)
+    }
+    for ((inputName, inputTensor) <- inputs) {
+      runner = runner.feed(inputName, inputTensor)
+    }
+    try {
+      runner.run().asScala
+    } finally {
+      inputs.map(_._2).foreach(_.close())
+    }
+
   }
 
   private val emptySchema = StructType(Seq.empty)
@@ -899,7 +926,14 @@ object DebugRowOpsImpl extends Logging {
    * @param graphDef
    * @return
    */
-  def performReducePairwise(input: Array[Row], schema: StructType, graphDef: Array[Byte]): Row = {
+  def performReducePairwise(
+      input: Array[Row],
+      schema: StructType,
+      graphDef: SerializedGraph): Row = {
+
+    // Dump the graph onto disk if necessary
+    graphDef.evictContent()
+
     require(input.length > 0, "Cannot provide empty input")
     // If there is a single row, no need to perform operations.
     if (input.length == 1) {
@@ -913,26 +947,21 @@ object DebugRowOpsImpl extends Logging {
     // For efficiency, this tries to reuse the session.
     val tfInput: Array[Row] = input.tail
     var result: Row = input.head
-    val g = TensorFlowOps.readGraph(graphDef)
-    TensorFlowOps.withSession { session =>
-      val s1 = session.Extend(g)
-      assert(s1.ok(), s1.error_message().getString)
+
+    TensorFlowOps.withSession(graphDef) { session =>
       for (row <- tfInput) {
         val values = (result.toSeq ++ row.toSeq).toArray
         val r: Row = new GenericRowWithSchema(values, inputSchema)
         val thisInput = Array(r)
-        val stpv = DataOps.convert(thisInput, inputSchema, inputSchema.fields.indices.toArray)
-        val outputs = new jtf.TensorVector()
-        val requested = TensorFlowOps.stringVector(schema.map(_.name))
-        val skipped = new jtf.StringVector()
-        val s3 = tfLock.synchronized { session.Run(stpv, requested, skipped, outputs) }
-        assert(s3.ok(), s3.error_message().getString)
-        // Fill in with an empty row, because we are not passing the rest of of the data.
+        val inputs = TFDataOps.convert(thisInput, inputSchema, inputSchema.fields.indices.toArray)
+        val requested = schema.map(_.name)
+        val outputs = performRunner(session, requested, inputs)
         val emptyRows = Array.fill(1)(emptyRow)
-        val it = DataOps.convertBack(outputs, schema, emptyRows, emptySchema, appendInput = false)
+        val it = TFDataOps.convertBack(outputs, schema, emptyRows, emptySchema, appendInput = false)
         assert(it.hasNext)
         result = it.next()
         assert(!it.hasNext)
+        outputs.foreach(_.close())
       }
     }
     result
