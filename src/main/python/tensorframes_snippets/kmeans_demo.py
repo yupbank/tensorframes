@@ -4,8 +4,7 @@ Implementation of the K-Means algorithm, while distributing the computations on 
 Given a set of feature vectors, this algorithm runs the K-Means clustering algorithm starting
 from a given set of centroids.
 """
-
-%autoindent
+from __future__ import print_function
 
 import tensorflow as tf
 import tensorframes as tfs
@@ -79,7 +78,7 @@ def run_one_step(dataframe, start_centers):
         min_distances = tf.reduce_min(distances, 1, name='min_distances')
         counts = tf.tile(tf.constant([1]), num_points, name='count')
         df2 = tfs.map_blocks([indexes, counts, min_distances], dataframe)
-    # Perform the reduction: we regroup the point by their centroid indexes.
+    # Perform the reduction: we regroup the points by their centroid indexes.
     gb = df2.groupBy("indexes")
     with tf.Graph().as_default() as g:
         # Look at the documentation of tfs.aggregate for the naming conventions of the placeholders.
@@ -187,7 +186,7 @@ def kmeanstf(dataframe, init_centers, num_iters = 5, tf_aggregate = True):
     ds = []
     for i in range(num_iters):
         (c1, d1) = step_fun(dataframe, c)
-        print "Step =", i, ", overall distance = ", d1
+        print("Step =", i, ", overall distance = ", d1)
         c = c1
         if d == d1:
             break
@@ -196,9 +195,13 @@ def kmeanstf(dataframe, init_centers, num_iters = 5, tf_aggregate = True):
     return c, ds
 
 # Here is a an example of usage:
+try:
+    sc.setLogLevel('INFO')
+except:
+    pass
 
 from pyspark.ml.clustering import KMeans, KMeansModel
-from pyspark.mllib.linalg import VectorUDT, _convert_to_vector
+from pyspark.ml.linalg import VectorUDT, _convert_to_vector
 from pyspark.sql.types import Row, StructField, StructType
 import time
 
@@ -230,6 +233,7 @@ init_centers = np.random.randn(k, num_features)
 start_centers = init_centers
 dataframe = df0
 
+
 ta_0 = time.time()
 kmeans = KMeans().setK(k).setSeed(1).setFeaturesCol(FEATURES_COL).setInitMode(
         "random").setMaxIter(num_iters)
@@ -250,5 +254,4 @@ mllib_dt = ta_1 - ta_0
 tf_dt = tb_1 - tb_0
 tf2_dt = tc_1 - tc_0
 
-print "mllib:", mllib_dt, "tf+spark:",tf_dt, "tf:",tf2_dt
-
+print("mllib:", mllib_dt, "tf+spark:",tf_dt, "tf:",tf2_dt)

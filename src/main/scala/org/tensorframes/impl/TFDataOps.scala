@@ -133,7 +133,8 @@ object TFDataOps extends Logging {
       appendInput: Boolean): Iterator[Row] = {
     // The structures should already have been validated.
     // Output has all the TF columns first, and then the other columns
-    logDebug(s"convertBack: ${input.length} input rows, tf_struct=$tf_struct")
+    logDebug(s"convertBack: ${input.length} input rows, tv=$tv tf_struct=$tf_struct input_struct=$input_struct " +
+      s"append=$appendInput")
 
     val tfSizesAndIters = for ((field, t) <- tf_struct.fields.zip(tv).toSeq) yield {
       val info = ColumnInformation(field).stf.getOrElse {
@@ -164,9 +165,6 @@ object TFDataOps extends Logging {
       StructType(tf_struct.fields)
     }
     val res: Iterator[Row] = DataOps.convertBackFast0(input, tfIters, tfNumRows, input_struct, outputSchema)
-
-//    logTrace(s"outputSchema=$outputSchema")
-//    logTrace(s"res: $res")
     res
   }
 
@@ -190,16 +188,11 @@ object TFDataOps extends Logging {
       cellShape: Shape,
       expectedNumRows: Option[Int],
       fastPath: Boolean = true): (Int, Iterable[Any]) = {
-    logTrace(s"getColumn: shape: " +
-      s"cellShape:$cellShape numRows:$expectedNumRows")
     val allDataBuffer: mutable.WrappedArray[_] =
       SupportedOperations.opsFor(scalaType).convertTensor(t)
     val numData = allDataBuffer.size
     // Infer if necessary the reshaping size.
     val (inferredNumRows, inferredShape) = DataOps.inferPhysicalShape(numData, cellShape, expectedNumRows)
-//    logTrace(s"getColumn: databuffer = $allDataBuffer")
-//    logTrace(s"getColumn: infered cell shape: $inferredShape, numData: $numData," +
-//      s" inferredNumRows: $inferredNumRows")
     val reshapeShape = inferredShape.prepend(inferredNumRows)
     val res = if (fastPath) {
       DataOps.getColumnFast0(reshapeShape, scalaType, allDataBuffer)
@@ -207,7 +200,6 @@ object TFDataOps extends Logging {
       DataOps.reshapeIter(allDataBuffer.asInstanceOf[mutable.WrappedArray[Any]],
         inferredShape.dims.toList)
     }
-//    logTrace(s"getColumn: reshaped = $res")
     inferredNumRows -> res
   }
 
