@@ -13,6 +13,7 @@ __all__ = ['reduce_rows', 'map_rows', 'reduce_blocks', 'map_blocks',
 _sc = None
 _sql = None
 logger = logging.getLogger('tensorframes')
+first_tensor_by_op_name = lambda graph, name: graph.get_operation_by_name(name)[0]
 
 def _java_api():
     """
@@ -134,6 +135,32 @@ def _map(fetches, dframe, feed_dict, block, trim):
     jdf = builder.buildDF()
     return DataFrame(jdf, _sql)
 
+def _get_input(graph):
+    ph_names = []
+    for n in graph.as_graph_def().node:
+        # Just the input nodes:
+        if n.op == 'Placeholder':
+            ph_names.append(n.name)
+    return ph_names
+
+def _unique_graph(fetches):
+    graph = set()
+    for t in fetches:
+        graph.add(t.graph)
+    assert len(graph)==1, 'there can only be one graph'
+    return graph.pop()
+
+def _map_pd(fetches, pdframe, feed_dict=None, block=None, trim=None):
+    graph = _unique_graph(fetches)
+    if feed_dict is None:
+        feed_names = _get_input(graph)
+        feed_dict = dict(zip(feed_names, feed_names))
+
+    with tf.Session(graph=graph) as sess:
+        res = sess.run(fetches, feed_dict={first_tensor_by_op_name(graph, k): pdframe[v] for k, v in feed_dict.iteritems()})
+        for v, n in zip(fetches, res):
+            pdframe[v.op.name] = n
+        return pdframe
 
 def reduce_rows(fetches, dframe):
     """ Applies the fetches on pairs of rows, so that only one row of data remains in the end. The order in which
