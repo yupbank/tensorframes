@@ -151,6 +151,7 @@ def _unique_graph(fetches):
     return graph.pop()
 
 def _map_pd(fetches, pdframe, feed_dict=None, block=None, trim=None):
+    fetches = _check_fetches(fetches)
     graph = _unique_graph(fetches)
     if feed_dict is None:
         feed_names = _get_input(graph)
@@ -235,6 +236,8 @@ def map_rows(fetches, dframe, feed_dict=None):
     :param dframe: a Spark DataFrame
     :return: a Spark DataFrame
     """
+    if isinstance(dframe, pd.DataFrame):
+        return _map_pd(fetches, dframe, feed_dict, block=False, trim=None)
     return _map(fetches, dframe, feed_dict, block=False, trim=None)
 
 def map_blocks(fetches, dframe, trim=False):
@@ -277,6 +280,8 @@ def map_blocks(fetches, dframe, trim=False):
     :return: a Spark DataFrame
     """
     # TODO: add feed dictionary
+    if isinstance(dframe, pd.DataFrame):
+        return _map_pd(fetches, dframe, feed_dict=None, block=False, trim=None)
     return _map(fetches, dframe, None, block=True, trim=trim)
 
 def reduce_blocks(fetches, dframe):
