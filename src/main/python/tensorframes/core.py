@@ -37,6 +37,18 @@ def _get_shape(node):
     l = node.get_shape().as_list()
     return [-1 if x is None else x for x in l]
 
+def _initialize_variable(graph, fetches):
+    with tf.Session(graph=graph) as sess:
+        sess.run(tf.global_variables_initializer())
+        output_graph_def = tf.graph_util.convert_variables_to_constants(sess,
+                            graph.as_graph_def(add_shapes=True),
+                            [fetch.op.name for fetch in fetches])
+
+    new_graph = tf.Graph()
+    with new_graph.as_default():
+        tf.import_graph_def(output_graph_def, name='')
+        return new_graph, [new_graph.get_tensor_by_name(fetch.name) for fetch in fetches]
+
 def _add_graph(graph, builder, use_file=True):
     if use_file:
         # TODO: remove the dir and honor the existing one
@@ -81,6 +93,7 @@ def _check_fetches(fetches):
 
 def _get_graph(fetches):
     graph = tf.get_default_graph()
+    graph, fetches = _initialize_variable(graph, fetches)
     fetch_names = [_validate_fetch(graph, fetch) for fetch in fetches]
     logger.info("Fetch names: %s", str(fetch_names))
     # String the output index
