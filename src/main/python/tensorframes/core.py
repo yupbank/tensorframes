@@ -37,9 +37,10 @@ def _get_shape(node):
     l = node.get_shape().as_list()
     return [-1 if x is None else x for x in l]
 
-def _initialize_variable(graph, fetches):
+def _initialize_variable(graph, fetches, initial_variable):
     with tf.Session(graph=graph) as sess:
-        sess.run(tf.global_variables_initializer())
+        if initial_variable:
+            sess.run(tf.global_variables_initializer())
         output_graph_def = tf.graph_util.convert_variables_to_constants(sess,
                             graph.as_graph_def(add_shapes=True),
                             [fetch.op.name for fetch in fetches])
@@ -91,9 +92,9 @@ def _check_fetches(fetches):
         return [fetches]
     return fetches
 
-def _get_graph(fetches):
+def _get_graph(fetches, initial_variable=True):
     graph = tf.get_default_graph()
-    graph, fetches = _initialize_variable(graph, fetches)
+    graph, fetches = _initialize_variable(graph, fetches, initial_variable)
     fetch_names = [_validate_fetch(graph, fetch) for fetch in fetches]
     logger.info("Fetch names: %s", str(fetch_names))
     # String the output index
@@ -135,10 +136,10 @@ def _add_inputs(builder, start_dct, ph_names):
     logger.info("inputs: %s %s", str(input_names), str(field_names))
     builder.inputs(input_names, field_names)
 
-def _map(fetches, dframe, feed_dict, block, trim):
+def _map(fetches, dframe, feed_dict, block, trim, initial_variable=True):
     fetches = _check_fetches(fetches)
     # We are not dealing for now with registered expansions, but this is something we should add later.
-    graph = _get_graph(fetches)
+    graph = _get_graph(fetches, initial_variable)
     if block:
         builder = _java_api().map_blocks(dframe._jdf, trim)
     else:
@@ -162,9 +163,10 @@ def _unique_graph(fetches):
     assert len(graph)==1, 'there can only be one graph'
     return graph.pop()
 
-def _map_pd(fetches, pdframe, feed_dict=None, block=None, trim=None):
+def _map_pd(fetches, pdframe, feed_dict=None, block=None, trim=None, initial_variable=True):
     fetches = _check_fetches(fetches)
     graph = _unique_graph(fetches)
+    graph, fetches = _initialize_variable(graph, fetches, initial_variable)
     if feed_dict is None:
         feed_names = _get_input(graph)
         feed_dict = dict(zip(feed_names, feed_names))
@@ -175,7 +177,7 @@ def _map_pd(fetches, pdframe, feed_dict=None, block=None, trim=None):
             pdframe[v.op.name] = n
         return pdframe
 
-def reduce_rows(fetches, dframe):
+def reduce_rows(fetches, dframe, initial_variable=True):
     """ Applies the fetches on pairs of rows, so that only one row of data remains in the end. The order in which
     the operations are performed on the rows is unspecified.
 
@@ -202,17 +204,18 @@ def reduce_rows(fetches, dframe):
 
     :param fetches: see description above
     :param dframe: a Spark DataFrame
+    :param initial_variable: a boolean option default True, inital variables if it is used.
     :return: a list of numpy arrays
     """
     fetches = _check_fetches(fetches)
-    graph = _get_graph(fetches)
+    graph = _get_graph(fetches, initial_variable)
     builder = _java_api().reduce_rows(dframe._jdf)
     _add_graph(graph, builder)
     _add_shapes(graph, builder, fetches)
     df = builder.buildRow()
     return _unpack_row(df, fetches)
 
-def map_rows(fetches, dframe, feed_dict=None):
+def map_rows(fetches, dframe, feed_dict=None, initial_variable=True):
     """ Transforms a DataFrame into another DataFrame row by row, by adding new fields for each fetch.
 
     The `fetches` argument may be a list of graph elements or a single
@@ -250,10 +253,10 @@ def map_rows(fetches, dframe, feed_dict=None):
     :return: a Spark DataFrame or a pandas DataFrame
     """
     if isinstance(dframe, pd.DataFrame):
-        return _map_pd(fetches, dframe, feed_dict, block=False, trim=None)
-    return _map(fetches, dframe, feed_dict, block=False, trim=None)
+        return _map_pd(fetches, dframe, feed_dict, block=False, trim=None, initial_variable=initial_variable)
+    return _map(fetches, dframe, feed_dict, block=False, trim=None, initial_variable=initial_variable)
 
-def map_blocks(fetches, dframe, trim=False):
+def map_blocks(fetches, dframe, trim=False, initial_variable=True):
     """ Transforms a DataFrame into another DataFrame block by block.
 
     It either appends new columns to the DataFrame (trim = false), or it completely discards the
@@ -295,10 +298,10 @@ def map_blocks(fetches, dframe, trim=False):
     """
     # TODO: add feed dictionary
     if isinstance(dframe, pd.DataFrame):
-        return _map_pd(fetches, dframe, feed_dict=None, block=False, trim=None)
-    return _map(fetches, dframe, None, block=True, trim=trim)
+        return _map_pd(fetches, dframe, feed_dict=None, block=False, trim=None, initial_variable=initial_variable)
+    return _map(fetches, dframe, None, block=True, trim=trim, initial_variable=initial_variable)
 
-def reduce_blocks(fetches, dframe):
+def reduce_blocks(fetches, dframe, initial_variable=True):
     """ Applies the fetches on blocks of rows, so that only one row of data remains in the end. The order in which
     the operations are performed on the rows is unspecified.
 
@@ -321,15 +324,17 @@ def reduce_blocks(fetches, dframe):
       fetches: A single graph element, or a list of graph elements
         (described above).
       dframe: A DataFrame object. The columns of the tensor frame will be fed into the fetches at execution.
+    :param initial_variable: a boolean option default True, inital variables if it is used.
 
     Returns: a list of numpy arrays, one for each of the fetches, or a single numpy array if there is but one fetch.
 
     :param fetches: see description above
     :param dframe: a Spark DataFrame
+    :param initial_variable: a boolean option default True, inital variables if it is used.
     :return: a list of numpy arrays
     """
     fetches = _check_fetches(fetches)
-    graph = _get_graph(fetches)
+    graph = _get_graph(fetches, initial_variable)
     builder = _java_api().reduce_blocks(dframe._jdf)
     _add_graph(graph, builder)
     _add_shapes(graph, builder, fetches)
@@ -362,18 +367,19 @@ def analyze(dframe):
     """
     return DataFrame(_java_api().analyze(dframe._jdf), _sql)
 
-def aggregate(fetches, grouped_data):
+def aggregate(fetches, grouped_data, initial_variable=True):
     """
     Performs an algebraic aggregation on the grouped data.
 
 
     :param fetches: a single graph element, or a sequence of graph elements
     :param grouped_data: a Spark groupedData object
+    :param initial_variable: a boolean option default True, inital variables if it is used.
     :return: a dataframe, with all the columns corresponding to the fetches being appended to the
       key columns.
     """
     fetches = _check_fetches(fetches)
-    graph = _get_graph(fetches)
+    graph = _get_graph(fetches, initial_variable)
     jdfin = _get_jgroup(grouped_data)
     builder = _java_api().aggregate_blocks(jdfin)
     _add_graph(graph, builder)
