@@ -2,6 +2,7 @@ import tensorflow as tf
 import numpy as np
 import logging
 import tempfile
+import pandas as pd
 
 from pyspark import RDD, SparkContext
 from pyspark.sql import SQLContext, Row, DataFrame
@@ -13,7 +14,7 @@ __all__ = ['reduce_rows', 'map_rows', 'reduce_blocks', 'map_blocks',
 _sc = None
 _sql = None
 logger = logging.getLogger('tensorframes')
-first_tensor_by_op_name = lambda graph, name: graph.get_operation_by_name(name)[0]
+first_tensor_by_op_name = lambda graph, name: graph.get_operation_by_name(name).outputs[0]
 
 def _java_api():
     """
@@ -158,7 +159,7 @@ def _map_pd(fetches, pdframe, feed_dict=None, block=None, trim=None):
         feed_dict = dict(zip(feed_names, feed_names))
 
     with tf.Session(graph=graph) as sess:
-        res = sess.run(fetches, feed_dict={first_tensor_by_op_name(graph, k): pdframe[v] for k, v in feed_dict.iteritems()})
+        res = sess.run(fetches, feed_dict={first_tensor_by_op_name(graph, k): pdframe[feed_dict[k]] for k in feed_dict})
         for v, n in zip(fetches, res):
             pdframe[v.op.name] = n
         return pdframe
