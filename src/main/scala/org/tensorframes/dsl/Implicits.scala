@@ -40,7 +40,7 @@ trait DFImplicits {
 
     def mapBlocks(o0: Operation, os: Operation*): DataFrame = {
       val seq = Seq(o0) ++ os
-      val g = DslImpl.buildGraph(Seq(o0) ++ os)
+      val g = DslImpl.buildGraph(seq)
       mapBlocks(g, Node.hints(seq, g))
     }
 
@@ -50,7 +50,7 @@ trait DFImplicits {
 
     def mapBlocksTrimmed(o0: Operation, os: Operation*): DataFrame = {
       val seq = Seq(o0) ++ os
-      val g = DslImpl.buildGraph(Seq(o0) ++ os)
+      val g = DslImpl.buildGraph(seq)
       mapBlocksTrimmed(g, Node.hints(seq, g))
     }
 
@@ -60,7 +60,7 @@ trait DFImplicits {
 
     def reduceRows(o0: Operation, os: Operation*): Row = {
       val seq = Seq(o0) ++ os
-      val g = DslImpl.buildGraph(Seq(o0) ++ os)
+      val g = DslImpl.buildGraph(seq)
       reduceRows(g, Node.hints(seq, g))
     }
 
@@ -70,7 +70,7 @@ trait DFImplicits {
 
     def reduceBlocks(o0: Operation, os: Operation*): Row = {
       val seq = Seq(o0) ++ os
-      val g = DslImpl.buildGraph(Seq(o0) ++ os)
+      val g = DslImpl.buildGraph(seq)
       reduceBlocks(g, Node.hints(seq, g))
     }
 
@@ -110,7 +110,7 @@ trait DFImplicits {
     }
     def aggregate(o0: Operation, os: Operation*): DataFrame = {
       val seq = Seq(o0) ++ os
-      val g = DslImpl.buildGraph(Seq(o0) ++ os)
+      val g = DslImpl.buildGraph(seq)
       aggregate(g, Node.hints(seq, g))
     }
   }
