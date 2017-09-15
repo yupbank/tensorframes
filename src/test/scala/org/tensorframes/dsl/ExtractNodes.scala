@@ -13,12 +13,14 @@ object ExtractNodes extends Matchers with Logging {
   def executeCommand(py: String): Map[String, String] = {
     val content =
       s"""
+         |from __future__ import print_function
          |import tensorflow as tf
+         |
          |$py
          |g = tf.get_default_graph().as_graph_def()
          |for n in g.node:
-         |    print ">>>>>", str(n.name), "<<<<<<"
-         |    print n
+         |    print(">>>>>", str(n.name), "<<<<<<")
+         |    print(n)
        """.stripMargin
     val f = File.createTempFile("pythonTest", ".py")
     logTrace(s"Created temp file ${f.getAbsolutePath}")
