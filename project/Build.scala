@@ -1,9 +1,9 @@
-import sbt._
 import sbt.Keys._
-import sbtsparkpackage.SparkPackagePlugin.autoImport._
-import sbtassembly._
+import sbt._
 import sbtassembly.AssemblyKeys._
-import sbtassembly.AssemblyPlugin.autoImport.{ShadeRule => _, assembly => _, assemblyExcludedJars => _, assemblyOption => _, assemblyShadeRules => _, _}
+import sbtassembly.AssemblyPlugin.autoImport.{ShadeRule => _, assembly => _, assemblyExcludedJars => _, assemblyOption => _, assemblyShadeRules => _}
+import sbtassembly._
+import sbtsparkpackage.SparkPackagePlugin.autoImport._
 
 object Shading extends Build {
 
@@ -11,7 +11,7 @@ object Shading extends Build {
 
 
   lazy val commonSettings = Seq(
-    version := "0.2.9",
+    version := "0.3.0",
     name := "tensorframes",
     scalaVersion := sys.props.getOrElse("scala.version", "2.11.8"),
     organization := "databricks",
@@ -60,7 +60,7 @@ object Shading extends Build {
   )
 
   lazy val shadedDependencies = Seq(
-    "com.google.protobuf" % "protobuf-java" % "3.2.0"
+    "com.google.protobuf" % "protobuf-java" % "3.5.1"
   )
 
   lazy val shaded = Project("shaded", file(".")).settings(

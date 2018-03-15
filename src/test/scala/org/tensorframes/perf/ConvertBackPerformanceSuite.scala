@@ -73,7 +73,7 @@ object ConvertBackPerformanceSuite {
       sqlType: NumericType,
       row: Row,
       cellShape: Shape,
-      numCells: Int): Tensor = {
+      numCells: Int): Tensor[_] = {
     val conv = SupportedOperations.opsFor(sqlType).tfConverter(cellShape, numCells)
     conv.reserve()
     (0 until numCells).foreach { _ => conv.append(row, 0) }

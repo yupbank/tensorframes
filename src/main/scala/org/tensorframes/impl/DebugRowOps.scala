@@ -906,10 +906,10 @@ object DebugRowOpsImpl extends Logging {
   /**
     * Performs a run, and deallocates the inputs, regardless of the success of the run.
     */
-  private def performRunner(
+  private def performRunner (
       session: Session,
       requested: Seq[String],
-      inputs: Seq[(String, Tensor)]): Seq[Tensor] = {
+      inputs: Seq[(String, Tensor[_])]): Seq[Tensor[_]] = {
     var runner = session.runner()
     for (req <- requested) {
       runner = runner.fetch(req)

@@ -4,19 +4,21 @@
 package org.tensorflow.framework;
 
 /**
- * Protobuf type {@code tensorflow.OpDef}
- *
  * <pre>
  * Defines an operation. A NodeDef in a GraphDef specifies an Op by
  * using the "op" field which should match the name of a OpDef.
+ * LINT.IfChange
  * </pre>
+ *
+ * Protobuf type {@code tensorflow.OpDef}
  */
 public  final class OpDef extends
-    com.google.protobuf.GeneratedMessage implements
+    com.google.protobuf.GeneratedMessageV3 implements
     // @@protoc_insertion_point(message_implements:tensorflow.OpDef)
     OpDefOrBuilder {
+private static final long serialVersionUID = 0L;
   // Use OpDef.newBuilder() to construct.
-  private OpDef(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+  private OpDef(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
     super(builder);
   }
   private OpDef() {
@@ -35,13 +37,19 @@ public  final class OpDef extends
   @java.lang.Override
   public final com.google.protobuf.UnknownFieldSet
   getUnknownFields() {
-    return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
+    return this.unknownFields;
   }
   private OpDef(
       com.google.protobuf.CodedInputStream input,
-      com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
+      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+      throws com.google.protobuf.InvalidProtocolBufferException {
     this();
+    if (extensionRegistry == null) {
+      throw new java.lang.NullPointerException();
+    }
     int mutable_bitField0_ = 0;
+    com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+        com.google.protobuf.UnknownFieldSet.newBuilder();
     try {
       boolean done = false;
       while (!done) {
@@ -51,13 +59,14 @@ public  final class OpDef extends
             done = true;
             break;
           default: {
-            if (!input.skipField(tag)) {
+            if (!parseUnknownFieldProto3(
+                input, unknownFields, extensionRegistry, tag)) {
               done = true;
             }
             break;
           }
           case 10: {
-            String s = input.readStringRequireUtf8();
+            java.lang.String s = input.readStringRequireUtf8();
 
             name_ = s;
             break;
@@ -67,7 +76,8 @@ public  final class OpDef extends
               inputArg_ = new java.util.ArrayList<org.tensorflow.framework.OpDef.ArgDef>();
               mutable_bitField0_ |= 0x00000002;
             }
-            inputArg_.add(input.readMessage(org.tensorflow.framework.OpDef.ArgDef.parser(), extensionRegistry));
+            inputArg_.add(
+                input.readMessage(org.tensorflow.framework.OpDef.ArgDef.parser(), extensionRegistry));
             break;
           }
           case 26: {
@@ -75,7 +85,8 @@ public  final class OpDef extends
               outputArg_ = new java.util.ArrayList<org.tensorflow.framework.OpDef.ArgDef>();
               mutable_bitField0_ |= 0x00000004;
             }
-            outputArg_.add(input.readMessage(org.tensorflow.framework.OpDef.ArgDef.parser(), extensionRegistry));
+            outputArg_.add(
+                input.readMessage(org.tensorflow.framework.OpDef.ArgDef.parser(), extensionRegistry));
             break;
           }
           case 34: {
@@ -83,19 +94,33 @@ public  final class OpDef extends
               attr_ = new java.util.ArrayList<org.tensorflow.framework.OpDef.AttrDef>();
               mutable_bitField0_ |= 0x00000008;
             }
-            attr_.add(input.readMessage(org.tensorflow.framework.OpDef.AttrDef.parser(), extensionRegistry));
+            attr_.add(
+                input.readMessage(org.tensorflow.framework.OpDef.AttrDef.parser(), extensionRegistry));
             break;
           }
           case 42: {
-            String s = input.readStringRequireUtf8();
+            java.lang.String s = input.readStringRequireUtf8();
 
             summary_ = s;
             break;
           }
           case 50: {
-            String s = input.readStringRequireUtf8();
+            java.lang.String s = input.readStringRequireUtf8();
 
             description_ = s;
+            break;
+          }
+          case 66: {
+            org.tensorflow.framework.OpDeprecation.Builder subBuilder = null;
+            if (deprecation_ != null) {
+              subBuilder = deprecation_.toBuilder();
+            }
+            deprecation_ = input.readMessage(org.tensorflow.framework.OpDeprecation.parser(), extensionRegistry);
+            if (subBuilder != null) {
+              subBuilder.mergeFrom(deprecation_);
+              deprecation_ = subBuilder.buildPartial();
+            }
+
             break;
           }
           case 128: {
@@ -121,11 +146,10 @@ public  final class OpDef extends
         }
       }
     } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-      throw new RuntimeException(e.setUnfinishedMessage(this));
+      throw e.setUnfinishedMessage(this);
     } catch (java.io.IOException e) {
-      throw new RuntimeException(
-          new com.google.protobuf.InvalidProtocolBufferException(
-              e.getMessage()).setUnfinishedMessage(this));
+      throw new com.google.protobuf.InvalidProtocolBufferException(
+          e).setUnfinishedMessage(this);
     } finally {
       if (((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
         inputArg_ = java.util.Collections.unmodifiableList(inputArg_);
@@ -136,6 +160,7 @@ public  final class OpDef extends
       if (((mutable_bitField0_ & 0x00000008) == 0x00000008)) {
         attr_ = java.util.Collections.unmodifiableList(attr_);
       }
+      this.unknownFields = unknownFields.build();
       makeExtensionsImmutable();
     }
   }
@@ -144,7 +169,7 @@ public  final class OpDef extends
     return org.tensorflow.framework.OpDefProtos.internal_static_tensorflow_OpDef_descriptor;
   }
 
-  protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+  protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
     return org.tensorflow.framework.OpDefProtos.internal_static_tensorflow_OpDef_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
@@ -156,44 +181,42 @@ public  final class OpDef extends
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>optional string name = 1;</code>
-     *
      * <pre>
      * Name for the input/output.  Should match the regexp "[a-z][a-z0-9_]*".
      * </pre>
+     *
+     * <code>string name = 1;</code>
      */
     java.lang.String getName();
     /**
-     * <code>optional string name = 1;</code>
-     *
      * <pre>
      * Name for the input/output.  Should match the regexp "[a-z][a-z0-9_]*".
      * </pre>
+     *
+     * <code>string name = 1;</code>
      */
     com.google.protobuf.ByteString
         getNameBytes();
 
     /**
-     * <code>optional string description = 2;</code>
-     *
      * <pre>
      * Human readable description.
      * </pre>
+     *
+     * <code>string description = 2;</code>
      */
     java.lang.String getDescription();
     /**
-     * <code>optional string description = 2;</code>
-     *
      * <pre>
      * Human readable description.
      * </pre>
+     *
+     * <code>string description = 2;</code>
      */
     com.google.protobuf.ByteString
         getDescriptionBytes();
 
     /**
-     * <code>optional .tensorflow.DataType type = 3;</code>
-     *
      * <pre>
      * Describes the type of one or more tensors that are accepted/produced
      * by this input/output arg.  The only legal combinations are:
@@ -206,11 +229,11 @@ public  final class OpDef extends
      * * For a sequence of tensors, the "type_list_attr" field will be set
      *   to the name of an attr with type "list(type)".
      * </pre>
+     *
+     * <code>.tensorflow.DataType type = 3;</code>
      */
     int getTypeValue();
     /**
-     * <code>optional .tensorflow.DataType type = 3;</code>
-     *
      * <pre>
      * Describes the type of one or more tensors that are accepted/produced
      * by this input/output arg.  The only legal combinations are:
@@ -223,89 +246,92 @@ public  final class OpDef extends
      * * For a sequence of tensors, the "type_list_attr" field will be set
      *   to the name of an attr with type "list(type)".
      * </pre>
+     *
+     * <code>.tensorflow.DataType type = 3;</code>
      */
     org.tensorflow.framework.DataType getType();
 
     /**
-     * <code>optional string type_attr = 4;</code>
-     *
      * <pre>
      * if specified, attr must have type "type"
      * </pre>
+     *
+     * <code>string type_attr = 4;</code>
      */
     java.lang.String getTypeAttr();
     /**
-     * <code>optional string type_attr = 4;</code>
-     *
      * <pre>
      * if specified, attr must have type "type"
      * </pre>
+     *
+     * <code>string type_attr = 4;</code>
      */
     com.google.protobuf.ByteString
         getTypeAttrBytes();
 
     /**
-     * <code>optional string number_attr = 5;</code>
-     *
      * <pre>
      * if specified, attr must have type "int"
      * </pre>
+     *
+     * <code>string number_attr = 5;</code>
      */
     java.lang.String getNumberAttr();
     /**
-     * <code>optional string number_attr = 5;</code>
-     *
      * <pre>
      * if specified, attr must have type "int"
      * </pre>
+     *
+     * <code>string number_attr = 5;</code>
      */
     com.google.protobuf.ByteString
         getNumberAttrBytes();
 
     /**
-     * <code>optional string type_list_attr = 6;</code>
-     *
      * <pre>
      * If specified, attr must have type "list(type)", and none of
      * type, type_attr, and number_attr may be specified.
      * </pre>
+     *
+     * <code>string type_list_attr = 6;</code>
      */
     java.lang.String getTypeListAttr();
     /**
-     * <code>optional string type_list_attr = 6;</code>
-     *
      * <pre>
      * If specified, attr must have type "list(type)", and none of
      * type, type_attr, and number_attr may be specified.
      * </pre>
+     *
+     * <code>string type_list_attr = 6;</code>
      */
     com.google.protobuf.ByteString
         getTypeListAttrBytes();
 
     /**
-     * <code>optional bool is_ref = 16;</code>
-     *
      * <pre>
      * For inputs: if true, the inputs are required to be refs.
      *   By default, inputs can be either refs or non-refs.
      * For outputs: if true, outputs are refs, otherwise they are not.
      * </pre>
+     *
+     * <code>bool is_ref = 16;</code>
      */
     boolean getIsRef();
   }
   /**
-   * Protobuf type {@code tensorflow.OpDef.ArgDef}
-   *
    * <pre>
    * For describing inputs and outputs.
    * </pre>
+   *
+   * Protobuf type {@code tensorflow.OpDef.ArgDef}
    */
   public  static final class ArgDef extends
-      com.google.protobuf.GeneratedMessage implements
+      com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:tensorflow.OpDef.ArgDef)
       ArgDefOrBuilder {
+  private static final long serialVersionUID = 0L;
     // Use ArgDef.newBuilder() to construct.
-    private ArgDef(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+    private ArgDef(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
     private ArgDef() {
@@ -321,13 +347,19 @@ public  final class OpDef extends
     @java.lang.Override
     public final com.google.protobuf.UnknownFieldSet
     getUnknownFields() {
-      return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
+      return this.unknownFields;
     }
     private ArgDef(
         com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
       this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
       int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
       try {
         boolean done = false;
         while (!done) {
@@ -337,19 +369,20 @@ public  final class OpDef extends
               done = true;
               break;
             default: {
-              if (!input.skipField(tag)) {
+              if (!parseUnknownFieldProto3(
+                  input, unknownFields, extensionRegistry, tag)) {
                 done = true;
               }
               break;
             }
             case 10: {
-              String s = input.readStringRequireUtf8();
+              java.lang.String s = input.readStringRequireUtf8();
 
               name_ = s;
               break;
             }
             case 18: {
-              String s = input.readStringRequireUtf8();
+              java.lang.String s = input.readStringRequireUtf8();
 
               description_ = s;
               break;
@@ -361,19 +394,19 @@ public  final class OpDef extends
               break;
             }
             case 34: {
-              String s = input.readStringRequireUtf8();
+              java.lang.String s = input.readStringRequireUtf8();
 
               typeAttr_ = s;
               break;
             }
             case 42: {
-              String s = input.readStringRequireUtf8();
+              java.lang.String s = input.readStringRequireUtf8();
 
               numberAttr_ = s;
               break;
             }
             case 50: {
-              String s = input.readStringRequireUtf8();
+              java.lang.String s = input.readStringRequireUtf8();
 
               typeListAttr_ = s;
               break;
@@ -386,12 +419,12 @@ public  final class OpDef extends
           }
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        throw new RuntimeException(e.setUnfinishedMessage(this));
+        throw e.setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
-        throw new RuntimeException(
-            new com.google.protobuf.InvalidProtocolBufferException(
-                e.getMessage()).setUnfinishedMessage(this));
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
       } finally {
+        this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
       }
     }
@@ -400,7 +433,7 @@ public  final class OpDef extends
       return org.tensorflow.framework.OpDefProtos.internal_static_tensorflow_OpDef_ArgDef_descriptor;
     }
 
-    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return org.tensorflow.framework.OpDefProtos.internal_static_tensorflow_OpDef_ArgDef_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
@@ -410,11 +443,11 @@ public  final class OpDef extends
     public static final int NAME_FIELD_NUMBER = 1;
     private volatile java.lang.Object name_;
     /**
-     * <code>optional string name = 1;</code>
-     *
      * <pre>
      * Name for the input/output.  Should match the regexp "[a-z][a-z0-9_]*".
      * </pre>
+     *
+     * <code>string name = 1;</code>
      */
     public java.lang.String getName() {
       java.lang.Object ref = name_;
@@ -429,11 +462,11 @@ public  final class OpDef extends
       }
     }
     /**
-     * <code>optional string name = 1;</code>
-     *
      * <pre>
      * Name for the input/output.  Should match the regexp "[a-z][a-z0-9_]*".
      * </pre>
+     *
+     * <code>string name = 1;</code>
      */
     public com.google.protobuf.ByteString
         getNameBytes() {
@@ -452,11 +485,11 @@ public  final class OpDef extends
     public static final int DESCRIPTION_FIELD_NUMBER = 2;
     private volatile java.lang.Object description_;
     /**
-     * <code>optional string description = 2;</code>
-     *
      * <pre>
      * Human readable description.
      * </pre>
+     *
+     * <code>string description = 2;</code>
      */
     public java.lang.String getDescription() {
       java.lang.Object ref = description_;
@@ -471,11 +504,11 @@ public  final class OpDef extends
       }
     }
     /**
-     * <code>optional string description = 2;</code>
-     *
      * <pre>
      * Human readable description.
      * </pre>
+     *
+     * <code>string description = 2;</code>
      */
     public com.google.protobuf.ByteString
         getDescriptionBytes() {
@@ -494,8 +527,6 @@ public  final class OpDef extends
     public static final int TYPE_FIELD_NUMBER = 3;
     private int type_;
     /**
-     * <code>optional .tensorflow.DataType type = 3;</code>
-     *
      * <pre>
      * Describes the type of one or more tensors that are accepted/produced
      * by this input/output arg.  The only legal combinations are:
@@ -508,13 +539,13 @@ public  final class OpDef extends
      * * For a sequence of tensors, the "type_list_attr" field will be set
      *   to the name of an attr with type "list(type)".
      * </pre>
+     *
+     * <code>.tensorflow.DataType type = 3;</code>
      */
     public int getTypeValue() {
       return type_;
     }
     /**
-     * <code>optional .tensorflow.DataType type = 3;</code>
-     *
      * <pre>
      * Describes the type of one or more tensors that are accepted/produced
      * by this input/output arg.  The only legal combinations are:
@@ -527,6 +558,8 @@ public  final class OpDef extends
      * * For a sequence of tensors, the "type_list_attr" field will be set
      *   to the name of an attr with type "list(type)".
      * </pre>
+     *
+     * <code>.tensorflow.DataType type = 3;</code>
      */
     public org.tensorflow.framework.DataType getType() {
       org.tensorflow.framework.DataType result = org.tensorflow.framework.DataType.valueOf(type_);
@@ -536,11 +569,11 @@ public  final class OpDef extends
     public static final int TYPE_ATTR_FIELD_NUMBER = 4;
     private volatile java.lang.Object typeAttr_;
     /**
-     * <code>optional string type_attr = 4;</code>
-     *
      * <pre>
      * if specified, attr must have type "type"
      * </pre>
+     *
+     * <code>string type_attr = 4;</code>
      */
     public java.lang.String getTypeAttr() {
       java.lang.Object ref = typeAttr_;
@@ -555,11 +588,11 @@ public  final class OpDef extends
       }
     }
     /**
-     * <code>optional string type_attr = 4;</code>
-     *
      * <pre>
      * if specified, attr must have type "type"
      * </pre>
+     *
+     * <code>string type_attr = 4;</code>
      */
     public com.google.protobuf.ByteString
         getTypeAttrBytes() {
@@ -578,11 +611,11 @@ public  final class OpDef extends
     public static final int NUMBER_ATTR_FIELD_NUMBER = 5;
     private volatile java.lang.Object numberAttr_;
     /**
-     * <code>optional string number_attr = 5;</code>
-     *
      * <pre>
      * if specified, attr must have type "int"
      * </pre>
+     *
+     * <code>string number_attr = 5;</code>
      */
     public java.lang.String getNumberAttr() {
       java.lang.Object ref = numberAttr_;
@@ -597,11 +630,11 @@ public  final class OpDef extends
       }
     }
     /**
-     * <code>optional string number_attr = 5;</code>
-     *
      * <pre>
      * if specified, attr must have type "int"
      * </pre>
+     *
+     * <code>string number_attr = 5;</code>
      */
     public com.google.protobuf.ByteString
         getNumberAttrBytes() {
@@ -620,12 +653,12 @@ public  final class OpDef extends
     public static final int TYPE_LIST_ATTR_FIELD_NUMBER = 6;
     private volatile java.lang.Object typeListAttr_;
     /**
-     * <code>optional string type_list_attr = 6;</code>
-     *
      * <pre>
      * If specified, attr must have type "list(type)", and none of
      * type, type_attr, and number_attr may be specified.
      * </pre>
+     *
+     * <code>string type_list_attr = 6;</code>
      */
     public java.lang.String getTypeListAttr() {
       java.lang.Object ref = typeListAttr_;
@@ -640,12 +673,12 @@ public  final class OpDef extends
       }
     }
     /**
-     * <code>optional string type_list_attr = 6;</code>
-     *
      * <pre>
      * If specified, attr must have type "list(type)", and none of
      * type, type_attr, and number_attr may be specified.
      * </pre>
+     *
+     * <code>string type_list_attr = 6;</code>
      */
     public com.google.protobuf.ByteString
         getTypeListAttrBytes() {
@@ -664,13 +697,13 @@ public  final class OpDef extends
     public static final int IS_REF_FIELD_NUMBER = 16;
     private boolean isRef_;
     /**
-     * <code>optional bool is_ref = 16;</code>
-     *
      * <pre>
      * For inputs: if true, the inputs are required to be refs.
      *   By default, inputs can be either refs or non-refs.
      * For outputs: if true, outputs are refs, otherwise they are not.
      * </pre>
+     *
+     * <code>bool is_ref = 16;</code>
      */
     public boolean getIsRef() {
       return isRef_;
@@ -689,26 +722,27 @@ public  final class OpDef extends
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       if (!getNameBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessage.writeString(output, 1, name_);
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, name_);
       }
       if (!getDescriptionBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessage.writeString(output, 2, description_);
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, description_);
       }
       if (type_ != org.tensorflow.framework.DataType.DT_INVALID.getNumber()) {
         output.writeEnum(3, type_);
       }
       if (!getTypeAttrBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessage.writeString(output, 4, typeAttr_);
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 4, typeAttr_);
       }
       if (!getNumberAttrBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessage.writeString(output, 5, numberAttr_);
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 5, numberAttr_);
       }
       if (!getTypeListAttrBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessage.writeString(output, 6, typeListAttr_);
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 6, typeListAttr_);
       }
       if (isRef_ != false) {
         output.writeBool(16, isRef_);
       }
+      unknownFields.writeTo(output);
     }
 
     public int getSerializedSize() {
@@ -717,33 +751,99 @@ public  final class OpDef extends
 
       size = 0;
       if (!getNameBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessage.computeStringSize(1, name_);
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, name_);
       }
       if (!getDescriptionBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessage.computeStringSize(2, description_);
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, description_);
       }
       if (type_ != org.tensorflow.framework.DataType.DT_INVALID.getNumber()) {
         size += com.google.protobuf.CodedOutputStream
           .computeEnumSize(3, type_);
       }
       if (!getTypeAttrBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessage.computeStringSize(4, typeAttr_);
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, typeAttr_);
       }
       if (!getNumberAttrBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessage.computeStringSize(5, numberAttr_);
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(5, numberAttr_);
       }
       if (!getTypeListAttrBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessage.computeStringSize(6, typeListAttr_);
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(6, typeListAttr_);
       }
       if (isRef_ != false) {
         size += com.google.protobuf.CodedOutputStream
           .computeBoolSize(16, isRef_);
       }
+      size += unknownFields.getSerializedSize();
       memoizedSize = size;
       return size;
     }
 
-    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof org.tensorflow.framework.OpDef.ArgDef)) {
+        return super.equals(obj);
+      }
+      org.tensorflow.framework.OpDef.ArgDef other = (org.tensorflow.framework.OpDef.ArgDef) obj;
+
+      boolean result = true;
+      result = result && getName()
+          .equals(other.getName());
+      result = result && getDescription()
+          .equals(other.getDescription());
+      result = result && type_ == other.type_;
+      result = result && getTypeAttr()
+          .equals(other.getTypeAttr());
+      result = result && getNumberAttr()
+          .equals(other.getNumberAttr());
+      result = result && getTypeListAttr()
+          .equals(other.getTypeListAttr());
+      result = result && (getIsRef()
+          == other.getIsRef());
+      result = result && unknownFields.equals(other.unknownFields);
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + NAME_FIELD_NUMBER;
+      hash = (53 * hash) + getName().hashCode();
+      hash = (37 * hash) + DESCRIPTION_FIELD_NUMBER;
+      hash = (53 * hash) + getDescription().hashCode();
+      hash = (37 * hash) + TYPE_FIELD_NUMBER;
+      hash = (53 * hash) + type_;
+      hash = (37 * hash) + TYPE_ATTR_FIELD_NUMBER;
+      hash = (53 * hash) + getTypeAttr().hashCode();
+      hash = (37 * hash) + NUMBER_ATTR_FIELD_NUMBER;
+      hash = (53 * hash) + getNumberAttr().hashCode();
+      hash = (37 * hash) + TYPE_LIST_ATTR_FIELD_NUMBER;
+      hash = (53 * hash) + getTypeListAttr().hashCode();
+      hash = (37 * hash) + IS_REF_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getIsRef());
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static org.tensorflow.framework.OpDef.ArgDef parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static org.tensorflow.framework.OpDef.ArgDef parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
     public static org.tensorflow.framework.OpDef.ArgDef parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -767,34 +867,40 @@ public  final class OpDef extends
     }
     public static org.tensorflow.framework.OpDef.ArgDef parseFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return PARSER.parseFrom(input);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
     }
     public static org.tensorflow.framework.OpDef.ArgDef parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return PARSER.parseFrom(input, extensionRegistry);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
     }
     public static org.tensorflow.framework.OpDef.ArgDef parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return PARSER.parseDelimitedFrom(input);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
     }
     public static org.tensorflow.framework.OpDef.ArgDef parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return PARSER.parseDelimitedFrom(input, extensionRegistry);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
     public static org.tensorflow.framework.OpDef.ArgDef parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
-      return PARSER.parseFrom(input);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
     }
     public static org.tensorflow.framework.OpDef.ArgDef parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return PARSER.parseFrom(input, extensionRegistry);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
     public Builder newBuilderForType() { return newBuilder(); }
@@ -811,19 +917,19 @@ public  final class OpDef extends
 
     @java.lang.Override
     protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
     /**
-     * Protobuf type {@code tensorflow.OpDef.ArgDef}
-     *
      * <pre>
      * For describing inputs and outputs.
      * </pre>
+     *
+     * Protobuf type {@code tensorflow.OpDef.ArgDef}
      */
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
         // @@protoc_insertion_point(builder_implements:tensorflow.OpDef.ArgDef)
         org.tensorflow.framework.OpDef.ArgDefOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
@@ -831,7 +937,7 @@ public  final class OpDef extends
         return org.tensorflow.framework.OpDefProtos.internal_static_tensorflow_OpDef_ArgDef_descriptor;
       }
 
-      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return org.tensorflow.framework.OpDefProtos.internal_static_tensorflow_OpDef_ArgDef_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
@@ -844,12 +950,13 @@ public  final class OpDef extends
       }
 
       private Builder(
-          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
       private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
         }
       }
       public Builder clear() {
@@ -901,6 +1008,32 @@ public  final class OpDef extends
         return result;
       }
 
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return (Builder) super.setField(field, value);
+      }
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof org.tensorflow.framework.OpDef.ArgDef) {
           return mergeFrom((org.tensorflow.framework.OpDef.ArgDef)other);
@@ -938,6 +1071,7 @@ public  final class OpDef extends
         if (other.getIsRef() != false) {
           setIsRef(other.getIsRef());
         }
+        this.mergeUnknownFields(other.unknownFields);
         onChanged();
         return this;
       }
@@ -955,7 +1089,7 @@ public  final class OpDef extends
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
           parsedMessage = (org.tensorflow.framework.OpDef.ArgDef) e.getUnfinishedMessage();
-          throw e;
+          throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
             mergeFrom(parsedMessage);
@@ -966,11 +1100,11 @@ public  final class OpDef extends
 
       private java.lang.Object name_ = "";
       /**
-       * <code>optional string name = 1;</code>
-       *
        * <pre>
        * Name for the input/output.  Should match the regexp "[a-z][a-z0-9_]*".
        * </pre>
+       *
+       * <code>string name = 1;</code>
        */
       public java.lang.String getName() {
         java.lang.Object ref = name_;
@@ -985,11 +1119,11 @@ public  final class OpDef extends
         }
       }
       /**
-       * <code>optional string name = 1;</code>
-       *
        * <pre>
        * Name for the input/output.  Should match the regexp "[a-z][a-z0-9_]*".
        * </pre>
+       *
+       * <code>string name = 1;</code>
        */
       public com.google.protobuf.ByteString
           getNameBytes() {
@@ -1005,11 +1139,11 @@ public  final class OpDef extends
         }
       }
       /**
-       * <code>optional string name = 1;</code>
-       *
        * <pre>
        * Name for the input/output.  Should match the regexp "[a-z][a-z0-9_]*".
        * </pre>
+       *
+       * <code>string name = 1;</code>
        */
       public Builder setName(
           java.lang.String value) {
@@ -1022,11 +1156,11 @@ public  final class OpDef extends
         return this;
       }
       /**
-       * <code>optional string name = 1;</code>
-       *
        * <pre>
        * Name for the input/output.  Should match the regexp "[a-z][a-z0-9_]*".
        * </pre>
+       *
+       * <code>string name = 1;</code>
        */
       public Builder clearName() {
         
@@ -1035,11 +1169,11 @@ public  final class OpDef extends
         return this;
       }
       /**
-       * <code>optional string name = 1;</code>
-       *
        * <pre>
        * Name for the input/output.  Should match the regexp "[a-z][a-z0-9_]*".
        * </pre>
+       *
+       * <code>string name = 1;</code>
        */
       public Builder setNameBytes(
           com.google.protobuf.ByteString value) {
@@ -1055,11 +1189,11 @@ public  final class OpDef extends
 
       private java.lang.Object description_ = "";
       /**
-       * <code>optional string description = 2;</code>
-       *
        * <pre>
        * Human readable description.
        * </pre>
+       *
+       * <code>string description = 2;</code>
        */
       public java.lang.String getDescription() {
         java.lang.Object ref = description_;
@@ -1074,11 +1208,11 @@ public  final class OpDef extends
         }
       }
       /**
-       * <code>optional string description = 2;</code>
-       *
        * <pre>
        * Human readable description.
        * </pre>
+       *
+       * <code>string description = 2;</code>
        */
       public com.google.protobuf.ByteString
           getDescriptionBytes() {
@@ -1094,11 +1228,11 @@ public  final class OpDef extends
         }
       }
       /**
-       * <code>optional string description = 2;</code>
-       *
        * <pre>
        * Human readable description.
        * </pre>
+       *
+       * <code>string description = 2;</code>
        */
       public Builder setDescription(
           java.lang.String value) {
@@ -1111,11 +1245,11 @@ public  final class OpDef extends
         return this;
       }
       /**
-       * <code>optional string description = 2;</code>
-       *
        * <pre>
        * Human readable description.
        * </pre>
+       *
+       * <code>string description = 2;</code>
        */
       public Builder clearDescription() {
         
@@ -1124,11 +1258,11 @@ public  final class OpDef extends
         return this;
       }
       /**
-       * <code>optional string description = 2;</code>
-       *
        * <pre>
        * Human readable description.
        * </pre>
+       *
+       * <code>string description = 2;</code>
        */
       public Builder setDescriptionBytes(
           com.google.protobuf.ByteString value) {
@@ -1144,8 +1278,6 @@ public  final class OpDef extends
 
       private int type_ = 0;
       /**
-       * <code>optional .tensorflow.DataType type = 3;</code>
-       *
        * <pre>
        * Describes the type of one or more tensors that are accepted/produced
        * by this input/output arg.  The only legal combinations are:
@@ -1158,13 +1290,13 @@ public  final class OpDef extends
        * * For a sequence of tensors, the "type_list_attr" field will be set
        *   to the name of an attr with type "list(type)".
        * </pre>
+       *
+       * <code>.tensorflow.DataType type = 3;</code>
        */
       public int getTypeValue() {
         return type_;
       }
       /**
-       * <code>optional .tensorflow.DataType type = 3;</code>
-       *
        * <pre>
        * Describes the type of one or more tensors that are accepted/produced
        * by this input/output arg.  The only legal combinations are:
@@ -1177,6 +1309,8 @@ public  final class OpDef extends
        * * For a sequence of tensors, the "type_list_attr" field will be set
        *   to the name of an attr with type "list(type)".
        * </pre>
+       *
+       * <code>.tensorflow.DataType type = 3;</code>
        */
       public Builder setTypeValue(int value) {
         type_ = value;
@@ -1184,8 +1318,6 @@ public  final class OpDef extends
         return this;
       }
       /**
-       * <code>optional .tensorflow.DataType type = 3;</code>
-       *
        * <pre>
        * Describes the type of one or more tensors that are accepted/produced
        * by this input/output arg.  The only legal combinations are:
@@ -1198,14 +1330,14 @@ public  final class OpDef extends
        * * For a sequence of tensors, the "type_list_attr" field will be set
        *   to the name of an attr with type "list(type)".
        * </pre>
+       *
+       * <code>.tensorflow.DataType type = 3;</code>
        */
       public org.tensorflow.framework.DataType getType() {
         org.tensorflow.framework.DataType result = org.tensorflow.framework.DataType.valueOf(type_);
         return result == null ? org.tensorflow.framework.DataType.UNRECOGNIZED : result;
       }
       /**
-       * <code>optional .tensorflow.DataType type = 3;</code>
-       *
        * <pre>
        * Describes the type of one or more tensors that are accepted/produced
        * by this input/output arg.  The only legal combinations are:
@@ -1218,6 +1350,8 @@ public  final class OpDef extends
        * * For a sequence of tensors, the "type_list_attr" field will be set
        *   to the name of an attr with type "list(type)".
        * </pre>
+       *
+       * <code>.tensorflow.DataType type = 3;</code>
        */
       public Builder setType(org.tensorflow.framework.DataType value) {
         if (value == null) {
@@ -1229,8 +1363,6 @@ public  final class OpDef extends
         return this;
       }
       /**
-       * <code>optional .tensorflow.DataType type = 3;</code>
-       *
        * <pre>
        * Describes the type of one or more tensors that are accepted/produced
        * by this input/output arg.  The only legal combinations are:
@@ -1243,6 +1375,8 @@ public  final class OpDef extends
        * * For a sequence of tensors, the "type_list_attr" field will be set
        *   to the name of an attr with type "list(type)".
        * </pre>
+       *
+       * <code>.tensorflow.DataType type = 3;</code>
        */
       public Builder clearType() {
         
@@ -1253,11 +1387,11 @@ public  final class OpDef extends
 
       private java.lang.Object typeAttr_ = "";
       /**
-       * <code>optional string type_attr = 4;</code>
-       *
        * <pre>
        * if specified, attr must have type "type"
        * </pre>
+       *
+       * <code>string type_attr = 4;</code>
        */
       public java.lang.String getTypeAttr() {
         java.lang.Object ref = typeAttr_;
@@ -1272,11 +1406,11 @@ public  final class OpDef extends
         }
       }
       /**
-       * <code>optional string type_attr = 4;</code>
-       *
        * <pre>
        * if specified, attr must have type "type"
        * </pre>
+       *
+       * <code>string type_attr = 4;</code>
        */
       public com.google.protobuf.ByteString
           getTypeAttrBytes() {
@@ -1292,11 +1426,11 @@ public  final class OpDef extends
         }
       }
       /**
-       * <code>optional string type_attr = 4;</code>
-       *
        * <pre>
        * if specified, attr must have type "type"
        * </pre>
+       *
+       * <code>string type_attr = 4;</code>
        */
       public Builder setTypeAttr(
           java.lang.String value) {
@@ -1309,11 +1443,11 @@ public  final class OpDef extends
         return this;
       }
       /**
-       * <code>optional string type_attr = 4;</code>
-       *
        * <pre>
        * if specified, attr must have type "type"
        * </pre>
+       *
+       * <code>string type_attr = 4;</code>
        */
       public Builder clearTypeAttr() {
         
@@ -1322,11 +1456,11 @@ public  final class OpDef extends
         return this;
       }
       /**
-       * <code>optional string type_attr = 4;</code>
-       *
        * <pre>
        * if specified, attr must have type "type"
        * </pre>
+       *
+       * <code>string type_attr = 4;</code>
        */
       public Builder setTypeAttrBytes(
           com.google.protobuf.ByteString value) {
@@ -1342,11 +1476,11 @@ public  final class OpDef extends
 
       private java.lang.Object numberAttr_ = "";
       /**
-       * <code>optional string number_attr = 5;</code>
-       *
        * <pre>
        * if specified, attr must have type "int"
        * </pre>
+       *
+       * <code>string number_attr = 5;</code>
        */
       public java.lang.String getNumberAttr() {
         java.lang.Object ref = numberAttr_;
@@ -1361,11 +1495,11 @@ public  final class OpDef extends
         }
       }
       /**
-       * <code>optional string number_attr = 5;</code>
-       *
        * <pre>
        * if specified, attr must have type "int"
        * </pre>
+       *
+       * <code>string number_attr = 5;</code>
        */
       public com.google.protobuf.ByteString
           getNumberAttrBytes() {
@@ -1381,11 +1515,11 @@ public  final class OpDef extends
         }
       }
       /**
-       * <code>optional string number_attr = 5;</code>
-       *
        * <pre>
        * if specified, attr must have type "int"
        * </pre>
+       *
+       * <code>string number_attr = 5;</code>
        */
       public Builder setNumberAttr(
           java.lang.String value) {
@@ -1398,11 +1532,11 @@ public  final class OpDef extends
         return this;
       }
       /**
-       * <code>optional string number_attr = 5;</code>
-       *
        * <pre>
        * if specified, attr must have type "int"
        * </pre>
+       *
+       * <code>string number_attr = 5;</code>
        */
       public Builder clearNumberAttr() {
         
@@ -1411,11 +1545,11 @@ public  final class OpDef extends
         return this;
       }
       /**
-       * <code>optional string number_attr = 5;</code>
-       *
        * <pre>
        * if specified, attr must have type "int"
        * </pre>
+       *
+       * <code>string number_attr = 5;</code>
        */
       public Builder setNumberAttrBytes(
           com.google.protobuf.ByteString value) {
@@ -1431,12 +1565,12 @@ public  final class OpDef extends
 
       private java.lang.Object typeListAttr_ = "";
       /**
-       * <code>optional string type_list_attr = 6;</code>
-       *
        * <pre>
        * If specified, attr must have type "list(type)", and none of
        * type, type_attr, and number_attr may be specified.
        * </pre>
+       *
+       * <code>string type_list_attr = 6;</code>
        */
       public java.lang.String getTypeListAttr() {
         java.lang.Object ref = typeListAttr_;
@@ -1451,12 +1585,12 @@ public  final class OpDef extends
         }
       }
       /**
-       * <code>optional string type_list_attr = 6;</code>
-       *
        * <pre>
        * If specified, attr must have type "list(type)", and none of
        * type, type_attr, and number_attr may be specified.
        * </pre>
+       *
+       * <code>string type_list_attr = 6;</code>
        */
       public com.google.protobuf.ByteString
           getTypeListAttrBytes() {
@@ -1472,12 +1606,12 @@ public  final class OpDef extends
         }
       }
       /**
-       * <code>optional string type_list_attr = 6;</code>
-       *
        * <pre>
        * If specified, attr must have type "list(type)", and none of
        * type, type_attr, and number_attr may be specified.
        * </pre>
+       *
+       * <code>string type_list_attr = 6;</code>
        */
       public Builder setTypeListAttr(
           java.lang.String value) {
@@ -1490,12 +1624,12 @@ public  final class OpDef extends
         return this;
       }
       /**
-       * <code>optional string type_list_attr = 6;</code>
-       *
        * <pre>
        * If specified, attr must have type "list(type)", and none of
        * type, type_attr, and number_attr may be specified.
        * </pre>
+       *
+       * <code>string type_list_attr = 6;</code>
        */
       public Builder clearTypeListAttr() {
         
@@ -1504,12 +1638,12 @@ public  final class OpDef extends
         return this;
       }
       /**
-       * <code>optional string type_list_attr = 6;</code>
-       *
        * <pre>
        * If specified, attr must have type "list(type)", and none of
        * type, type_attr, and number_attr may be specified.
        * </pre>
+       *
+       * <code>string type_list_attr = 6;</code>
        */
       public Builder setTypeListAttrBytes(
           com.google.protobuf.ByteString value) {
@@ -1525,25 +1659,25 @@ public  final class OpDef extends
 
       private boolean isRef_ ;
       /**
-       * <code>optional bool is_ref = 16;</code>
-       *
        * <pre>
        * For inputs: if true, the inputs are required to be refs.
        *   By default, inputs can be either refs or non-refs.
        * For outputs: if true, outputs are refs, otherwise they are not.
        * </pre>
+       *
+       * <code>bool is_ref = 16;</code>
        */
       public boolean getIsRef() {
         return isRef_;
       }
       /**
-       * <code>optional bool is_ref = 16;</code>
-       *
        * <pre>
        * For inputs: if true, the inputs are required to be refs.
        *   By default, inputs can be either refs or non-refs.
        * For outputs: if true, outputs are refs, otherwise they are not.
        * </pre>
+       *
+       * <code>bool is_ref = 16;</code>
        */
       public Builder setIsRef(boolean value) {
         
@@ -1552,13 +1686,13 @@ public  final class OpDef extends
         return this;
       }
       /**
-       * <code>optional bool is_ref = 16;</code>
-       *
        * <pre>
        * For inputs: if true, the inputs are required to be refs.
        *   By default, inputs can be either refs or non-refs.
        * For outputs: if true, outputs are refs, otherwise they are not.
        * </pre>
+       *
+       * <code>bool is_ref = 16;</code>
        */
       public Builder clearIsRef() {
         
@@ -1568,12 +1702,12 @@ public  final class OpDef extends
       }
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return this;
+        return super.setUnknownFieldsProto3(unknownFields);
       }
 
       public final Builder mergeUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return this;
+        return super.mergeUnknownFields(unknownFields);
       }
 
 
@@ -1596,16 +1730,7 @@ public  final class OpDef extends
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
-        try {
-          return new ArgDef(input, extensionRegistry);
-        } catch (RuntimeException e) {
-          if (e.getCause() instanceof
-              com.google.protobuf.InvalidProtocolBufferException) {
-            throw (com.google.protobuf.InvalidProtocolBufferException)
-                e.getCause();
-          }
-          throw e;
-        }
+        return new ArgDef(input, extensionRegistry);
       }
     };
 
@@ -1629,163 +1754,164 @@ public  final class OpDef extends
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>optional string name = 1;</code>
-     *
      * <pre>
      * A descriptive name for the argument.  May be used, e.g. by the
      * Python client, as a keyword argument name, and so should match
      * the regexp "[a-z][a-z0-9_]+".
      * </pre>
+     *
+     * <code>string name = 1;</code>
      */
     java.lang.String getName();
     /**
-     * <code>optional string name = 1;</code>
-     *
      * <pre>
      * A descriptive name for the argument.  May be used, e.g. by the
      * Python client, as a keyword argument name, and so should match
      * the regexp "[a-z][a-z0-9_]+".
      * </pre>
+     *
+     * <code>string name = 1;</code>
      */
     com.google.protobuf.ByteString
         getNameBytes();
 
     /**
-     * <code>optional string type = 2;</code>
-     *
      * <pre>
      * One of the type names from attr_value.proto ("string", "list(string)",
      * "int", etc.).
      * </pre>
+     *
+     * <code>string type = 2;</code>
      */
     java.lang.String getType();
     /**
-     * <code>optional string type = 2;</code>
-     *
      * <pre>
      * One of the type names from attr_value.proto ("string", "list(string)",
      * "int", etc.).
      * </pre>
+     *
+     * <code>string type = 2;</code>
      */
     com.google.protobuf.ByteString
         getTypeBytes();
 
     /**
-     * <code>optional .tensorflow.AttrValue default_value = 3;</code>
-     *
      * <pre>
      * A reasonable default for this attribute if the user does not supply
      * a value.  If not specified, the user must supply a value.
      * </pre>
+     *
+     * <code>.tensorflow.AttrValue default_value = 3;</code>
      */
     boolean hasDefaultValue();
     /**
-     * <code>optional .tensorflow.AttrValue default_value = 3;</code>
-     *
      * <pre>
      * A reasonable default for this attribute if the user does not supply
      * a value.  If not specified, the user must supply a value.
      * </pre>
+     *
+     * <code>.tensorflow.AttrValue default_value = 3;</code>
      */
     org.tensorflow.framework.AttrValue getDefaultValue();
     /**
-     * <code>optional .tensorflow.AttrValue default_value = 3;</code>
-     *
      * <pre>
      * A reasonable default for this attribute if the user does not supply
      * a value.  If not specified, the user must supply a value.
      * </pre>
+     *
+     * <code>.tensorflow.AttrValue default_value = 3;</code>
      */
     org.tensorflow.framework.AttrValueOrBuilder getDefaultValueOrBuilder();
 
     /**
-     * <code>optional string description = 4;</code>
-     *
      * <pre>
      * Human-readable description.
      * </pre>
+     *
+     * <code>string description = 4;</code>
      */
     java.lang.String getDescription();
     /**
-     * <code>optional string description = 4;</code>
-     *
      * <pre>
      * Human-readable description.
      * </pre>
+     *
+     * <code>string description = 4;</code>
      */
     com.google.protobuf.ByteString
         getDescriptionBytes();
 
     /**
-     * <code>optional bool has_minimum = 5;</code>
-     *
      * <pre>
      * For type == "int", this is a minimum value.  For "list(___)"
      * types, this is the minimum length.
      * </pre>
+     *
+     * <code>bool has_minimum = 5;</code>
      */
     boolean getHasMinimum();
 
     /**
-     * <code>optional int64 minimum = 6;</code>
+     * <code>int64 minimum = 6;</code>
      */
     long getMinimum();
 
     /**
-     * <code>optional .tensorflow.AttrValue allowed_values = 7;</code>
-     *
      * <pre>
      * The set of allowed values.  Has type that is the "list" version
-     * of the "type" field above (uses the ..._list, fields of AttrValue).
-     * If type == "type" or "list(type)" above, then the type_list field
-     * of allowed_values has the set of allowed DataTypes.
-     * If type == "string" or "list(string)", then the s_list field has
-     * the set of allowed strings.
+     * of the "type" field above (uses the "list" field of AttrValue).
+     * If type == "type" or "list(type)" above, then the "type" field
+     * of "allowed_values.list" has the set of allowed DataTypes.
+     * If type == "string" or "list(string)", then the "s" field of
+     * "allowed_values.list" has the set of allowed strings.
      * </pre>
+     *
+     * <code>.tensorflow.AttrValue allowed_values = 7;</code>
      */
     boolean hasAllowedValues();
     /**
-     * <code>optional .tensorflow.AttrValue allowed_values = 7;</code>
-     *
      * <pre>
      * The set of allowed values.  Has type that is the "list" version
-     * of the "type" field above (uses the ..._list, fields of AttrValue).
-     * If type == "type" or "list(type)" above, then the type_list field
-     * of allowed_values has the set of allowed DataTypes.
-     * If type == "string" or "list(string)", then the s_list field has
-     * the set of allowed strings.
+     * of the "type" field above (uses the "list" field of AttrValue).
+     * If type == "type" or "list(type)" above, then the "type" field
+     * of "allowed_values.list" has the set of allowed DataTypes.
+     * If type == "string" or "list(string)", then the "s" field of
+     * "allowed_values.list" has the set of allowed strings.
      * </pre>
+     *
+     * <code>.tensorflow.AttrValue allowed_values = 7;</code>
      */
     org.tensorflow.framework.AttrValue getAllowedValues();
     /**
-     * <code>optional .tensorflow.AttrValue allowed_values = 7;</code>
-     *
      * <pre>
      * The set of allowed values.  Has type that is the "list" version
-     * of the "type" field above (uses the ..._list, fields of AttrValue).
-     * If type == "type" or "list(type)" above, then the type_list field
-     * of allowed_values has the set of allowed DataTypes.
-     * If type == "string" or "list(string)", then the s_list field has
-     * the set of allowed strings.
+     * of the "type" field above (uses the "list" field of AttrValue).
+     * If type == "type" or "list(type)" above, then the "type" field
+     * of "allowed_values.list" has the set of allowed DataTypes.
+     * If type == "string" or "list(string)", then the "s" field of
+     * "allowed_values.list" has the set of allowed strings.
      * </pre>
+     *
+     * <code>.tensorflow.AttrValue allowed_values = 7;</code>
      */
     org.tensorflow.framework.AttrValueOrBuilder getAllowedValuesOrBuilder();
   }
   /**
-   * Protobuf type {@code tensorflow.OpDef.AttrDef}
-   *
    * <pre>
    * Description of the graph-construction-time configuration of this
    * Op.  That is to say, this describes the attr fields that will
    * be specified in the NodeDef.
    * </pre>
+   *
+   * Protobuf type {@code tensorflow.OpDef.AttrDef}
    */
   public  static final class AttrDef extends
-      com.google.protobuf.GeneratedMessage implements
+      com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:tensorflow.OpDef.AttrDef)
       AttrDefOrBuilder {
+  private static final long serialVersionUID = 0L;
     // Use AttrDef.newBuilder() to construct.
-    private AttrDef(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+    private AttrDef(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
     private AttrDef() {
@@ -1799,13 +1925,19 @@ public  final class OpDef extends
     @java.lang.Override
     public final com.google.protobuf.UnknownFieldSet
     getUnknownFields() {
-      return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
+      return this.unknownFields;
     }
     private AttrDef(
         com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
       this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
       int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
       try {
         boolean done = false;
         while (!done) {
@@ -1815,19 +1947,20 @@ public  final class OpDef extends
               done = true;
               break;
             default: {
-              if (!input.skipField(tag)) {
+              if (!parseUnknownFieldProto3(
+                  input, unknownFields, extensionRegistry, tag)) {
                 done = true;
               }
               break;
             }
             case 10: {
-              String s = input.readStringRequireUtf8();
+              java.lang.String s = input.readStringRequireUtf8();
 
               name_ = s;
               break;
             }
             case 18: {
-              String s = input.readStringRequireUtf8();
+              java.lang.String s = input.readStringRequireUtf8();
 
               type_ = s;
               break;
@@ -1846,7 +1979,7 @@ public  final class OpDef extends
               break;
             }
             case 34: {
-              String s = input.readStringRequireUtf8();
+              java.lang.String s = input.readStringRequireUtf8();
 
               description_ = s;
               break;
@@ -1877,12 +2010,12 @@ public  final class OpDef extends
           }
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        throw new RuntimeException(e.setUnfinishedMessage(this));
+        throw e.setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
-        throw new RuntimeException(
-            new com.google.protobuf.InvalidProtocolBufferException(
-                e.getMessage()).setUnfinishedMessage(this));
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
       } finally {
+        this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
       }
     }
@@ -1891,7 +2024,7 @@ public  final class OpDef extends
       return org.tensorflow.framework.OpDefProtos.internal_static_tensorflow_OpDef_AttrDef_descriptor;
     }
 
-    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return org.tensorflow.framework.OpDefProtos.internal_static_tensorflow_OpDef_AttrDef_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
@@ -1901,13 +2034,13 @@ public  final class OpDef extends
     public static final int NAME_FIELD_NUMBER = 1;
     private volatile java.lang.Object name_;
     /**
-     * <code>optional string name = 1;</code>
-     *
      * <pre>
      * A descriptive name for the argument.  May be used, e.g. by the
      * Python client, as a keyword argument name, and so should match
      * the regexp "[a-z][a-z0-9_]+".
      * </pre>
+     *
+     * <code>string name = 1;</code>
      */
     public java.lang.String getName() {
       java.lang.Object ref = name_;
@@ -1922,13 +2055,13 @@ public  final class OpDef extends
       }
     }
     /**
-     * <code>optional string name = 1;</code>
-     *
      * <pre>
      * A descriptive name for the argument.  May be used, e.g. by the
      * Python client, as a keyword argument name, and so should match
      * the regexp "[a-z][a-z0-9_]+".
      * </pre>
+     *
+     * <code>string name = 1;</code>
      */
     public com.google.protobuf.ByteString
         getNameBytes() {
@@ -1947,12 +2080,12 @@ public  final class OpDef extends
     public static final int TYPE_FIELD_NUMBER = 2;
     private volatile java.lang.Object type_;
     /**
-     * <code>optional string type = 2;</code>
-     *
      * <pre>
      * One of the type names from attr_value.proto ("string", "list(string)",
      * "int", etc.).
      * </pre>
+     *
+     * <code>string type = 2;</code>
      */
     public java.lang.String getType() {
       java.lang.Object ref = type_;
@@ -1967,12 +2100,12 @@ public  final class OpDef extends
       }
     }
     /**
-     * <code>optional string type = 2;</code>
-     *
      * <pre>
      * One of the type names from attr_value.proto ("string", "list(string)",
      * "int", etc.).
      * </pre>
+     *
+     * <code>string type = 2;</code>
      */
     public com.google.protobuf.ByteString
         getTypeBytes() {
@@ -1991,34 +2124,34 @@ public  final class OpDef extends
     public static final int DEFAULT_VALUE_FIELD_NUMBER = 3;
     private org.tensorflow.framework.AttrValue defaultValue_;
     /**
-     * <code>optional .tensorflow.AttrValue default_value = 3;</code>
-     *
      * <pre>
      * A reasonable default for this attribute if the user does not supply
      * a value.  If not specified, the user must supply a value.
      * </pre>
+     *
+     * <code>.tensorflow.AttrValue default_value = 3;</code>
      */
     public boolean hasDefaultValue() {
       return defaultValue_ != null;
     }
     /**
-     * <code>optional .tensorflow.AttrValue default_value = 3;</code>
-     *
      * <pre>
      * A reasonable default for this attribute if the user does not supply
      * a value.  If not specified, the user must supply a value.
      * </pre>
+     *
+     * <code>.tensorflow.AttrValue default_value = 3;</code>
      */
     public org.tensorflow.framework.AttrValue getDefaultValue() {
       return defaultValue_ == null ? org.tensorflow.framework.AttrValue.getDefaultInstance() : defaultValue_;
     }
     /**
-     * <code>optional .tensorflow.AttrValue default_value = 3;</code>
-     *
      * <pre>
      * A reasonable default for this attribute if the user does not supply
      * a value.  If not specified, the user must supply a value.
      * </pre>
+     *
+     * <code>.tensorflow.AttrValue default_value = 3;</code>
      */
     public org.tensorflow.framework.AttrValueOrBuilder getDefaultValueOrBuilder() {
       return getDefaultValue();
@@ -2027,11 +2160,11 @@ public  final class OpDef extends
     public static final int DESCRIPTION_FIELD_NUMBER = 4;
     private volatile java.lang.Object description_;
     /**
-     * <code>optional string description = 4;</code>
-     *
      * <pre>
      * Human-readable description.
      * </pre>
+     *
+     * <code>string description = 4;</code>
      */
     public java.lang.String getDescription() {
       java.lang.Object ref = description_;
@@ -2046,11 +2179,11 @@ public  final class OpDef extends
       }
     }
     /**
-     * <code>optional string description = 4;</code>
-     *
      * <pre>
      * Human-readable description.
      * </pre>
+     *
+     * <code>string description = 4;</code>
      */
     public com.google.protobuf.ByteString
         getDescriptionBytes() {
@@ -2069,12 +2202,12 @@ public  final class OpDef extends
     public static final int HAS_MINIMUM_FIELD_NUMBER = 5;
     private boolean hasMinimum_;
     /**
-     * <code>optional bool has_minimum = 5;</code>
-     *
      * <pre>
      * For type == "int", this is a minimum value.  For "list(___)"
      * types, this is the minimum length.
      * </pre>
+     *
+     * <code>bool has_minimum = 5;</code>
      */
     public boolean getHasMinimum() {
       return hasMinimum_;
@@ -2083,7 +2216,7 @@ public  final class OpDef extends
     public static final int MINIMUM_FIELD_NUMBER = 6;
     private long minimum_;
     /**
-     * <code>optional int64 minimum = 6;</code>
+     * <code>int64 minimum = 6;</code>
      */
     public long getMinimum() {
       return minimum_;
@@ -2092,46 +2225,46 @@ public  final class OpDef extends
     public static final int ALLOWED_VALUES_FIELD_NUMBER = 7;
     private org.tensorflow.framework.AttrValue allowedValues_;
     /**
-     * <code>optional .tensorflow.AttrValue allowed_values = 7;</code>
-     *
      * <pre>
      * The set of allowed values.  Has type that is the "list" version
-     * of the "type" field above (uses the ..._list, fields of AttrValue).
-     * If type == "type" or "list(type)" above, then the type_list field
-     * of allowed_values has the set of allowed DataTypes.
-     * If type == "string" or "list(string)", then the s_list field has
-     * the set of allowed strings.
+     * of the "type" field above (uses the "list" field of AttrValue).
+     * If type == "type" or "list(type)" above, then the "type" field
+     * of "allowed_values.list" has the set of allowed DataTypes.
+     * If type == "string" or "list(string)", then the "s" field of
+     * "allowed_values.list" has the set of allowed strings.
      * </pre>
+     *
+     * <code>.tensorflow.AttrValue allowed_values = 7;</code>
      */
     public boolean hasAllowedValues() {
       return allowedValues_ != null;
     }
     /**
-     * <code>optional .tensorflow.AttrValue allowed_values = 7;</code>
-     *
      * <pre>
      * The set of allowed values.  Has type that is the "list" version
-     * of the "type" field above (uses the ..._list, fields of AttrValue).
-     * If type == "type" or "list(type)" above, then the type_list field
-     * of allowed_values has the set of allowed DataTypes.
-     * If type == "string" or "list(string)", then the s_list field has
-     * the set of allowed strings.
+     * of the "type" field above (uses the "list" field of AttrValue).
+     * If type == "type" or "list(type)" above, then the "type" field
+     * of "allowed_values.list" has the set of allowed DataTypes.
+     * If type == "string" or "list(string)", then the "s" field of
+     * "allowed_values.list" has the set of allowed strings.
      * </pre>
+     *
+     * <code>.tensorflow.AttrValue allowed_values = 7;</code>
      */
     public org.tensorflow.framework.AttrValue getAllowedValues() {
       return allowedValues_ == null ? org.tensorflow.framework.AttrValue.getDefaultInstance() : allowedValues_;
     }
     /**
-     * <code>optional .tensorflow.AttrValue allowed_values = 7;</code>
-     *
      * <pre>
      * The set of allowed values.  Has type that is the "list" version
-     * of the "type" field above (uses the ..._list, fields of AttrValue).
-     * If type == "type" or "list(type)" above, then the type_list field
-     * of allowed_values has the set of allowed DataTypes.
-     * If type == "string" or "list(string)", then the s_list field has
-     * the set of allowed strings.
+     * of the "type" field above (uses the "list" field of AttrValue).
+     * If type == "type" or "list(type)" above, then the "type" field
+     * of "allowed_values.list" has the set of allowed DataTypes.
+     * If type == "string" or "list(string)", then the "s" field of
+     * "allowed_values.list" has the set of allowed strings.
      * </pre>
+     *
+     * <code>.tensorflow.AttrValue allowed_values = 7;</code>
      */
     public org.tensorflow.framework.AttrValueOrBuilder getAllowedValuesOrBuilder() {
       return getAllowedValues();
@@ -2150,16 +2283,16 @@ public  final class OpDef extends
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       if (!getNameBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessage.writeString(output, 1, name_);
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, name_);
       }
       if (!getTypeBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessage.writeString(output, 2, type_);
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, type_);
       }
       if (defaultValue_ != null) {
         output.writeMessage(3, getDefaultValue());
       }
       if (!getDescriptionBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessage.writeString(output, 4, description_);
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 4, description_);
       }
       if (hasMinimum_ != false) {
         output.writeBool(5, hasMinimum_);
@@ -2170,6 +2303,7 @@ public  final class OpDef extends
       if (allowedValues_ != null) {
         output.writeMessage(7, getAllowedValues());
       }
+      unknownFields.writeTo(output);
     }
 
     public int getSerializedSize() {
@@ -2178,17 +2312,17 @@ public  final class OpDef extends
 
       size = 0;
       if (!getNameBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessage.computeStringSize(1, name_);
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, name_);
       }
       if (!getTypeBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessage.computeStringSize(2, type_);
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, type_);
       }
       if (defaultValue_ != null) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(3, getDefaultValue());
       }
       if (!getDescriptionBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessage.computeStringSize(4, description_);
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, description_);
       }
       if (hasMinimum_ != false) {
         size += com.google.protobuf.CodedOutputStream
@@ -2202,11 +2336,89 @@ public  final class OpDef extends
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(7, getAllowedValues());
       }
+      size += unknownFields.getSerializedSize();
       memoizedSize = size;
       return size;
     }
 
-    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof org.tensorflow.framework.OpDef.AttrDef)) {
+        return super.equals(obj);
+      }
+      org.tensorflow.framework.OpDef.AttrDef other = (org.tensorflow.framework.OpDef.AttrDef) obj;
+
+      boolean result = true;
+      result = result && getName()
+          .equals(other.getName());
+      result = result && getType()
+          .equals(other.getType());
+      result = result && (hasDefaultValue() == other.hasDefaultValue());
+      if (hasDefaultValue()) {
+        result = result && getDefaultValue()
+            .equals(other.getDefaultValue());
+      }
+      result = result && getDescription()
+          .equals(other.getDescription());
+      result = result && (getHasMinimum()
+          == other.getHasMinimum());
+      result = result && (getMinimum()
+          == other.getMinimum());
+      result = result && (hasAllowedValues() == other.hasAllowedValues());
+      if (hasAllowedValues()) {
+        result = result && getAllowedValues()
+            .equals(other.getAllowedValues());
+      }
+      result = result && unknownFields.equals(other.unknownFields);
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + NAME_FIELD_NUMBER;
+      hash = (53 * hash) + getName().hashCode();
+      hash = (37 * hash) + TYPE_FIELD_NUMBER;
+      hash = (53 * hash) + getType().hashCode();
+      if (hasDefaultValue()) {
+        hash = (37 * hash) + DEFAULT_VALUE_FIELD_NUMBER;
+        hash = (53 * hash) + getDefaultValue().hashCode();
+      }
+      hash = (37 * hash) + DESCRIPTION_FIELD_NUMBER;
+      hash = (53 * hash) + getDescription().hashCode();
+      hash = (37 * hash) + HAS_MINIMUM_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getHasMinimum());
+      hash = (37 * hash) + MINIMUM_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getMinimum());
+      if (hasAllowedValues()) {
+        hash = (37 * hash) + ALLOWED_VALUES_FIELD_NUMBER;
+        hash = (53 * hash) + getAllowedValues().hashCode();
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static org.tensorflow.framework.OpDef.AttrDef parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static org.tensorflow.framework.OpDef.AttrDef parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
     public static org.tensorflow.framework.OpDef.AttrDef parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -2230,34 +2442,40 @@ public  final class OpDef extends
     }
     public static org.tensorflow.framework.OpDef.AttrDef parseFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return PARSER.parseFrom(input);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
     }
     public static org.tensorflow.framework.OpDef.AttrDef parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return PARSER.parseFrom(input, extensionRegistry);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
     }
     public static org.tensorflow.framework.OpDef.AttrDef parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return PARSER.parseDelimitedFrom(input);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
     }
     public static org.tensorflow.framework.OpDef.AttrDef parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return PARSER.parseDelimitedFrom(input, extensionRegistry);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
     public static org.tensorflow.framework.OpDef.AttrDef parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
-      return PARSER.parseFrom(input);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
     }
     public static org.tensorflow.framework.OpDef.AttrDef parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return PARSER.parseFrom(input, extensionRegistry);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
     public Builder newBuilderForType() { return newBuilder(); }
@@ -2274,21 +2492,21 @@ public  final class OpDef extends
 
     @java.lang.Override
     protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
     /**
-     * Protobuf type {@code tensorflow.OpDef.AttrDef}
-     *
      * <pre>
      * Description of the graph-construction-time configuration of this
      * Op.  That is to say, this describes the attr fields that will
      * be specified in the NodeDef.
      * </pre>
+     *
+     * Protobuf type {@code tensorflow.OpDef.AttrDef}
      */
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
         // @@protoc_insertion_point(builder_implements:tensorflow.OpDef.AttrDef)
         org.tensorflow.framework.OpDef.AttrDefOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
@@ -2296,7 +2514,7 @@ public  final class OpDef extends
         return org.tensorflow.framework.OpDefProtos.internal_static_tensorflow_OpDef_AttrDef_descriptor;
       }
 
-      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return org.tensorflow.framework.OpDefProtos.internal_static_tensorflow_OpDef_AttrDef_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
@@ -2309,12 +2527,13 @@ public  final class OpDef extends
       }
 
       private Builder(
-          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
       private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
         }
       }
       public Builder clear() {
@@ -2382,6 +2601,32 @@ public  final class OpDef extends
         return result;
       }
 
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return (Builder) super.setField(field, value);
+      }
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof org.tensorflow.framework.OpDef.AttrDef) {
           return mergeFrom((org.tensorflow.framework.OpDef.AttrDef)other);
@@ -2417,6 +2662,7 @@ public  final class OpDef extends
         if (other.hasAllowedValues()) {
           mergeAllowedValues(other.getAllowedValues());
         }
+        this.mergeUnknownFields(other.unknownFields);
         onChanged();
         return this;
       }
@@ -2434,7 +2680,7 @@ public  final class OpDef extends
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
           parsedMessage = (org.tensorflow.framework.OpDef.AttrDef) e.getUnfinishedMessage();
-          throw e;
+          throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
             mergeFrom(parsedMessage);
@@ -2445,13 +2691,13 @@ public  final class OpDef extends
 
       private java.lang.Object name_ = "";
       /**
-       * <code>optional string name = 1;</code>
-       *
        * <pre>
        * A descriptive name for the argument.  May be used, e.g. by the
        * Python client, as a keyword argument name, and so should match
        * the regexp "[a-z][a-z0-9_]+".
        * </pre>
+       *
+       * <code>string name = 1;</code>
        */
       public java.lang.String getName() {
         java.lang.Object ref = name_;
@@ -2466,13 +2712,13 @@ public  final class OpDef extends
         }
       }
       /**
-       * <code>optional string name = 1;</code>
-       *
        * <pre>
        * A descriptive name for the argument.  May be used, e.g. by the
        * Python client, as a keyword argument name, and so should match
        * the regexp "[a-z][a-z0-9_]+".
        * </pre>
+       *
+       * <code>string name = 1;</code>
        */
       public com.google.protobuf.ByteString
           getNameBytes() {
@@ -2488,13 +2734,13 @@ public  final class OpDef extends
         }
       }
       /**
-       * <code>optional string name = 1;</code>
-       *
        * <pre>
        * A descriptive name for the argument.  May be used, e.g. by the
        * Python client, as a keyword argument name, and so should match
        * the regexp "[a-z][a-z0-9_]+".
        * </pre>
+       *
+       * <code>string name = 1;</code>
        */
       public Builder setName(
           java.lang.String value) {
@@ -2507,13 +2753,13 @@ public  final class OpDef extends
         return this;
       }
       /**
-       * <code>optional string name = 1;</code>
-       *
        * <pre>
        * A descriptive name for the argument.  May be used, e.g. by the
        * Python client, as a keyword argument name, and so should match
        * the regexp "[a-z][a-z0-9_]+".
        * </pre>
+       *
+       * <code>string name = 1;</code>
        */
       public Builder clearName() {
         
@@ -2522,13 +2768,13 @@ public  final class OpDef extends
         return this;
       }
       /**
-       * <code>optional string name = 1;</code>
-       *
        * <pre>
        * A descriptive name for the argument.  May be used, e.g. by the
        * Python client, as a keyword argument name, and so should match
        * the regexp "[a-z][a-z0-9_]+".
        * </pre>
+       *
+       * <code>string name = 1;</code>
        */
       public Builder setNameBytes(
           com.google.protobuf.ByteString value) {
@@ -2544,12 +2790,12 @@ public  final class OpDef extends
 
       private java.lang.Object type_ = "";
       /**
-       * <code>optional string type = 2;</code>
-       *
        * <pre>
        * One of the type names from attr_value.proto ("string", "list(string)",
        * "int", etc.).
        * </pre>
+       *
+       * <code>string type = 2;</code>
        */
       public java.lang.String getType() {
         java.lang.Object ref = type_;
@@ -2564,12 +2810,12 @@ public  final class OpDef extends
         }
       }
       /**
-       * <code>optional string type = 2;</code>
-       *
        * <pre>
        * One of the type names from attr_value.proto ("string", "list(string)",
        * "int", etc.).
        * </pre>
+       *
+       * <code>string type = 2;</code>
        */
       public com.google.protobuf.ByteString
           getTypeBytes() {
@@ -2585,12 +2831,12 @@ public  final class OpDef extends
         }
       }
       /**
-       * <code>optional string type = 2;</code>
-       *
        * <pre>
        * One of the type names from attr_value.proto ("string", "list(string)",
        * "int", etc.).
        * </pre>
+       *
+       * <code>string type = 2;</code>
        */
       public Builder setType(
           java.lang.String value) {
@@ -2603,12 +2849,12 @@ public  final class OpDef extends
         return this;
       }
       /**
-       * <code>optional string type = 2;</code>
-       *
        * <pre>
        * One of the type names from attr_value.proto ("string", "list(string)",
        * "int", etc.).
        * </pre>
+       *
+       * <code>string type = 2;</code>
        */
       public Builder clearType() {
         
@@ -2617,12 +2863,12 @@ public  final class OpDef extends
         return this;
       }
       /**
-       * <code>optional string type = 2;</code>
-       *
        * <pre>
        * One of the type names from attr_value.proto ("string", "list(string)",
        * "int", etc.).
        * </pre>
+       *
+       * <code>string type = 2;</code>
        */
       public Builder setTypeBytes(
           com.google.protobuf.ByteString value) {
@@ -2637,26 +2883,26 @@ public  final class OpDef extends
       }
 
       private org.tensorflow.framework.AttrValue defaultValue_ = null;
-      private com.google.protobuf.SingleFieldBuilder<
+      private com.google.protobuf.SingleFieldBuilderV3<
           org.tensorflow.framework.AttrValue, org.tensorflow.framework.AttrValue.Builder, org.tensorflow.framework.AttrValueOrBuilder> defaultValueBuilder_;
       /**
-       * <code>optional .tensorflow.AttrValue default_value = 3;</code>
-       *
        * <pre>
        * A reasonable default for this attribute if the user does not supply
        * a value.  If not specified, the user must supply a value.
        * </pre>
+       *
+       * <code>.tensorflow.AttrValue default_value = 3;</code>
        */
       public boolean hasDefaultValue() {
         return defaultValueBuilder_ != null || defaultValue_ != null;
       }
       /**
-       * <code>optional .tensorflow.AttrValue default_value = 3;</code>
-       *
        * <pre>
        * A reasonable default for this attribute if the user does not supply
        * a value.  If not specified, the user must supply a value.
        * </pre>
+       *
+       * <code>.tensorflow.AttrValue default_value = 3;</code>
        */
       public org.tensorflow.framework.AttrValue getDefaultValue() {
         if (defaultValueBuilder_ == null) {
@@ -2666,12 +2912,12 @@ public  final class OpDef extends
         }
       }
       /**
-       * <code>optional .tensorflow.AttrValue default_value = 3;</code>
-       *
        * <pre>
        * A reasonable default for this attribute if the user does not supply
        * a value.  If not specified, the user must supply a value.
        * </pre>
+       *
+       * <code>.tensorflow.AttrValue default_value = 3;</code>
        */
       public Builder setDefaultValue(org.tensorflow.framework.AttrValue value) {
         if (defaultValueBuilder_ == null) {
@@ -2687,12 +2933,12 @@ public  final class OpDef extends
         return this;
       }
       /**
-       * <code>optional .tensorflow.AttrValue default_value = 3;</code>
-       *
        * <pre>
        * A reasonable default for this attribute if the user does not supply
        * a value.  If not specified, the user must supply a value.
        * </pre>
+       *
+       * <code>.tensorflow.AttrValue default_value = 3;</code>
        */
       public Builder setDefaultValue(
           org.tensorflow.framework.AttrValue.Builder builderForValue) {
@@ -2706,12 +2952,12 @@ public  final class OpDef extends
         return this;
       }
       /**
-       * <code>optional .tensorflow.AttrValue default_value = 3;</code>
-       *
        * <pre>
        * A reasonable default for this attribute if the user does not supply
        * a value.  If not specified, the user must supply a value.
        * </pre>
+       *
+       * <code>.tensorflow.AttrValue default_value = 3;</code>
        */
       public Builder mergeDefaultValue(org.tensorflow.framework.AttrValue value) {
         if (defaultValueBuilder_ == null) {
@@ -2729,12 +2975,12 @@ public  final class OpDef extends
         return this;
       }
       /**
-       * <code>optional .tensorflow.AttrValue default_value = 3;</code>
-       *
        * <pre>
        * A reasonable default for this attribute if the user does not supply
        * a value.  If not specified, the user must supply a value.
        * </pre>
+       *
+       * <code>.tensorflow.AttrValue default_value = 3;</code>
        */
       public Builder clearDefaultValue() {
         if (defaultValueBuilder_ == null) {
@@ -2748,12 +2994,12 @@ public  final class OpDef extends
         return this;
       }
       /**
-       * <code>optional .tensorflow.AttrValue default_value = 3;</code>
-       *
        * <pre>
        * A reasonable default for this attribute if the user does not supply
        * a value.  If not specified, the user must supply a value.
        * </pre>
+       *
+       * <code>.tensorflow.AttrValue default_value = 3;</code>
        */
       public org.tensorflow.framework.AttrValue.Builder getDefaultValueBuilder() {
         
@@ -2761,12 +3007,12 @@ public  final class OpDef extends
         return getDefaultValueFieldBuilder().getBuilder();
       }
       /**
-       * <code>optional .tensorflow.AttrValue default_value = 3;</code>
-       *
        * <pre>
        * A reasonable default for this attribute if the user does not supply
        * a value.  If not specified, the user must supply a value.
        * </pre>
+       *
+       * <code>.tensorflow.AttrValue default_value = 3;</code>
        */
       public org.tensorflow.framework.AttrValueOrBuilder getDefaultValueOrBuilder() {
         if (defaultValueBuilder_ != null) {
@@ -2777,18 +3023,18 @@ public  final class OpDef extends
         }
       }
       /**
-       * <code>optional .tensorflow.AttrValue default_value = 3;</code>
-       *
        * <pre>
        * A reasonable default for this attribute if the user does not supply
        * a value.  If not specified, the user must supply a value.
        * </pre>
+       *
+       * <code>.tensorflow.AttrValue default_value = 3;</code>
        */
-      private com.google.protobuf.SingleFieldBuilder<
+      private com.google.protobuf.SingleFieldBuilderV3<
           org.tensorflow.framework.AttrValue, org.tensorflow.framework.AttrValue.Builder, org.tensorflow.framework.AttrValueOrBuilder> 
           getDefaultValueFieldBuilder() {
         if (defaultValueBuilder_ == null) {
-          defaultValueBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+          defaultValueBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
               org.tensorflow.framework.AttrValue, org.tensorflow.framework.AttrValue.Builder, org.tensorflow.framework.AttrValueOrBuilder>(
                   getDefaultValue(),
                   getParentForChildren(),
@@ -2800,11 +3046,11 @@ public  final class OpDef extends
 
       private java.lang.Object description_ = "";
       /**
-       * <code>optional string description = 4;</code>
-       *
        * <pre>
        * Human-readable description.
        * </pre>
+       *
+       * <code>string description = 4;</code>
        */
       public java.lang.String getDescription() {
         java.lang.Object ref = description_;
@@ -2819,11 +3065,11 @@ public  final class OpDef extends
         }
       }
       /**
-       * <code>optional string description = 4;</code>
-       *
        * <pre>
        * Human-readable description.
        * </pre>
+       *
+       * <code>string description = 4;</code>
        */
       public com.google.protobuf.ByteString
           getDescriptionBytes() {
@@ -2839,11 +3085,11 @@ public  final class OpDef extends
         }
       }
       /**
-       * <code>optional string description = 4;</code>
-       *
        * <pre>
        * Human-readable description.
        * </pre>
+       *
+       * <code>string description = 4;</code>
        */
       public Builder setDescription(
           java.lang.String value) {
@@ -2856,11 +3102,11 @@ public  final class OpDef extends
         return this;
       }
       /**
-       * <code>optional string description = 4;</code>
-       *
        * <pre>
        * Human-readable description.
        * </pre>
+       *
+       * <code>string description = 4;</code>
        */
       public Builder clearDescription() {
         
@@ -2869,11 +3115,11 @@ public  final class OpDef extends
         return this;
       }
       /**
-       * <code>optional string description = 4;</code>
-       *
        * <pre>
        * Human-readable description.
        * </pre>
+       *
+       * <code>string description = 4;</code>
        */
       public Builder setDescriptionBytes(
           com.google.protobuf.ByteString value) {
@@ -2889,23 +3135,23 @@ public  final class OpDef extends
 
       private boolean hasMinimum_ ;
       /**
-       * <code>optional bool has_minimum = 5;</code>
-       *
        * <pre>
        * For type == "int", this is a minimum value.  For "list(___)"
        * types, this is the minimum length.
        * </pre>
+       *
+       * <code>bool has_minimum = 5;</code>
        */
       public boolean getHasMinimum() {
         return hasMinimum_;
       }
       /**
-       * <code>optional bool has_minimum = 5;</code>
-       *
        * <pre>
        * For type == "int", this is a minimum value.  For "list(___)"
        * types, this is the minimum length.
        * </pre>
+       *
+       * <code>bool has_minimum = 5;</code>
        */
       public Builder setHasMinimum(boolean value) {
         
@@ -2914,12 +3160,12 @@ public  final class OpDef extends
         return this;
       }
       /**
-       * <code>optional bool has_minimum = 5;</code>
-       *
        * <pre>
        * For type == "int", this is a minimum value.  For "list(___)"
        * types, this is the minimum length.
        * </pre>
+       *
+       * <code>bool has_minimum = 5;</code>
        */
       public Builder clearHasMinimum() {
         
@@ -2930,13 +3176,13 @@ public  final class OpDef extends
 
       private long minimum_ ;
       /**
-       * <code>optional int64 minimum = 6;</code>
+       * <code>int64 minimum = 6;</code>
        */
       public long getMinimum() {
         return minimum_;
       }
       /**
-       * <code>optional int64 minimum = 6;</code>
+       * <code>int64 minimum = 6;</code>
        */
       public Builder setMinimum(long value) {
         
@@ -2945,7 +3191,7 @@ public  final class OpDef extends
         return this;
       }
       /**
-       * <code>optional int64 minimum = 6;</code>
+       * <code>int64 minimum = 6;</code>
        */
       public Builder clearMinimum() {
         
@@ -2955,34 +3201,34 @@ public  final class OpDef extends
       }
 
       private org.tensorflow.framework.AttrValue allowedValues_ = null;
-      private com.google.protobuf.SingleFieldBuilder<
+      private com.google.protobuf.SingleFieldBuilderV3<
           org.tensorflow.framework.AttrValue, org.tensorflow.framework.AttrValue.Builder, org.tensorflow.framework.AttrValueOrBuilder> allowedValuesBuilder_;
       /**
-       * <code>optional .tensorflow.AttrValue allowed_values = 7;</code>
-       *
        * <pre>
        * The set of allowed values.  Has type that is the "list" version
-       * of the "type" field above (uses the ..._list, fields of AttrValue).
-       * If type == "type" or "list(type)" above, then the type_list field
-       * of allowed_values has the set of allowed DataTypes.
-       * If type == "string" or "list(string)", then the s_list field has
-       * the set of allowed strings.
+       * of the "type" field above (uses the "list" field of AttrValue).
+       * If type == "type" or "list(type)" above, then the "type" field
+       * of "allowed_values.list" has the set of allowed DataTypes.
+       * If type == "string" or "list(string)", then the "s" field of
+       * "allowed_values.list" has the set of allowed strings.
        * </pre>
+       *
+       * <code>.tensorflow.AttrValue allowed_values = 7;</code>
        */
       public boolean hasAllowedValues() {
         return allowedValuesBuilder_ != null || allowedValues_ != null;
       }
       /**
-       * <code>optional .tensorflow.AttrValue allowed_values = 7;</code>
-       *
        * <pre>
        * The set of allowed values.  Has type that is the "list" version
-       * of the "type" field above (uses the ..._list, fields of AttrValue).
-       * If type == "type" or "list(type)" above, then the type_list field
-       * of allowed_values has the set of allowed DataTypes.
-       * If type == "string" or "list(string)", then the s_list field has
-       * the set of allowed strings.
+       * of the "type" field above (uses the "list" field of AttrValue).
+       * If type == "type" or "list(type)" above, then the "type" field
+       * of "allowed_values.list" has the set of allowed DataTypes.
+       * If type == "string" or "list(string)", then the "s" field of
+       * "allowed_values.list" has the set of allowed strings.
        * </pre>
+       *
+       * <code>.tensorflow.AttrValue allowed_values = 7;</code>
        */
       public org.tensorflow.framework.AttrValue getAllowedValues() {
         if (allowedValuesBuilder_ == null) {
@@ -2992,16 +3238,16 @@ public  final class OpDef extends
         }
       }
       /**
-       * <code>optional .tensorflow.AttrValue allowed_values = 7;</code>
-       *
        * <pre>
        * The set of allowed values.  Has type that is the "list" version
-       * of the "type" field above (uses the ..._list, fields of AttrValue).
-       * If type == "type" or "list(type)" above, then the type_list field
-       * of allowed_values has the set of allowed DataTypes.
-       * If type == "string" or "list(string)", then the s_list field has
-       * the set of allowed strings.
+       * of the "type" field above (uses the "list" field of AttrValue).
+       * If type == "type" or "list(type)" above, then the "type" field
+       * of "allowed_values.list" has the set of allowed DataTypes.
+       * If type == "string" or "list(string)", then the "s" field of
+       * "allowed_values.list" has the set of allowed strings.
        * </pre>
+       *
+       * <code>.tensorflow.AttrValue allowed_values = 7;</code>
        */
       public Builder setAllowedValues(org.tensorflow.framework.AttrValue value) {
         if (allowedValuesBuilder_ == null) {
@@ -3017,16 +3263,16 @@ public  final class OpDef extends
         return this;
       }
       /**
-       * <code>optional .tensorflow.AttrValue allowed_values = 7;</code>
-       *
        * <pre>
        * The set of allowed values.  Has type that is the "list" version
-       * of the "type" field above (uses the ..._list, fields of AttrValue).
-       * If type == "type" or "list(type)" above, then the type_list field
-       * of allowed_values has the set of allowed DataTypes.
-       * If type == "string" or "list(string)", then the s_list field has
-       * the set of allowed strings.
+       * of the "type" field above (uses the "list" field of AttrValue).
+       * If type == "type" or "list(type)" above, then the "type" field
+       * of "allowed_values.list" has the set of allowed DataTypes.
+       * If type == "string" or "list(string)", then the "s" field of
+       * "allowed_values.list" has the set of allowed strings.
        * </pre>
+       *
+       * <code>.tensorflow.AttrValue allowed_values = 7;</code>
        */
       public Builder setAllowedValues(
           org.tensorflow.framework.AttrValue.Builder builderForValue) {
@@ -3040,16 +3286,16 @@ public  final class OpDef extends
         return this;
       }
       /**
-       * <code>optional .tensorflow.AttrValue allowed_values = 7;</code>
-       *
        * <pre>
        * The set of allowed values.  Has type that is the "list" version
-       * of the "type" field above (uses the ..._list, fields of AttrValue).
-       * If type == "type" or "list(type)" above, then the type_list field
-       * of allowed_values has the set of allowed DataTypes.
-       * If type == "string" or "list(string)", then the s_list field has
-       * the set of allowed strings.
+       * of the "type" field above (uses the "list" field of AttrValue).
+       * If type == "type" or "list(type)" above, then the "type" field
+       * of "allowed_values.list" has the set of allowed DataTypes.
+       * If type == "string" or "list(string)", then the "s" field of
+       * "allowed_values.list" has the set of allowed strings.
        * </pre>
+       *
+       * <code>.tensorflow.AttrValue allowed_values = 7;</code>
        */
       public Builder mergeAllowedValues(org.tensorflow.framework.AttrValue value) {
         if (allowedValuesBuilder_ == null) {
@@ -3067,16 +3313,16 @@ public  final class OpDef extends
         return this;
       }
       /**
-       * <code>optional .tensorflow.AttrValue allowed_values = 7;</code>
-       *
        * <pre>
        * The set of allowed values.  Has type that is the "list" version
-       * of the "type" field above (uses the ..._list, fields of AttrValue).
-       * If type == "type" or "list(type)" above, then the type_list field
-       * of allowed_values has the set of allowed DataTypes.
-       * If type == "string" or "list(string)", then the s_list field has
-       * the set of allowed strings.
+       * of the "type" field above (uses the "list" field of AttrValue).
+       * If type == "type" or "list(type)" above, then the "type" field
+       * of "allowed_values.list" has the set of allowed DataTypes.
+       * If type == "string" or "list(string)", then the "s" field of
+       * "allowed_values.list" has the set of allowed strings.
        * </pre>
+       *
+       * <code>.tensorflow.AttrValue allowed_values = 7;</code>
        */
       public Builder clearAllowedValues() {
         if (allowedValuesBuilder_ == null) {
@@ -3090,16 +3336,16 @@ public  final class OpDef extends
         return this;
       }
       /**
-       * <code>optional .tensorflow.AttrValue allowed_values = 7;</code>
-       *
        * <pre>
        * The set of allowed values.  Has type that is the "list" version
-       * of the "type" field above (uses the ..._list, fields of AttrValue).
-       * If type == "type" or "list(type)" above, then the type_list field
-       * of allowed_values has the set of allowed DataTypes.
-       * If type == "string" or "list(string)", then the s_list field has
-       * the set of allowed strings.
+       * of the "type" field above (uses the "list" field of AttrValue).
+       * If type == "type" or "list(type)" above, then the "type" field
+       * of "allowed_values.list" has the set of allowed DataTypes.
+       * If type == "string" or "list(string)", then the "s" field of
+       * "allowed_values.list" has the set of allowed strings.
        * </pre>
+       *
+       * <code>.tensorflow.AttrValue allowed_values = 7;</code>
        */
       public org.tensorflow.framework.AttrValue.Builder getAllowedValuesBuilder() {
         
@@ -3107,16 +3353,16 @@ public  final class OpDef extends
         return getAllowedValuesFieldBuilder().getBuilder();
       }
       /**
-       * <code>optional .tensorflow.AttrValue allowed_values = 7;</code>
-       *
        * <pre>
        * The set of allowed values.  Has type that is the "list" version
-       * of the "type" field above (uses the ..._list, fields of AttrValue).
-       * If type == "type" or "list(type)" above, then the type_list field
-       * of allowed_values has the set of allowed DataTypes.
-       * If type == "string" or "list(string)", then the s_list field has
-       * the set of allowed strings.
+       * of the "type" field above (uses the "list" field of AttrValue).
+       * If type == "type" or "list(type)" above, then the "type" field
+       * of "allowed_values.list" has the set of allowed DataTypes.
+       * If type == "string" or "list(string)", then the "s" field of
+       * "allowed_values.list" has the set of allowed strings.
        * </pre>
+       *
+       * <code>.tensorflow.AttrValue allowed_values = 7;</code>
        */
       public org.tensorflow.framework.AttrValueOrBuilder getAllowedValuesOrBuilder() {
         if (allowedValuesBuilder_ != null) {
@@ -3127,22 +3373,22 @@ public  final class OpDef extends
         }
       }
       /**
-       * <code>optional .tensorflow.AttrValue allowed_values = 7;</code>
-       *
        * <pre>
        * The set of allowed values.  Has type that is the "list" version
-       * of the "type" field above (uses the ..._list, fields of AttrValue).
-       * If type == "type" or "list(type)" above, then the type_list field
-       * of allowed_values has the set of allowed DataTypes.
-       * If type == "string" or "list(string)", then the s_list field has
-       * the set of allowed strings.
+       * of the "type" field above (uses the "list" field of AttrValue).
+       * If type == "type" or "list(type)" above, then the "type" field
+       * of "allowed_values.list" has the set of allowed DataTypes.
+       * If type == "string" or "list(string)", then the "s" field of
+       * "allowed_values.list" has the set of allowed strings.
        * </pre>
+       *
+       * <code>.tensorflow.AttrValue allowed_values = 7;</code>
        */
-      private com.google.protobuf.SingleFieldBuilder<
+      private com.google.protobuf.SingleFieldBuilderV3<
           org.tensorflow.framework.AttrValue, org.tensorflow.framework.AttrValue.Builder, org.tensorflow.framework.AttrValueOrBuilder> 
           getAllowedValuesFieldBuilder() {
         if (allowedValuesBuilder_ == null) {
-          allowedValuesBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+          allowedValuesBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
               org.tensorflow.framework.AttrValue, org.tensorflow.framework.AttrValue.Builder, org.tensorflow.framework.AttrValueOrBuilder>(
                   getAllowedValues(),
                   getParentForChildren(),
@@ -3153,12 +3399,12 @@ public  final class OpDef extends
       }
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return this;
+        return super.setUnknownFieldsProto3(unknownFields);
       }
 
       public final Builder mergeUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return this;
+        return super.mergeUnknownFields(unknownFields);
       }
 
 
@@ -3181,16 +3427,7 @@ public  final class OpDef extends
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
-        try {
-          return new AttrDef(input, extensionRegistry);
-        } catch (RuntimeException e) {
-          if (e.getCause() instanceof
-              com.google.protobuf.InvalidProtocolBufferException) {
-            throw (com.google.protobuf.InvalidProtocolBufferException)
-                e.getCause();
-          }
-          throw e;
-        }
+        return new AttrDef(input, extensionRegistry);
       }
     };
 
@@ -3213,12 +3450,12 @@ public  final class OpDef extends
   public static final int NAME_FIELD_NUMBER = 1;
   private volatile java.lang.Object name_;
   /**
-   * <code>optional string name = 1;</code>
-   *
    * <pre>
    * Op names starting with an underscore are reserved for internal use.
    * Names should be CamelCase and match the regexp "[A-Z][a-zA-Z0-9_]*".
    * </pre>
+   *
+   * <code>string name = 1;</code>
    */
   public java.lang.String getName() {
     java.lang.Object ref = name_;
@@ -3233,12 +3470,12 @@ public  final class OpDef extends
     }
   }
   /**
-   * <code>optional string name = 1;</code>
-   *
    * <pre>
    * Op names starting with an underscore are reserved for internal use.
    * Names should be CamelCase and match the regexp "[A-Z][a-zA-Z0-9_]*".
    * </pre>
+   *
+   * <code>string name = 1;</code>
    */
   public com.google.protobuf.ByteString
       getNameBytes() {
@@ -3257,52 +3494,52 @@ public  final class OpDef extends
   public static final int INPUT_ARG_FIELD_NUMBER = 2;
   private java.util.List<org.tensorflow.framework.OpDef.ArgDef> inputArg_;
   /**
-   * <code>repeated .tensorflow.OpDef.ArgDef input_arg = 2;</code>
-   *
    * <pre>
    * Description of the input(s).
    * </pre>
+   *
+   * <code>repeated .tensorflow.OpDef.ArgDef input_arg = 2;</code>
    */
   public java.util.List<org.tensorflow.framework.OpDef.ArgDef> getInputArgList() {
     return inputArg_;
   }
   /**
-   * <code>repeated .tensorflow.OpDef.ArgDef input_arg = 2;</code>
-   *
    * <pre>
    * Description of the input(s).
    * </pre>
+   *
+   * <code>repeated .tensorflow.OpDef.ArgDef input_arg = 2;</code>
    */
   public java.util.List<? extends org.tensorflow.framework.OpDef.ArgDefOrBuilder> 
       getInputArgOrBuilderList() {
     return inputArg_;
   }
   /**
-   * <code>repeated .tensorflow.OpDef.ArgDef input_arg = 2;</code>
-   *
    * <pre>
    * Description of the input(s).
    * </pre>
+   *
+   * <code>repeated .tensorflow.OpDef.ArgDef input_arg = 2;</code>
    */
   public int getInputArgCount() {
     return inputArg_.size();
   }
   /**
-   * <code>repeated .tensorflow.OpDef.ArgDef input_arg = 2;</code>
-   *
    * <pre>
    * Description of the input(s).
    * </pre>
+   *
+   * <code>repeated .tensorflow.OpDef.ArgDef input_arg = 2;</code>
    */
   public org.tensorflow.framework.OpDef.ArgDef getInputArg(int index) {
     return inputArg_.get(index);
   }
   /**
-   * <code>repeated .tensorflow.OpDef.ArgDef input_arg = 2;</code>
-   *
    * <pre>
    * Description of the input(s).
    * </pre>
+   *
+   * <code>repeated .tensorflow.OpDef.ArgDef input_arg = 2;</code>
    */
   public org.tensorflow.framework.OpDef.ArgDefOrBuilder getInputArgOrBuilder(
       int index) {
@@ -3312,52 +3549,52 @@ public  final class OpDef extends
   public static final int OUTPUT_ARG_FIELD_NUMBER = 3;
   private java.util.List<org.tensorflow.framework.OpDef.ArgDef> outputArg_;
   /**
-   * <code>repeated .tensorflow.OpDef.ArgDef output_arg = 3;</code>
-   *
    * <pre>
    * Description of the output(s).
    * </pre>
+   *
+   * <code>repeated .tensorflow.OpDef.ArgDef output_arg = 3;</code>
    */
   public java.util.List<org.tensorflow.framework.OpDef.ArgDef> getOutputArgList() {
     return outputArg_;
   }
   /**
-   * <code>repeated .tensorflow.OpDef.ArgDef output_arg = 3;</code>
-   *
    * <pre>
    * Description of the output(s).
    * </pre>
+   *
+   * <code>repeated .tensorflow.OpDef.ArgDef output_arg = 3;</code>
    */
   public java.util.List<? extends org.tensorflow.framework.OpDef.ArgDefOrBuilder> 
       getOutputArgOrBuilderList() {
     return outputArg_;
   }
   /**
-   * <code>repeated .tensorflow.OpDef.ArgDef output_arg = 3;</code>
-   *
    * <pre>
    * Description of the output(s).
    * </pre>
+   *
+   * <code>repeated .tensorflow.OpDef.ArgDef output_arg = 3;</code>
    */
   public int getOutputArgCount() {
     return outputArg_.size();
   }
   /**
-   * <code>repeated .tensorflow.OpDef.ArgDef output_arg = 3;</code>
-   *
    * <pre>
    * Description of the output(s).
    * </pre>
+   *
+   * <code>repeated .tensorflow.OpDef.ArgDef output_arg = 3;</code>
    */
   public org.tensorflow.framework.OpDef.ArgDef getOutputArg(int index) {
     return outputArg_.get(index);
   }
   /**
-   * <code>repeated .tensorflow.OpDef.ArgDef output_arg = 3;</code>
-   *
    * <pre>
    * Description of the output(s).
    * </pre>
+   *
+   * <code>repeated .tensorflow.OpDef.ArgDef output_arg = 3;</code>
    */
   public org.tensorflow.framework.OpDef.ArgDefOrBuilder getOutputArgOrBuilder(
       int index) {
@@ -3399,14 +3636,47 @@ public  final class OpDef extends
     return attr_.get(index);
   }
 
+  public static final int DEPRECATION_FIELD_NUMBER = 8;
+  private org.tensorflow.framework.OpDeprecation deprecation_;
+  /**
+   * <pre>
+   * Optional deprecation based on GraphDef versions.
+   * </pre>
+   *
+   * <code>.tensorflow.OpDeprecation deprecation = 8;</code>
+   */
+  public boolean hasDeprecation() {
+    return deprecation_ != null;
+  }
+  /**
+   * <pre>
+   * Optional deprecation based on GraphDef versions.
+   * </pre>
+   *
+   * <code>.tensorflow.OpDeprecation deprecation = 8;</code>
+   */
+  public org.tensorflow.framework.OpDeprecation getDeprecation() {
+    return deprecation_ == null ? org.tensorflow.framework.OpDeprecation.getDefaultInstance() : deprecation_;
+  }
+  /**
+   * <pre>
+   * Optional deprecation based on GraphDef versions.
+   * </pre>
+   *
+   * <code>.tensorflow.OpDeprecation deprecation = 8;</code>
+   */
+  public org.tensorflow.framework.OpDeprecationOrBuilder getDeprecationOrBuilder() {
+    return getDeprecation();
+  }
+
   public static final int SUMMARY_FIELD_NUMBER = 5;
   private volatile java.lang.Object summary_;
   /**
-   * <code>optional string summary = 5;</code>
-   *
    * <pre>
    * One-line human-readable description of what the Op does.
    * </pre>
+   *
+   * <code>string summary = 5;</code>
    */
   public java.lang.String getSummary() {
     java.lang.Object ref = summary_;
@@ -3421,11 +3691,11 @@ public  final class OpDef extends
     }
   }
   /**
-   * <code>optional string summary = 5;</code>
-   *
    * <pre>
    * One-line human-readable description of what the Op does.
    * </pre>
+   *
+   * <code>string summary = 5;</code>
    */
   public com.google.protobuf.ByteString
       getSummaryBytes() {
@@ -3444,11 +3714,11 @@ public  final class OpDef extends
   public static final int DESCRIPTION_FIELD_NUMBER = 6;
   private volatile java.lang.Object description_;
   /**
-   * <code>optional string description = 6;</code>
-   *
    * <pre>
    * Additional, longer human-readable description of what the Op does.
    * </pre>
+   *
+   * <code>string description = 6;</code>
    */
   public java.lang.String getDescription() {
     java.lang.Object ref = description_;
@@ -3463,11 +3733,11 @@ public  final class OpDef extends
     }
   }
   /**
-   * <code>optional string description = 6;</code>
-   *
    * <pre>
    * Additional, longer human-readable description of what the Op does.
    * </pre>
+   *
+   * <code>string description = 6;</code>
    */
   public com.google.protobuf.ByteString
       getDescriptionBytes() {
@@ -3486,11 +3756,11 @@ public  final class OpDef extends
   public static final int IS_COMMUTATIVE_FIELD_NUMBER = 18;
   private boolean isCommutative_;
   /**
-   * <code>optional bool is_commutative = 18;</code>
-   *
    * <pre>
    * True if the operation is commutative ("op(a,b) == op(b,a)" for all inputs)
    * </pre>
+   *
+   * <code>bool is_commutative = 18;</code>
    */
   public boolean getIsCommutative() {
     return isCommutative_;
@@ -3499,8 +3769,6 @@ public  final class OpDef extends
   public static final int IS_AGGREGATE_FIELD_NUMBER = 16;
   private boolean isAggregate_;
   /**
-   * <code>optional bool is_aggregate = 16;</code>
-   *
    * <pre>
    * If is_aggregate is true, then this operation accepts N &gt;= 2
    * inputs and produces 1 output all of the same type.  Should be
@@ -3511,6 +3779,8 @@ public  final class OpDef extends
    * groups of nearby devices) before communicating.
    * TODO(josh11b): Implement that optimization.
    * </pre>
+   *
+   * <code>bool is_aggregate = 16;</code>
    */
   public boolean getIsAggregate() {
     return isAggregate_;
@@ -3519,8 +3789,6 @@ public  final class OpDef extends
   public static final int IS_STATEFUL_FIELD_NUMBER = 17;
   private boolean isStateful_;
   /**
-   * <code>optional bool is_stateful = 17;</code>
-   *
    * <pre>
    * By default Ops may be moved between devices.  Stateful ops should
    * either not be moved, or should only be moved if that state can also
@@ -3528,6 +3796,8 @@ public  final class OpDef extends
    * Stateful ops are guaranteed to never be optimized away by Common
    * Subexpression Elimination (CSE).
    * </pre>
+   *
+   * <code>bool is_stateful = 17;</code>
    */
   public boolean getIsStateful() {
     return isStateful_;
@@ -3536,14 +3806,14 @@ public  final class OpDef extends
   public static final int ALLOWS_UNINITIALIZED_INPUT_FIELD_NUMBER = 19;
   private boolean allowsUninitializedInput_;
   /**
-   * <code>optional bool allows_uninitialized_input = 19;</code>
-   *
    * <pre>
    * By default, all inputs to an Op must be initialized Tensors.  Ops
    * that may initialize tensors for the first time should set this
    * field to true, to allow the Op to take an uninitialized Tensor as
    * input.
    * </pre>
+   *
+   * <code>bool allows_uninitialized_input = 19;</code>
    */
   public boolean getAllowsUninitializedInput() {
     return allowsUninitializedInput_;
@@ -3562,7 +3832,7 @@ public  final class OpDef extends
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
     if (!getNameBytes().isEmpty()) {
-      com.google.protobuf.GeneratedMessage.writeString(output, 1, name_);
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 1, name_);
     }
     for (int i = 0; i < inputArg_.size(); i++) {
       output.writeMessage(2, inputArg_.get(i));
@@ -3574,10 +3844,13 @@ public  final class OpDef extends
       output.writeMessage(4, attr_.get(i));
     }
     if (!getSummaryBytes().isEmpty()) {
-      com.google.protobuf.GeneratedMessage.writeString(output, 5, summary_);
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 5, summary_);
     }
     if (!getDescriptionBytes().isEmpty()) {
-      com.google.protobuf.GeneratedMessage.writeString(output, 6, description_);
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 6, description_);
+    }
+    if (deprecation_ != null) {
+      output.writeMessage(8, getDeprecation());
     }
     if (isAggregate_ != false) {
       output.writeBool(16, isAggregate_);
@@ -3591,6 +3864,7 @@ public  final class OpDef extends
     if (allowsUninitializedInput_ != false) {
       output.writeBool(19, allowsUninitializedInput_);
     }
+    unknownFields.writeTo(output);
   }
 
   public int getSerializedSize() {
@@ -3599,7 +3873,7 @@ public  final class OpDef extends
 
     size = 0;
     if (!getNameBytes().isEmpty()) {
-      size += com.google.protobuf.GeneratedMessage.computeStringSize(1, name_);
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, name_);
     }
     for (int i = 0; i < inputArg_.size(); i++) {
       size += com.google.protobuf.CodedOutputStream
@@ -3614,10 +3888,14 @@ public  final class OpDef extends
         .computeMessageSize(4, attr_.get(i));
     }
     if (!getSummaryBytes().isEmpty()) {
-      size += com.google.protobuf.GeneratedMessage.computeStringSize(5, summary_);
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(5, summary_);
     }
     if (!getDescriptionBytes().isEmpty()) {
-      size += com.google.protobuf.GeneratedMessage.computeStringSize(6, description_);
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(6, description_);
+    }
+    if (deprecation_ != null) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(8, getDeprecation());
     }
     if (isAggregate_ != false) {
       size += com.google.protobuf.CodedOutputStream
@@ -3635,11 +3913,108 @@ public  final class OpDef extends
       size += com.google.protobuf.CodedOutputStream
         .computeBoolSize(19, allowsUninitializedInput_);
     }
+    size += unknownFields.getSerializedSize();
     memoizedSize = size;
     return size;
   }
 
-  private static final long serialVersionUID = 0L;
+  @java.lang.Override
+  public boolean equals(final java.lang.Object obj) {
+    if (obj == this) {
+     return true;
+    }
+    if (!(obj instanceof org.tensorflow.framework.OpDef)) {
+      return super.equals(obj);
+    }
+    org.tensorflow.framework.OpDef other = (org.tensorflow.framework.OpDef) obj;
+
+    boolean result = true;
+    result = result && getName()
+        .equals(other.getName());
+    result = result && getInputArgList()
+        .equals(other.getInputArgList());
+    result = result && getOutputArgList()
+        .equals(other.getOutputArgList());
+    result = result && getAttrList()
+        .equals(other.getAttrList());
+    result = result && (hasDeprecation() == other.hasDeprecation());
+    if (hasDeprecation()) {
+      result = result && getDeprecation()
+          .equals(other.getDeprecation());
+    }
+    result = result && getSummary()
+        .equals(other.getSummary());
+    result = result && getDescription()
+        .equals(other.getDescription());
+    result = result && (getIsCommutative()
+        == other.getIsCommutative());
+    result = result && (getIsAggregate()
+        == other.getIsAggregate());
+    result = result && (getIsStateful()
+        == other.getIsStateful());
+    result = result && (getAllowsUninitializedInput()
+        == other.getAllowsUninitializedInput());
+    result = result && unknownFields.equals(other.unknownFields);
+    return result;
+  }
+
+  @java.lang.Override
+  public int hashCode() {
+    if (memoizedHashCode != 0) {
+      return memoizedHashCode;
+    }
+    int hash = 41;
+    hash = (19 * hash) + getDescriptor().hashCode();
+    hash = (37 * hash) + NAME_FIELD_NUMBER;
+    hash = (53 * hash) + getName().hashCode();
+    if (getInputArgCount() > 0) {
+      hash = (37 * hash) + INPUT_ARG_FIELD_NUMBER;
+      hash = (53 * hash) + getInputArgList().hashCode();
+    }
+    if (getOutputArgCount() > 0) {
+      hash = (37 * hash) + OUTPUT_ARG_FIELD_NUMBER;
+      hash = (53 * hash) + getOutputArgList().hashCode();
+    }
+    if (getAttrCount() > 0) {
+      hash = (37 * hash) + ATTR_FIELD_NUMBER;
+      hash = (53 * hash) + getAttrList().hashCode();
+    }
+    if (hasDeprecation()) {
+      hash = (37 * hash) + DEPRECATION_FIELD_NUMBER;
+      hash = (53 * hash) + getDeprecation().hashCode();
+    }
+    hash = (37 * hash) + SUMMARY_FIELD_NUMBER;
+    hash = (53 * hash) + getSummary().hashCode();
+    hash = (37 * hash) + DESCRIPTION_FIELD_NUMBER;
+    hash = (53 * hash) + getDescription().hashCode();
+    hash = (37 * hash) + IS_COMMUTATIVE_FIELD_NUMBER;
+    hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+        getIsCommutative());
+    hash = (37 * hash) + IS_AGGREGATE_FIELD_NUMBER;
+    hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+        getIsAggregate());
+    hash = (37 * hash) + IS_STATEFUL_FIELD_NUMBER;
+    hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+        getIsStateful());
+    hash = (37 * hash) + ALLOWS_UNINITIALIZED_INPUT_FIELD_NUMBER;
+    hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+        getAllowsUninitializedInput());
+    hash = (29 * hash) + unknownFields.hashCode();
+    memoizedHashCode = hash;
+    return hash;
+  }
+
+  public static org.tensorflow.framework.OpDef parseFrom(
+      java.nio.ByteBuffer data)
+      throws com.google.protobuf.InvalidProtocolBufferException {
+    return PARSER.parseFrom(data);
+  }
+  public static org.tensorflow.framework.OpDef parseFrom(
+      java.nio.ByteBuffer data,
+      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+      throws com.google.protobuf.InvalidProtocolBufferException {
+    return PARSER.parseFrom(data, extensionRegistry);
+  }
   public static org.tensorflow.framework.OpDef parseFrom(
       com.google.protobuf.ByteString data)
       throws com.google.protobuf.InvalidProtocolBufferException {
@@ -3663,34 +4038,40 @@ public  final class OpDef extends
   }
   public static org.tensorflow.framework.OpDef parseFrom(java.io.InputStream input)
       throws java.io.IOException {
-    return PARSER.parseFrom(input);
+    return com.google.protobuf.GeneratedMessageV3
+        .parseWithIOException(PARSER, input);
   }
   public static org.tensorflow.framework.OpDef parseFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
-    return PARSER.parseFrom(input, extensionRegistry);
+    return com.google.protobuf.GeneratedMessageV3
+        .parseWithIOException(PARSER, input, extensionRegistry);
   }
   public static org.tensorflow.framework.OpDef parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
-    return PARSER.parseDelimitedFrom(input);
+    return com.google.protobuf.GeneratedMessageV3
+        .parseDelimitedWithIOException(PARSER, input);
   }
   public static org.tensorflow.framework.OpDef parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
-    return PARSER.parseDelimitedFrom(input, extensionRegistry);
+    return com.google.protobuf.GeneratedMessageV3
+        .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
   }
   public static org.tensorflow.framework.OpDef parseFrom(
       com.google.protobuf.CodedInputStream input)
       throws java.io.IOException {
-    return PARSER.parseFrom(input);
+    return com.google.protobuf.GeneratedMessageV3
+        .parseWithIOException(PARSER, input);
   }
   public static org.tensorflow.framework.OpDef parseFrom(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
-    return PARSER.parseFrom(input, extensionRegistry);
+    return com.google.protobuf.GeneratedMessageV3
+        .parseWithIOException(PARSER, input, extensionRegistry);
   }
 
   public Builder newBuilderForType() { return newBuilder(); }
@@ -3707,20 +4088,21 @@ public  final class OpDef extends
 
   @java.lang.Override
   protected Builder newBuilderForType(
-      com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
     Builder builder = new Builder(parent);
     return builder;
   }
   /**
-   * Protobuf type {@code tensorflow.OpDef}
-   *
    * <pre>
    * Defines an operation. A NodeDef in a GraphDef specifies an Op by
    * using the "op" field which should match the name of a OpDef.
+   * LINT.IfChange
    * </pre>
+   *
+   * Protobuf type {@code tensorflow.OpDef}
    */
   public static final class Builder extends
-      com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+      com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
       // @@protoc_insertion_point(builder_implements:tensorflow.OpDef)
       org.tensorflow.framework.OpDefOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
@@ -3728,7 +4110,7 @@ public  final class OpDef extends
       return org.tensorflow.framework.OpDefProtos.internal_static_tensorflow_OpDef_descriptor;
     }
 
-    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return org.tensorflow.framework.OpDefProtos.internal_static_tensorflow_OpDef_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
@@ -3741,12 +4123,13 @@ public  final class OpDef extends
     }
 
     private Builder(
-        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       super(parent);
       maybeForceBuilderInitialization();
     }
     private void maybeForceBuilderInitialization() {
-      if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+      if (com.google.protobuf.GeneratedMessageV3
+              .alwaysUseFieldBuilders) {
         getInputArgFieldBuilder();
         getOutputArgFieldBuilder();
         getAttrFieldBuilder();
@@ -3773,6 +4156,12 @@ public  final class OpDef extends
         bitField0_ = (bitField0_ & ~0x00000008);
       } else {
         attrBuilder_.clear();
+      }
+      if (deprecationBuilder_ == null) {
+        deprecation_ = null;
+      } else {
+        deprecation_ = null;
+        deprecationBuilder_ = null;
       }
       summary_ = "";
 
@@ -3838,6 +4227,11 @@ public  final class OpDef extends
       } else {
         result.attr_ = attrBuilder_.build();
       }
+      if (deprecationBuilder_ == null) {
+        result.deprecation_ = deprecation_;
+      } else {
+        result.deprecation_ = deprecationBuilder_.build();
+      }
       result.summary_ = summary_;
       result.description_ = description_;
       result.isCommutative_ = isCommutative_;
@@ -3849,6 +4243,32 @@ public  final class OpDef extends
       return result;
     }
 
+    public Builder clone() {
+      return (Builder) super.clone();
+    }
+    public Builder setField(
+        com.google.protobuf.Descriptors.FieldDescriptor field,
+        java.lang.Object value) {
+      return (Builder) super.setField(field, value);
+    }
+    public Builder clearField(
+        com.google.protobuf.Descriptors.FieldDescriptor field) {
+      return (Builder) super.clearField(field);
+    }
+    public Builder clearOneof(
+        com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+      return (Builder) super.clearOneof(oneof);
+    }
+    public Builder setRepeatedField(
+        com.google.protobuf.Descriptors.FieldDescriptor field,
+        int index, java.lang.Object value) {
+      return (Builder) super.setRepeatedField(field, index, value);
+    }
+    public Builder addRepeatedField(
+        com.google.protobuf.Descriptors.FieldDescriptor field,
+        java.lang.Object value) {
+      return (Builder) super.addRepeatedField(field, value);
+    }
     public Builder mergeFrom(com.google.protobuf.Message other) {
       if (other instanceof org.tensorflow.framework.OpDef) {
         return mergeFrom((org.tensorflow.framework.OpDef)other);
@@ -3883,7 +4303,7 @@ public  final class OpDef extends
             inputArg_ = other.inputArg_;
             bitField0_ = (bitField0_ & ~0x00000002);
             inputArgBuilder_ = 
-              com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
+              com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
                  getInputArgFieldBuilder() : null;
           } else {
             inputArgBuilder_.addAllMessages(other.inputArg_);
@@ -3909,7 +4329,7 @@ public  final class OpDef extends
             outputArg_ = other.outputArg_;
             bitField0_ = (bitField0_ & ~0x00000004);
             outputArgBuilder_ = 
-              com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
+              com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
                  getOutputArgFieldBuilder() : null;
           } else {
             outputArgBuilder_.addAllMessages(other.outputArg_);
@@ -3935,12 +4355,15 @@ public  final class OpDef extends
             attr_ = other.attr_;
             bitField0_ = (bitField0_ & ~0x00000008);
             attrBuilder_ = 
-              com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
+              com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
                  getAttrFieldBuilder() : null;
           } else {
             attrBuilder_.addAllMessages(other.attr_);
           }
         }
+      }
+      if (other.hasDeprecation()) {
+        mergeDeprecation(other.getDeprecation());
       }
       if (!other.getSummary().isEmpty()) {
         summary_ = other.summary_;
@@ -3962,6 +4385,7 @@ public  final class OpDef extends
       if (other.getAllowsUninitializedInput() != false) {
         setAllowsUninitializedInput(other.getAllowsUninitializedInput());
       }
+      this.mergeUnknownFields(other.unknownFields);
       onChanged();
       return this;
     }
@@ -3979,7 +4403,7 @@ public  final class OpDef extends
         parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
         parsedMessage = (org.tensorflow.framework.OpDef) e.getUnfinishedMessage();
-        throw e;
+        throw e.unwrapIOException();
       } finally {
         if (parsedMessage != null) {
           mergeFrom(parsedMessage);
@@ -3991,12 +4415,12 @@ public  final class OpDef extends
 
     private java.lang.Object name_ = "";
     /**
-     * <code>optional string name = 1;</code>
-     *
      * <pre>
      * Op names starting with an underscore are reserved for internal use.
      * Names should be CamelCase and match the regexp "[A-Z][a-zA-Z0-9_]*".
      * </pre>
+     *
+     * <code>string name = 1;</code>
      */
     public java.lang.String getName() {
       java.lang.Object ref = name_;
@@ -4011,12 +4435,12 @@ public  final class OpDef extends
       }
     }
     /**
-     * <code>optional string name = 1;</code>
-     *
      * <pre>
      * Op names starting with an underscore are reserved for internal use.
      * Names should be CamelCase and match the regexp "[A-Z][a-zA-Z0-9_]*".
      * </pre>
+     *
+     * <code>string name = 1;</code>
      */
     public com.google.protobuf.ByteString
         getNameBytes() {
@@ -4032,12 +4456,12 @@ public  final class OpDef extends
       }
     }
     /**
-     * <code>optional string name = 1;</code>
-     *
      * <pre>
      * Op names starting with an underscore are reserved for internal use.
      * Names should be CamelCase and match the regexp "[A-Z][a-zA-Z0-9_]*".
      * </pre>
+     *
+     * <code>string name = 1;</code>
      */
     public Builder setName(
         java.lang.String value) {
@@ -4050,12 +4474,12 @@ public  final class OpDef extends
       return this;
     }
     /**
-     * <code>optional string name = 1;</code>
-     *
      * <pre>
      * Op names starting with an underscore are reserved for internal use.
      * Names should be CamelCase and match the regexp "[A-Z][a-zA-Z0-9_]*".
      * </pre>
+     *
+     * <code>string name = 1;</code>
      */
     public Builder clearName() {
       
@@ -4064,12 +4488,12 @@ public  final class OpDef extends
       return this;
     }
     /**
-     * <code>optional string name = 1;</code>
-     *
      * <pre>
      * Op names starting with an underscore are reserved for internal use.
      * Names should be CamelCase and match the regexp "[A-Z][a-zA-Z0-9_]*".
      * </pre>
+     *
+     * <code>string name = 1;</code>
      */
     public Builder setNameBytes(
         com.google.protobuf.ByteString value) {
@@ -4092,15 +4516,15 @@ public  final class OpDef extends
        }
     }
 
-    private com.google.protobuf.RepeatedFieldBuilder<
+    private com.google.protobuf.RepeatedFieldBuilderV3<
         org.tensorflow.framework.OpDef.ArgDef, org.tensorflow.framework.OpDef.ArgDef.Builder, org.tensorflow.framework.OpDef.ArgDefOrBuilder> inputArgBuilder_;
 
     /**
-     * <code>repeated .tensorflow.OpDef.ArgDef input_arg = 2;</code>
-     *
      * <pre>
      * Description of the input(s).
      * </pre>
+     *
+     * <code>repeated .tensorflow.OpDef.ArgDef input_arg = 2;</code>
      */
     public java.util.List<org.tensorflow.framework.OpDef.ArgDef> getInputArgList() {
       if (inputArgBuilder_ == null) {
@@ -4110,11 +4534,11 @@ public  final class OpDef extends
       }
     }
     /**
-     * <code>repeated .tensorflow.OpDef.ArgDef input_arg = 2;</code>
-     *
      * <pre>
      * Description of the input(s).
      * </pre>
+     *
+     * <code>repeated .tensorflow.OpDef.ArgDef input_arg = 2;</code>
      */
     public int getInputArgCount() {
       if (inputArgBuilder_ == null) {
@@ -4124,11 +4548,11 @@ public  final class OpDef extends
       }
     }
     /**
-     * <code>repeated .tensorflow.OpDef.ArgDef input_arg = 2;</code>
-     *
      * <pre>
      * Description of the input(s).
      * </pre>
+     *
+     * <code>repeated .tensorflow.OpDef.ArgDef input_arg = 2;</code>
      */
     public org.tensorflow.framework.OpDef.ArgDef getInputArg(int index) {
       if (inputArgBuilder_ == null) {
@@ -4138,11 +4562,11 @@ public  final class OpDef extends
       }
     }
     /**
-     * <code>repeated .tensorflow.OpDef.ArgDef input_arg = 2;</code>
-     *
      * <pre>
      * Description of the input(s).
      * </pre>
+     *
+     * <code>repeated .tensorflow.OpDef.ArgDef input_arg = 2;</code>
      */
     public Builder setInputArg(
         int index, org.tensorflow.framework.OpDef.ArgDef value) {
@@ -4159,11 +4583,11 @@ public  final class OpDef extends
       return this;
     }
     /**
-     * <code>repeated .tensorflow.OpDef.ArgDef input_arg = 2;</code>
-     *
      * <pre>
      * Description of the input(s).
      * </pre>
+     *
+     * <code>repeated .tensorflow.OpDef.ArgDef input_arg = 2;</code>
      */
     public Builder setInputArg(
         int index, org.tensorflow.framework.OpDef.ArgDef.Builder builderForValue) {
@@ -4177,11 +4601,11 @@ public  final class OpDef extends
       return this;
     }
     /**
-     * <code>repeated .tensorflow.OpDef.ArgDef input_arg = 2;</code>
-     *
      * <pre>
      * Description of the input(s).
      * </pre>
+     *
+     * <code>repeated .tensorflow.OpDef.ArgDef input_arg = 2;</code>
      */
     public Builder addInputArg(org.tensorflow.framework.OpDef.ArgDef value) {
       if (inputArgBuilder_ == null) {
@@ -4197,11 +4621,11 @@ public  final class OpDef extends
       return this;
     }
     /**
-     * <code>repeated .tensorflow.OpDef.ArgDef input_arg = 2;</code>
-     *
      * <pre>
      * Description of the input(s).
      * </pre>
+     *
+     * <code>repeated .tensorflow.OpDef.ArgDef input_arg = 2;</code>
      */
     public Builder addInputArg(
         int index, org.tensorflow.framework.OpDef.ArgDef value) {
@@ -4218,11 +4642,11 @@ public  final class OpDef extends
       return this;
     }
     /**
-     * <code>repeated .tensorflow.OpDef.ArgDef input_arg = 2;</code>
-     *
      * <pre>
      * Description of the input(s).
      * </pre>
+     *
+     * <code>repeated .tensorflow.OpDef.ArgDef input_arg = 2;</code>
      */
     public Builder addInputArg(
         org.tensorflow.framework.OpDef.ArgDef.Builder builderForValue) {
@@ -4236,11 +4660,11 @@ public  final class OpDef extends
       return this;
     }
     /**
-     * <code>repeated .tensorflow.OpDef.ArgDef input_arg = 2;</code>
-     *
      * <pre>
      * Description of the input(s).
      * </pre>
+     *
+     * <code>repeated .tensorflow.OpDef.ArgDef input_arg = 2;</code>
      */
     public Builder addInputArg(
         int index, org.tensorflow.framework.OpDef.ArgDef.Builder builderForValue) {
@@ -4254,11 +4678,11 @@ public  final class OpDef extends
       return this;
     }
     /**
-     * <code>repeated .tensorflow.OpDef.ArgDef input_arg = 2;</code>
-     *
      * <pre>
      * Description of the input(s).
      * </pre>
+     *
+     * <code>repeated .tensorflow.OpDef.ArgDef input_arg = 2;</code>
      */
     public Builder addAllInputArg(
         java.lang.Iterable<? extends org.tensorflow.framework.OpDef.ArgDef> values) {
@@ -4273,11 +4697,11 @@ public  final class OpDef extends
       return this;
     }
     /**
-     * <code>repeated .tensorflow.OpDef.ArgDef input_arg = 2;</code>
-     *
      * <pre>
      * Description of the input(s).
      * </pre>
+     *
+     * <code>repeated .tensorflow.OpDef.ArgDef input_arg = 2;</code>
      */
     public Builder clearInputArg() {
       if (inputArgBuilder_ == null) {
@@ -4290,11 +4714,11 @@ public  final class OpDef extends
       return this;
     }
     /**
-     * <code>repeated .tensorflow.OpDef.ArgDef input_arg = 2;</code>
-     *
      * <pre>
      * Description of the input(s).
      * </pre>
+     *
+     * <code>repeated .tensorflow.OpDef.ArgDef input_arg = 2;</code>
      */
     public Builder removeInputArg(int index) {
       if (inputArgBuilder_ == null) {
@@ -4307,22 +4731,22 @@ public  final class OpDef extends
       return this;
     }
     /**
-     * <code>repeated .tensorflow.OpDef.ArgDef input_arg = 2;</code>
-     *
      * <pre>
      * Description of the input(s).
      * </pre>
+     *
+     * <code>repeated .tensorflow.OpDef.ArgDef input_arg = 2;</code>
      */
     public org.tensorflow.framework.OpDef.ArgDef.Builder getInputArgBuilder(
         int index) {
       return getInputArgFieldBuilder().getBuilder(index);
     }
     /**
-     * <code>repeated .tensorflow.OpDef.ArgDef input_arg = 2;</code>
-     *
      * <pre>
      * Description of the input(s).
      * </pre>
+     *
+     * <code>repeated .tensorflow.OpDef.ArgDef input_arg = 2;</code>
      */
     public org.tensorflow.framework.OpDef.ArgDefOrBuilder getInputArgOrBuilder(
         int index) {
@@ -4332,11 +4756,11 @@ public  final class OpDef extends
       }
     }
     /**
-     * <code>repeated .tensorflow.OpDef.ArgDef input_arg = 2;</code>
-     *
      * <pre>
      * Description of the input(s).
      * </pre>
+     *
+     * <code>repeated .tensorflow.OpDef.ArgDef input_arg = 2;</code>
      */
     public java.util.List<? extends org.tensorflow.framework.OpDef.ArgDefOrBuilder> 
          getInputArgOrBuilderList() {
@@ -4347,22 +4771,22 @@ public  final class OpDef extends
       }
     }
     /**
-     * <code>repeated .tensorflow.OpDef.ArgDef input_arg = 2;</code>
-     *
      * <pre>
      * Description of the input(s).
      * </pre>
+     *
+     * <code>repeated .tensorflow.OpDef.ArgDef input_arg = 2;</code>
      */
     public org.tensorflow.framework.OpDef.ArgDef.Builder addInputArgBuilder() {
       return getInputArgFieldBuilder().addBuilder(
           org.tensorflow.framework.OpDef.ArgDef.getDefaultInstance());
     }
     /**
-     * <code>repeated .tensorflow.OpDef.ArgDef input_arg = 2;</code>
-     *
      * <pre>
      * Description of the input(s).
      * </pre>
+     *
+     * <code>repeated .tensorflow.OpDef.ArgDef input_arg = 2;</code>
      */
     public org.tensorflow.framework.OpDef.ArgDef.Builder addInputArgBuilder(
         int index) {
@@ -4370,21 +4794,21 @@ public  final class OpDef extends
           index, org.tensorflow.framework.OpDef.ArgDef.getDefaultInstance());
     }
     /**
-     * <code>repeated .tensorflow.OpDef.ArgDef input_arg = 2;</code>
-     *
      * <pre>
      * Description of the input(s).
      * </pre>
+     *
+     * <code>repeated .tensorflow.OpDef.ArgDef input_arg = 2;</code>
      */
     public java.util.List<org.tensorflow.framework.OpDef.ArgDef.Builder> 
          getInputArgBuilderList() {
       return getInputArgFieldBuilder().getBuilderList();
     }
-    private com.google.protobuf.RepeatedFieldBuilder<
+    private com.google.protobuf.RepeatedFieldBuilderV3<
         org.tensorflow.framework.OpDef.ArgDef, org.tensorflow.framework.OpDef.ArgDef.Builder, org.tensorflow.framework.OpDef.ArgDefOrBuilder> 
         getInputArgFieldBuilder() {
       if (inputArgBuilder_ == null) {
-        inputArgBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
+        inputArgBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
             org.tensorflow.framework.OpDef.ArgDef, org.tensorflow.framework.OpDef.ArgDef.Builder, org.tensorflow.framework.OpDef.ArgDefOrBuilder>(
                 inputArg_,
                 ((bitField0_ & 0x00000002) == 0x00000002),
@@ -4404,15 +4828,15 @@ public  final class OpDef extends
        }
     }
 
-    private com.google.protobuf.RepeatedFieldBuilder<
+    private com.google.protobuf.RepeatedFieldBuilderV3<
         org.tensorflow.framework.OpDef.ArgDef, org.tensorflow.framework.OpDef.ArgDef.Builder, org.tensorflow.framework.OpDef.ArgDefOrBuilder> outputArgBuilder_;
 
     /**
-     * <code>repeated .tensorflow.OpDef.ArgDef output_arg = 3;</code>
-     *
      * <pre>
      * Description of the output(s).
      * </pre>
+     *
+     * <code>repeated .tensorflow.OpDef.ArgDef output_arg = 3;</code>
      */
     public java.util.List<org.tensorflow.framework.OpDef.ArgDef> getOutputArgList() {
       if (outputArgBuilder_ == null) {
@@ -4422,11 +4846,11 @@ public  final class OpDef extends
       }
     }
     /**
-     * <code>repeated .tensorflow.OpDef.ArgDef output_arg = 3;</code>
-     *
      * <pre>
      * Description of the output(s).
      * </pre>
+     *
+     * <code>repeated .tensorflow.OpDef.ArgDef output_arg = 3;</code>
      */
     public int getOutputArgCount() {
       if (outputArgBuilder_ == null) {
@@ -4436,11 +4860,11 @@ public  final class OpDef extends
       }
     }
     /**
-     * <code>repeated .tensorflow.OpDef.ArgDef output_arg = 3;</code>
-     *
      * <pre>
      * Description of the output(s).
      * </pre>
+     *
+     * <code>repeated .tensorflow.OpDef.ArgDef output_arg = 3;</code>
      */
     public org.tensorflow.framework.OpDef.ArgDef getOutputArg(int index) {
       if (outputArgBuilder_ == null) {
@@ -4450,11 +4874,11 @@ public  final class OpDef extends
       }
     }
     /**
-     * <code>repeated .tensorflow.OpDef.ArgDef output_arg = 3;</code>
-     *
      * <pre>
      * Description of the output(s).
      * </pre>
+     *
+     * <code>repeated .tensorflow.OpDef.ArgDef output_arg = 3;</code>
      */
     public Builder setOutputArg(
         int index, org.tensorflow.framework.OpDef.ArgDef value) {
@@ -4471,11 +4895,11 @@ public  final class OpDef extends
       return this;
     }
     /**
-     * <code>repeated .tensorflow.OpDef.ArgDef output_arg = 3;</code>
-     *
      * <pre>
      * Description of the output(s).
      * </pre>
+     *
+     * <code>repeated .tensorflow.OpDef.ArgDef output_arg = 3;</code>
      */
     public Builder setOutputArg(
         int index, org.tensorflow.framework.OpDef.ArgDef.Builder builderForValue) {
@@ -4489,11 +4913,11 @@ public  final class OpDef extends
       return this;
     }
     /**
-     * <code>repeated .tensorflow.OpDef.ArgDef output_arg = 3;</code>
-     *
      * <pre>
      * Description of the output(s).
      * </pre>
+     *
+     * <code>repeated .tensorflow.OpDef.ArgDef output_arg = 3;</code>
      */
     public Builder addOutputArg(org.tensorflow.framework.OpDef.ArgDef value) {
       if (outputArgBuilder_ == null) {
@@ -4509,11 +4933,11 @@ public  final class OpDef extends
       return this;
     }
     /**
-     * <code>repeated .tensorflow.OpDef.ArgDef output_arg = 3;</code>
-     *
      * <pre>
      * Description of the output(s).
      * </pre>
+     *
+     * <code>repeated .tensorflow.OpDef.ArgDef output_arg = 3;</code>
      */
     public Builder addOutputArg(
         int index, org.tensorflow.framework.OpDef.ArgDef value) {
@@ -4530,11 +4954,11 @@ public  final class OpDef extends
       return this;
     }
     /**
-     * <code>repeated .tensorflow.OpDef.ArgDef output_arg = 3;</code>
-     *
      * <pre>
      * Description of the output(s).
      * </pre>
+     *
+     * <code>repeated .tensorflow.OpDef.ArgDef output_arg = 3;</code>
      */
     public Builder addOutputArg(
         org.tensorflow.framework.OpDef.ArgDef.Builder builderForValue) {
@@ -4548,11 +4972,11 @@ public  final class OpDef extends
       return this;
     }
     /**
-     * <code>repeated .tensorflow.OpDef.ArgDef output_arg = 3;</code>
-     *
      * <pre>
      * Description of the output(s).
      * </pre>
+     *
+     * <code>repeated .tensorflow.OpDef.ArgDef output_arg = 3;</code>
      */
     public Builder addOutputArg(
         int index, org.tensorflow.framework.OpDef.ArgDef.Builder builderForValue) {
@@ -4566,11 +4990,11 @@ public  final class OpDef extends
       return this;
     }
     /**
-     * <code>repeated .tensorflow.OpDef.ArgDef output_arg = 3;</code>
-     *
      * <pre>
      * Description of the output(s).
      * </pre>
+     *
+     * <code>repeated .tensorflow.OpDef.ArgDef output_arg = 3;</code>
      */
     public Builder addAllOutputArg(
         java.lang.Iterable<? extends org.tensorflow.framework.OpDef.ArgDef> values) {
@@ -4585,11 +5009,11 @@ public  final class OpDef extends
       return this;
     }
     /**
-     * <code>repeated .tensorflow.OpDef.ArgDef output_arg = 3;</code>
-     *
      * <pre>
      * Description of the output(s).
      * </pre>
+     *
+     * <code>repeated .tensorflow.OpDef.ArgDef output_arg = 3;</code>
      */
     public Builder clearOutputArg() {
       if (outputArgBuilder_ == null) {
@@ -4602,11 +5026,11 @@ public  final class OpDef extends
       return this;
     }
     /**
-     * <code>repeated .tensorflow.OpDef.ArgDef output_arg = 3;</code>
-     *
      * <pre>
      * Description of the output(s).
      * </pre>
+     *
+     * <code>repeated .tensorflow.OpDef.ArgDef output_arg = 3;</code>
      */
     public Builder removeOutputArg(int index) {
       if (outputArgBuilder_ == null) {
@@ -4619,22 +5043,22 @@ public  final class OpDef extends
       return this;
     }
     /**
-     * <code>repeated .tensorflow.OpDef.ArgDef output_arg = 3;</code>
-     *
      * <pre>
      * Description of the output(s).
      * </pre>
+     *
+     * <code>repeated .tensorflow.OpDef.ArgDef output_arg = 3;</code>
      */
     public org.tensorflow.framework.OpDef.ArgDef.Builder getOutputArgBuilder(
         int index) {
       return getOutputArgFieldBuilder().getBuilder(index);
     }
     /**
-     * <code>repeated .tensorflow.OpDef.ArgDef output_arg = 3;</code>
-     *
      * <pre>
      * Description of the output(s).
      * </pre>
+     *
+     * <code>repeated .tensorflow.OpDef.ArgDef output_arg = 3;</code>
      */
     public org.tensorflow.framework.OpDef.ArgDefOrBuilder getOutputArgOrBuilder(
         int index) {
@@ -4644,11 +5068,11 @@ public  final class OpDef extends
       }
     }
     /**
-     * <code>repeated .tensorflow.OpDef.ArgDef output_arg = 3;</code>
-     *
      * <pre>
      * Description of the output(s).
      * </pre>
+     *
+     * <code>repeated .tensorflow.OpDef.ArgDef output_arg = 3;</code>
      */
     public java.util.List<? extends org.tensorflow.framework.OpDef.ArgDefOrBuilder> 
          getOutputArgOrBuilderList() {
@@ -4659,22 +5083,22 @@ public  final class OpDef extends
       }
     }
     /**
-     * <code>repeated .tensorflow.OpDef.ArgDef output_arg = 3;</code>
-     *
      * <pre>
      * Description of the output(s).
      * </pre>
+     *
+     * <code>repeated .tensorflow.OpDef.ArgDef output_arg = 3;</code>
      */
     public org.tensorflow.framework.OpDef.ArgDef.Builder addOutputArgBuilder() {
       return getOutputArgFieldBuilder().addBuilder(
           org.tensorflow.framework.OpDef.ArgDef.getDefaultInstance());
     }
     /**
-     * <code>repeated .tensorflow.OpDef.ArgDef output_arg = 3;</code>
-     *
      * <pre>
      * Description of the output(s).
      * </pre>
+     *
+     * <code>repeated .tensorflow.OpDef.ArgDef output_arg = 3;</code>
      */
     public org.tensorflow.framework.OpDef.ArgDef.Builder addOutputArgBuilder(
         int index) {
@@ -4682,21 +5106,21 @@ public  final class OpDef extends
           index, org.tensorflow.framework.OpDef.ArgDef.getDefaultInstance());
     }
     /**
-     * <code>repeated .tensorflow.OpDef.ArgDef output_arg = 3;</code>
-     *
      * <pre>
      * Description of the output(s).
      * </pre>
+     *
+     * <code>repeated .tensorflow.OpDef.ArgDef output_arg = 3;</code>
      */
     public java.util.List<org.tensorflow.framework.OpDef.ArgDef.Builder> 
          getOutputArgBuilderList() {
       return getOutputArgFieldBuilder().getBuilderList();
     }
-    private com.google.protobuf.RepeatedFieldBuilder<
+    private com.google.protobuf.RepeatedFieldBuilderV3<
         org.tensorflow.framework.OpDef.ArgDef, org.tensorflow.framework.OpDef.ArgDef.Builder, org.tensorflow.framework.OpDef.ArgDefOrBuilder> 
         getOutputArgFieldBuilder() {
       if (outputArgBuilder_ == null) {
-        outputArgBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
+        outputArgBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
             org.tensorflow.framework.OpDef.ArgDef, org.tensorflow.framework.OpDef.ArgDef.Builder, org.tensorflow.framework.OpDef.ArgDefOrBuilder>(
                 outputArg_,
                 ((bitField0_ & 0x00000004) == 0x00000004),
@@ -4716,7 +5140,7 @@ public  final class OpDef extends
        }
     }
 
-    private com.google.protobuf.RepeatedFieldBuilder<
+    private com.google.protobuf.RepeatedFieldBuilderV3<
         org.tensorflow.framework.OpDef.AttrDef, org.tensorflow.framework.OpDef.AttrDef.Builder, org.tensorflow.framework.OpDef.AttrDefOrBuilder> attrBuilder_;
 
     /**
@@ -4932,11 +5356,11 @@ public  final class OpDef extends
          getAttrBuilderList() {
       return getAttrFieldBuilder().getBuilderList();
     }
-    private com.google.protobuf.RepeatedFieldBuilder<
+    private com.google.protobuf.RepeatedFieldBuilderV3<
         org.tensorflow.framework.OpDef.AttrDef, org.tensorflow.framework.OpDef.AttrDef.Builder, org.tensorflow.framework.OpDef.AttrDefOrBuilder> 
         getAttrFieldBuilder() {
       if (attrBuilder_ == null) {
-        attrBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
+        attrBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
             org.tensorflow.framework.OpDef.AttrDef, org.tensorflow.framework.OpDef.AttrDef.Builder, org.tensorflow.framework.OpDef.AttrDefOrBuilder>(
                 attr_,
                 ((bitField0_ & 0x00000008) == 0x00000008),
@@ -4947,13 +5371,166 @@ public  final class OpDef extends
       return attrBuilder_;
     }
 
+    private org.tensorflow.framework.OpDeprecation deprecation_ = null;
+    private com.google.protobuf.SingleFieldBuilderV3<
+        org.tensorflow.framework.OpDeprecation, org.tensorflow.framework.OpDeprecation.Builder, org.tensorflow.framework.OpDeprecationOrBuilder> deprecationBuilder_;
+    /**
+     * <pre>
+     * Optional deprecation based on GraphDef versions.
+     * </pre>
+     *
+     * <code>.tensorflow.OpDeprecation deprecation = 8;</code>
+     */
+    public boolean hasDeprecation() {
+      return deprecationBuilder_ != null || deprecation_ != null;
+    }
+    /**
+     * <pre>
+     * Optional deprecation based on GraphDef versions.
+     * </pre>
+     *
+     * <code>.tensorflow.OpDeprecation deprecation = 8;</code>
+     */
+    public org.tensorflow.framework.OpDeprecation getDeprecation() {
+      if (deprecationBuilder_ == null) {
+        return deprecation_ == null ? org.tensorflow.framework.OpDeprecation.getDefaultInstance() : deprecation_;
+      } else {
+        return deprecationBuilder_.getMessage();
+      }
+    }
+    /**
+     * <pre>
+     * Optional deprecation based on GraphDef versions.
+     * </pre>
+     *
+     * <code>.tensorflow.OpDeprecation deprecation = 8;</code>
+     */
+    public Builder setDeprecation(org.tensorflow.framework.OpDeprecation value) {
+      if (deprecationBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        deprecation_ = value;
+        onChanged();
+      } else {
+        deprecationBuilder_.setMessage(value);
+      }
+
+      return this;
+    }
+    /**
+     * <pre>
+     * Optional deprecation based on GraphDef versions.
+     * </pre>
+     *
+     * <code>.tensorflow.OpDeprecation deprecation = 8;</code>
+     */
+    public Builder setDeprecation(
+        org.tensorflow.framework.OpDeprecation.Builder builderForValue) {
+      if (deprecationBuilder_ == null) {
+        deprecation_ = builderForValue.build();
+        onChanged();
+      } else {
+        deprecationBuilder_.setMessage(builderForValue.build());
+      }
+
+      return this;
+    }
+    /**
+     * <pre>
+     * Optional deprecation based on GraphDef versions.
+     * </pre>
+     *
+     * <code>.tensorflow.OpDeprecation deprecation = 8;</code>
+     */
+    public Builder mergeDeprecation(org.tensorflow.framework.OpDeprecation value) {
+      if (deprecationBuilder_ == null) {
+        if (deprecation_ != null) {
+          deprecation_ =
+            org.tensorflow.framework.OpDeprecation.newBuilder(deprecation_).mergeFrom(value).buildPartial();
+        } else {
+          deprecation_ = value;
+        }
+        onChanged();
+      } else {
+        deprecationBuilder_.mergeFrom(value);
+      }
+
+      return this;
+    }
+    /**
+     * <pre>
+     * Optional deprecation based on GraphDef versions.
+     * </pre>
+     *
+     * <code>.tensorflow.OpDeprecation deprecation = 8;</code>
+     */
+    public Builder clearDeprecation() {
+      if (deprecationBuilder_ == null) {
+        deprecation_ = null;
+        onChanged();
+      } else {
+        deprecation_ = null;
+        deprecationBuilder_ = null;
+      }
+
+      return this;
+    }
+    /**
+     * <pre>
+     * Optional deprecation based on GraphDef versions.
+     * </pre>
+     *
+     * <code>.tensorflow.OpDeprecation deprecation = 8;</code>
+     */
+    public org.tensorflow.framework.OpDeprecation.Builder getDeprecationBuilder() {
+      
+      onChanged();
+      return getDeprecationFieldBuilder().getBuilder();
+    }
+    /**
+     * <pre>
+     * Optional deprecation based on GraphDef versions.
+     * </pre>
+     *
+     * <code>.tensorflow.OpDeprecation deprecation = 8;</code>
+     */
+    public org.tensorflow.framework.OpDeprecationOrBuilder getDeprecationOrBuilder() {
+      if (deprecationBuilder_ != null) {
+        return deprecationBuilder_.getMessageOrBuilder();
+      } else {
+        return deprecation_ == null ?
+            org.tensorflow.framework.OpDeprecation.getDefaultInstance() : deprecation_;
+      }
+    }
+    /**
+     * <pre>
+     * Optional deprecation based on GraphDef versions.
+     * </pre>
+     *
+     * <code>.tensorflow.OpDeprecation deprecation = 8;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        org.tensorflow.framework.OpDeprecation, org.tensorflow.framework.OpDeprecation.Builder, org.tensorflow.framework.OpDeprecationOrBuilder> 
+        getDeprecationFieldBuilder() {
+      if (deprecationBuilder_ == null) {
+        deprecationBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            org.tensorflow.framework.OpDeprecation, org.tensorflow.framework.OpDeprecation.Builder, org.tensorflow.framework.OpDeprecationOrBuilder>(
+                getDeprecation(),
+                getParentForChildren(),
+                isClean());
+        deprecation_ = null;
+      }
+      return deprecationBuilder_;
+    }
+
     private java.lang.Object summary_ = "";
     /**
-     * <code>optional string summary = 5;</code>
-     *
      * <pre>
      * One-line human-readable description of what the Op does.
      * </pre>
+     *
+     * <code>string summary = 5;</code>
      */
     public java.lang.String getSummary() {
       java.lang.Object ref = summary_;
@@ -4968,11 +5545,11 @@ public  final class OpDef extends
       }
     }
     /**
-     * <code>optional string summary = 5;</code>
-     *
      * <pre>
      * One-line human-readable description of what the Op does.
      * </pre>
+     *
+     * <code>string summary = 5;</code>
      */
     public com.google.protobuf.ByteString
         getSummaryBytes() {
@@ -4988,11 +5565,11 @@ public  final class OpDef extends
       }
     }
     /**
-     * <code>optional string summary = 5;</code>
-     *
      * <pre>
      * One-line human-readable description of what the Op does.
      * </pre>
+     *
+     * <code>string summary = 5;</code>
      */
     public Builder setSummary(
         java.lang.String value) {
@@ -5005,11 +5582,11 @@ public  final class OpDef extends
       return this;
     }
     /**
-     * <code>optional string summary = 5;</code>
-     *
      * <pre>
      * One-line human-readable description of what the Op does.
      * </pre>
+     *
+     * <code>string summary = 5;</code>
      */
     public Builder clearSummary() {
       
@@ -5018,11 +5595,11 @@ public  final class OpDef extends
       return this;
     }
     /**
-     * <code>optional string summary = 5;</code>
-     *
      * <pre>
      * One-line human-readable description of what the Op does.
      * </pre>
+     *
+     * <code>string summary = 5;</code>
      */
     public Builder setSummaryBytes(
         com.google.protobuf.ByteString value) {
@@ -5038,11 +5615,11 @@ public  final class OpDef extends
 
     private java.lang.Object description_ = "";
     /**
-     * <code>optional string description = 6;</code>
-     *
      * <pre>
      * Additional, longer human-readable description of what the Op does.
      * </pre>
+     *
+     * <code>string description = 6;</code>
      */
     public java.lang.String getDescription() {
       java.lang.Object ref = description_;
@@ -5057,11 +5634,11 @@ public  final class OpDef extends
       }
     }
     /**
-     * <code>optional string description = 6;</code>
-     *
      * <pre>
      * Additional, longer human-readable description of what the Op does.
      * </pre>
+     *
+     * <code>string description = 6;</code>
      */
     public com.google.protobuf.ByteString
         getDescriptionBytes() {
@@ -5077,11 +5654,11 @@ public  final class OpDef extends
       }
     }
     /**
-     * <code>optional string description = 6;</code>
-     *
      * <pre>
      * Additional, longer human-readable description of what the Op does.
      * </pre>
+     *
+     * <code>string description = 6;</code>
      */
     public Builder setDescription(
         java.lang.String value) {
@@ -5094,11 +5671,11 @@ public  final class OpDef extends
       return this;
     }
     /**
-     * <code>optional string description = 6;</code>
-     *
      * <pre>
      * Additional, longer human-readable description of what the Op does.
      * </pre>
+     *
+     * <code>string description = 6;</code>
      */
     public Builder clearDescription() {
       
@@ -5107,11 +5684,11 @@ public  final class OpDef extends
       return this;
     }
     /**
-     * <code>optional string description = 6;</code>
-     *
      * <pre>
      * Additional, longer human-readable description of what the Op does.
      * </pre>
+     *
+     * <code>string description = 6;</code>
      */
     public Builder setDescriptionBytes(
         com.google.protobuf.ByteString value) {
@@ -5127,21 +5704,21 @@ public  final class OpDef extends
 
     private boolean isCommutative_ ;
     /**
-     * <code>optional bool is_commutative = 18;</code>
-     *
      * <pre>
      * True if the operation is commutative ("op(a,b) == op(b,a)" for all inputs)
      * </pre>
+     *
+     * <code>bool is_commutative = 18;</code>
      */
     public boolean getIsCommutative() {
       return isCommutative_;
     }
     /**
-     * <code>optional bool is_commutative = 18;</code>
-     *
      * <pre>
      * True if the operation is commutative ("op(a,b) == op(b,a)" for all inputs)
      * </pre>
+     *
+     * <code>bool is_commutative = 18;</code>
      */
     public Builder setIsCommutative(boolean value) {
       
@@ -5150,11 +5727,11 @@ public  final class OpDef extends
       return this;
     }
     /**
-     * <code>optional bool is_commutative = 18;</code>
-     *
      * <pre>
      * True if the operation is commutative ("op(a,b) == op(b,a)" for all inputs)
      * </pre>
+     *
+     * <code>bool is_commutative = 18;</code>
      */
     public Builder clearIsCommutative() {
       
@@ -5165,8 +5742,6 @@ public  final class OpDef extends
 
     private boolean isAggregate_ ;
     /**
-     * <code>optional bool is_aggregate = 16;</code>
-     *
      * <pre>
      * If is_aggregate is true, then this operation accepts N &gt;= 2
      * inputs and produces 1 output all of the same type.  Should be
@@ -5177,13 +5752,13 @@ public  final class OpDef extends
      * groups of nearby devices) before communicating.
      * TODO(josh11b): Implement that optimization.
      * </pre>
+     *
+     * <code>bool is_aggregate = 16;</code>
      */
     public boolean getIsAggregate() {
       return isAggregate_;
     }
     /**
-     * <code>optional bool is_aggregate = 16;</code>
-     *
      * <pre>
      * If is_aggregate is true, then this operation accepts N &gt;= 2
      * inputs and produces 1 output all of the same type.  Should be
@@ -5194,6 +5769,8 @@ public  final class OpDef extends
      * groups of nearby devices) before communicating.
      * TODO(josh11b): Implement that optimization.
      * </pre>
+     *
+     * <code>bool is_aggregate = 16;</code>
      */
     public Builder setIsAggregate(boolean value) {
       
@@ -5202,8 +5779,6 @@ public  final class OpDef extends
       return this;
     }
     /**
-     * <code>optional bool is_aggregate = 16;</code>
-     *
      * <pre>
      * If is_aggregate is true, then this operation accepts N &gt;= 2
      * inputs and produces 1 output all of the same type.  Should be
@@ -5214,6 +5789,8 @@ public  final class OpDef extends
      * groups of nearby devices) before communicating.
      * TODO(josh11b): Implement that optimization.
      * </pre>
+     *
+     * <code>bool is_aggregate = 16;</code>
      */
     public Builder clearIsAggregate() {
       
@@ -5224,8 +5801,6 @@ public  final class OpDef extends
 
     private boolean isStateful_ ;
     /**
-     * <code>optional bool is_stateful = 17;</code>
-     *
      * <pre>
      * By default Ops may be moved between devices.  Stateful ops should
      * either not be moved, or should only be moved if that state can also
@@ -5233,13 +5808,13 @@ public  final class OpDef extends
      * Stateful ops are guaranteed to never be optimized away by Common
      * Subexpression Elimination (CSE).
      * </pre>
+     *
+     * <code>bool is_stateful = 17;</code>
      */
     public boolean getIsStateful() {
       return isStateful_;
     }
     /**
-     * <code>optional bool is_stateful = 17;</code>
-     *
      * <pre>
      * By default Ops may be moved between devices.  Stateful ops should
      * either not be moved, or should only be moved if that state can also
@@ -5247,6 +5822,8 @@ public  final class OpDef extends
      * Stateful ops are guaranteed to never be optimized away by Common
      * Subexpression Elimination (CSE).
      * </pre>
+     *
+     * <code>bool is_stateful = 17;</code>
      */
     public Builder setIsStateful(boolean value) {
       
@@ -5255,8 +5832,6 @@ public  final class OpDef extends
       return this;
     }
     /**
-     * <code>optional bool is_stateful = 17;</code>
-     *
      * <pre>
      * By default Ops may be moved between devices.  Stateful ops should
      * either not be moved, or should only be moved if that state can also
@@ -5264,6 +5839,8 @@ public  final class OpDef extends
      * Stateful ops are guaranteed to never be optimized away by Common
      * Subexpression Elimination (CSE).
      * </pre>
+     *
+     * <code>bool is_stateful = 17;</code>
      */
     public Builder clearIsStateful() {
       
@@ -5274,27 +5851,27 @@ public  final class OpDef extends
 
     private boolean allowsUninitializedInput_ ;
     /**
-     * <code>optional bool allows_uninitialized_input = 19;</code>
-     *
      * <pre>
      * By default, all inputs to an Op must be initialized Tensors.  Ops
      * that may initialize tensors for the first time should set this
      * field to true, to allow the Op to take an uninitialized Tensor as
      * input.
      * </pre>
+     *
+     * <code>bool allows_uninitialized_input = 19;</code>
      */
     public boolean getAllowsUninitializedInput() {
       return allowsUninitializedInput_;
     }
     /**
-     * <code>optional bool allows_uninitialized_input = 19;</code>
-     *
      * <pre>
      * By default, all inputs to an Op must be initialized Tensors.  Ops
      * that may initialize tensors for the first time should set this
      * field to true, to allow the Op to take an uninitialized Tensor as
      * input.
      * </pre>
+     *
+     * <code>bool allows_uninitialized_input = 19;</code>
      */
     public Builder setAllowsUninitializedInput(boolean value) {
       
@@ -5303,14 +5880,14 @@ public  final class OpDef extends
       return this;
     }
     /**
-     * <code>optional bool allows_uninitialized_input = 19;</code>
-     *
      * <pre>
      * By default, all inputs to an Op must be initialized Tensors.  Ops
      * that may initialize tensors for the first time should set this
      * field to true, to allow the Op to take an uninitialized Tensor as
      * input.
      * </pre>
+     *
+     * <code>bool allows_uninitialized_input = 19;</code>
      */
     public Builder clearAllowsUninitializedInput() {
       
@@ -5320,12 +5897,12 @@ public  final class OpDef extends
     }
     public final Builder setUnknownFields(
         final com.google.protobuf.UnknownFieldSet unknownFields) {
-      return this;
+      return super.setUnknownFieldsProto3(unknownFields);
     }
 
     public final Builder mergeUnknownFields(
         final com.google.protobuf.UnknownFieldSet unknownFields) {
-      return this;
+      return super.mergeUnknownFields(unknownFields);
     }
 
 
@@ -5348,16 +5925,7 @@ public  final class OpDef extends
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      try {
-        return new OpDef(input, extensionRegistry);
-      } catch (RuntimeException e) {
-        if (e.getCause() instanceof
-            com.google.protobuf.InvalidProtocolBufferException) {
-          throw (com.google.protobuf.InvalidProtocolBufferException)
-              e.getCause();
-        }
-        throw e;
-      }
+      return new OpDef(input, extensionRegistry);
     }
   };
 

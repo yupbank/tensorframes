@@ -4,19 +4,20 @@
 package org.tensorflow.framework;
 
 /**
- * Protobuf type {@code tensorflow.HistogramProto}
- *
  * <pre>
  * Serialization format for histogram module in
  * core/lib/histogram/histogram.h
  * </pre>
+ *
+ * Protobuf type {@code tensorflow.HistogramProto}
  */
 public  final class HistogramProto extends
-    com.google.protobuf.GeneratedMessage implements
+    com.google.protobuf.GeneratedMessageV3 implements
     // @@protoc_insertion_point(message_implements:tensorflow.HistogramProto)
     HistogramProtoOrBuilder {
+private static final long serialVersionUID = 0L;
   // Use HistogramProto.newBuilder() to construct.
-  private HistogramProto(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+  private HistogramProto(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
     super(builder);
   }
   private HistogramProto() {
@@ -32,13 +33,19 @@ public  final class HistogramProto extends
   @java.lang.Override
   public final com.google.protobuf.UnknownFieldSet
   getUnknownFields() {
-    return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
+    return this.unknownFields;
   }
   private HistogramProto(
       com.google.protobuf.CodedInputStream input,
-      com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
+      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+      throws com.google.protobuf.InvalidProtocolBufferException {
     this();
+    if (extensionRegistry == null) {
+      throw new java.lang.NullPointerException();
+    }
     int mutable_bitField0_ = 0;
+    com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+        com.google.protobuf.UnknownFieldSet.newBuilder();
     try {
       boolean done = false;
       while (!done) {
@@ -48,7 +55,8 @@ public  final class HistogramProto extends
             done = true;
             break;
           default: {
-            if (!input.skipField(tag)) {
+            if (!parseUnknownFieldProto3(
+                input, unknownFields, extensionRegistry, tag)) {
               done = true;
             }
             break;
@@ -123,11 +131,10 @@ public  final class HistogramProto extends
         }
       }
     } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-      throw new RuntimeException(e.setUnfinishedMessage(this));
+      throw e.setUnfinishedMessage(this);
     } catch (java.io.IOException e) {
-      throw new RuntimeException(
-          new com.google.protobuf.InvalidProtocolBufferException(
-              e.getMessage()).setUnfinishedMessage(this));
+      throw new com.google.protobuf.InvalidProtocolBufferException(
+          e).setUnfinishedMessage(this);
     } finally {
       if (((mutable_bitField0_ & 0x00000020) == 0x00000020)) {
         bucketLimit_ = java.util.Collections.unmodifiableList(bucketLimit_);
@@ -135,6 +142,7 @@ public  final class HistogramProto extends
       if (((mutable_bitField0_ & 0x00000040) == 0x00000040)) {
         bucket_ = java.util.Collections.unmodifiableList(bucket_);
       }
+      this.unknownFields = unknownFields.build();
       makeExtensionsImmutable();
     }
   }
@@ -143,7 +151,7 @@ public  final class HistogramProto extends
     return org.tensorflow.framework.SummaryProtos.internal_static_tensorflow_HistogramProto_descriptor;
   }
 
-  protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+  protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
     return org.tensorflow.framework.SummaryProtos.internal_static_tensorflow_HistogramProto_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
@@ -154,7 +162,7 @@ public  final class HistogramProto extends
   public static final int MIN_FIELD_NUMBER = 1;
   private double min_;
   /**
-   * <code>optional double min = 1;</code>
+   * <code>double min = 1;</code>
    */
   public double getMin() {
     return min_;
@@ -163,7 +171,7 @@ public  final class HistogramProto extends
   public static final int MAX_FIELD_NUMBER = 2;
   private double max_;
   /**
-   * <code>optional double max = 2;</code>
+   * <code>double max = 2;</code>
    */
   public double getMax() {
     return max_;
@@ -172,7 +180,7 @@ public  final class HistogramProto extends
   public static final int NUM_FIELD_NUMBER = 3;
   private double num_;
   /**
-   * <code>optional double num = 3;</code>
+   * <code>double num = 3;</code>
    */
   public double getNum() {
     return num_;
@@ -181,7 +189,7 @@ public  final class HistogramProto extends
   public static final int SUM_FIELD_NUMBER = 4;
   private double sum_;
   /**
-   * <code>optional double sum = 4;</code>
+   * <code>double sum = 4;</code>
    */
   public double getSum() {
     return sum_;
@@ -190,7 +198,7 @@ public  final class HistogramProto extends
   public static final int SUM_SQUARES_FIELD_NUMBER = 5;
   private double sumSquares_;
   /**
-   * <code>optional double sum_squares = 5;</code>
+   * <code>double sum_squares = 5;</code>
    */
   public double getSumSquares() {
     return sumSquares_;
@@ -199,8 +207,6 @@ public  final class HistogramProto extends
   public static final int BUCKET_LIMIT_FIELD_NUMBER = 6;
   private java.util.List<java.lang.Double> bucketLimit_;
   /**
-   * <code>repeated double bucket_limit = 6 [packed = true];</code>
-   *
    * <pre>
    * Parallel arrays encoding the bucket boundaries and the bucket values.
    * bucket(i) is the count for the bucket i.  The range for
@@ -208,14 +214,14 @@ public  final class HistogramProto extends
    *   i == 0:  -DBL_MAX .. bucket_limit(0)
    *   i != 0:  bucket_limit(i-1) .. bucket_limit(i)
    * </pre>
+   *
+   * <code>repeated double bucket_limit = 6 [packed = true];</code>
    */
   public java.util.List<java.lang.Double>
       getBucketLimitList() {
     return bucketLimit_;
   }
   /**
-   * <code>repeated double bucket_limit = 6 [packed = true];</code>
-   *
    * <pre>
    * Parallel arrays encoding the bucket boundaries and the bucket values.
    * bucket(i) is the count for the bucket i.  The range for
@@ -223,13 +229,13 @@ public  final class HistogramProto extends
    *   i == 0:  -DBL_MAX .. bucket_limit(0)
    *   i != 0:  bucket_limit(i-1) .. bucket_limit(i)
    * </pre>
+   *
+   * <code>repeated double bucket_limit = 6 [packed = true];</code>
    */
   public int getBucketLimitCount() {
     return bucketLimit_.size();
   }
   /**
-   * <code>repeated double bucket_limit = 6 [packed = true];</code>
-   *
    * <pre>
    * Parallel arrays encoding the bucket boundaries and the bucket values.
    * bucket(i) is the count for the bucket i.  The range for
@@ -237,6 +243,8 @@ public  final class HistogramProto extends
    *   i == 0:  -DBL_MAX .. bucket_limit(0)
    *   i != 0:  bucket_limit(i-1) .. bucket_limit(i)
    * </pre>
+   *
+   * <code>repeated double bucket_limit = 6 [packed = true];</code>
    */
   public double getBucketLimit(int index) {
     return bucketLimit_.get(index);
@@ -295,19 +303,20 @@ public  final class HistogramProto extends
       output.writeDouble(5, sumSquares_);
     }
     if (getBucketLimitList().size() > 0) {
-      output.writeRawVarint32(50);
-      output.writeRawVarint32(bucketLimitMemoizedSerializedSize);
+      output.writeUInt32NoTag(50);
+      output.writeUInt32NoTag(bucketLimitMemoizedSerializedSize);
     }
     for (int i = 0; i < bucketLimit_.size(); i++) {
       output.writeDoubleNoTag(bucketLimit_.get(i));
     }
     if (getBucketList().size() > 0) {
-      output.writeRawVarint32(58);
-      output.writeRawVarint32(bucketMemoizedSerializedSize);
+      output.writeUInt32NoTag(58);
+      output.writeUInt32NoTag(bucketMemoizedSerializedSize);
     }
     for (int i = 0; i < bucket_.size(); i++) {
       output.writeDoubleNoTag(bucket_.get(i));
     }
+    unknownFields.writeTo(output);
   }
 
   public int getSerializedSize() {
@@ -357,11 +366,96 @@ public  final class HistogramProto extends
       }
       bucketMemoizedSerializedSize = dataSize;
     }
+    size += unknownFields.getSerializedSize();
     memoizedSize = size;
     return size;
   }
 
-  private static final long serialVersionUID = 0L;
+  @java.lang.Override
+  public boolean equals(final java.lang.Object obj) {
+    if (obj == this) {
+     return true;
+    }
+    if (!(obj instanceof org.tensorflow.framework.HistogramProto)) {
+      return super.equals(obj);
+    }
+    org.tensorflow.framework.HistogramProto other = (org.tensorflow.framework.HistogramProto) obj;
+
+    boolean result = true;
+    result = result && (
+        java.lang.Double.doubleToLongBits(getMin())
+        == java.lang.Double.doubleToLongBits(
+            other.getMin()));
+    result = result && (
+        java.lang.Double.doubleToLongBits(getMax())
+        == java.lang.Double.doubleToLongBits(
+            other.getMax()));
+    result = result && (
+        java.lang.Double.doubleToLongBits(getNum())
+        == java.lang.Double.doubleToLongBits(
+            other.getNum()));
+    result = result && (
+        java.lang.Double.doubleToLongBits(getSum())
+        == java.lang.Double.doubleToLongBits(
+            other.getSum()));
+    result = result && (
+        java.lang.Double.doubleToLongBits(getSumSquares())
+        == java.lang.Double.doubleToLongBits(
+            other.getSumSquares()));
+    result = result && getBucketLimitList()
+        .equals(other.getBucketLimitList());
+    result = result && getBucketList()
+        .equals(other.getBucketList());
+    result = result && unknownFields.equals(other.unknownFields);
+    return result;
+  }
+
+  @java.lang.Override
+  public int hashCode() {
+    if (memoizedHashCode != 0) {
+      return memoizedHashCode;
+    }
+    int hash = 41;
+    hash = (19 * hash) + getDescriptor().hashCode();
+    hash = (37 * hash) + MIN_FIELD_NUMBER;
+    hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+        java.lang.Double.doubleToLongBits(getMin()));
+    hash = (37 * hash) + MAX_FIELD_NUMBER;
+    hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+        java.lang.Double.doubleToLongBits(getMax()));
+    hash = (37 * hash) + NUM_FIELD_NUMBER;
+    hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+        java.lang.Double.doubleToLongBits(getNum()));
+    hash = (37 * hash) + SUM_FIELD_NUMBER;
+    hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+        java.lang.Double.doubleToLongBits(getSum()));
+    hash = (37 * hash) + SUM_SQUARES_FIELD_NUMBER;
+    hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+        java.lang.Double.doubleToLongBits(getSumSquares()));
+    if (getBucketLimitCount() > 0) {
+      hash = (37 * hash) + BUCKET_LIMIT_FIELD_NUMBER;
+      hash = (53 * hash) + getBucketLimitList().hashCode();
+    }
+    if (getBucketCount() > 0) {
+      hash = (37 * hash) + BUCKET_FIELD_NUMBER;
+      hash = (53 * hash) + getBucketList().hashCode();
+    }
+    hash = (29 * hash) + unknownFields.hashCode();
+    memoizedHashCode = hash;
+    return hash;
+  }
+
+  public static org.tensorflow.framework.HistogramProto parseFrom(
+      java.nio.ByteBuffer data)
+      throws com.google.protobuf.InvalidProtocolBufferException {
+    return PARSER.parseFrom(data);
+  }
+  public static org.tensorflow.framework.HistogramProto parseFrom(
+      java.nio.ByteBuffer data,
+      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+      throws com.google.protobuf.InvalidProtocolBufferException {
+    return PARSER.parseFrom(data, extensionRegistry);
+  }
   public static org.tensorflow.framework.HistogramProto parseFrom(
       com.google.protobuf.ByteString data)
       throws com.google.protobuf.InvalidProtocolBufferException {
@@ -385,34 +479,40 @@ public  final class HistogramProto extends
   }
   public static org.tensorflow.framework.HistogramProto parseFrom(java.io.InputStream input)
       throws java.io.IOException {
-    return PARSER.parseFrom(input);
+    return com.google.protobuf.GeneratedMessageV3
+        .parseWithIOException(PARSER, input);
   }
   public static org.tensorflow.framework.HistogramProto parseFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
-    return PARSER.parseFrom(input, extensionRegistry);
+    return com.google.protobuf.GeneratedMessageV3
+        .parseWithIOException(PARSER, input, extensionRegistry);
   }
   public static org.tensorflow.framework.HistogramProto parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
-    return PARSER.parseDelimitedFrom(input);
+    return com.google.protobuf.GeneratedMessageV3
+        .parseDelimitedWithIOException(PARSER, input);
   }
   public static org.tensorflow.framework.HistogramProto parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
-    return PARSER.parseDelimitedFrom(input, extensionRegistry);
+    return com.google.protobuf.GeneratedMessageV3
+        .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
   }
   public static org.tensorflow.framework.HistogramProto parseFrom(
       com.google.protobuf.CodedInputStream input)
       throws java.io.IOException {
-    return PARSER.parseFrom(input);
+    return com.google.protobuf.GeneratedMessageV3
+        .parseWithIOException(PARSER, input);
   }
   public static org.tensorflow.framework.HistogramProto parseFrom(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
-    return PARSER.parseFrom(input, extensionRegistry);
+    return com.google.protobuf.GeneratedMessageV3
+        .parseWithIOException(PARSER, input, extensionRegistry);
   }
 
   public Builder newBuilderForType() { return newBuilder(); }
@@ -429,20 +529,20 @@ public  final class HistogramProto extends
 
   @java.lang.Override
   protected Builder newBuilderForType(
-      com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
     Builder builder = new Builder(parent);
     return builder;
   }
   /**
-   * Protobuf type {@code tensorflow.HistogramProto}
-   *
    * <pre>
    * Serialization format for histogram module in
    * core/lib/histogram/histogram.h
    * </pre>
+   *
+   * Protobuf type {@code tensorflow.HistogramProto}
    */
   public static final class Builder extends
-      com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+      com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
       // @@protoc_insertion_point(builder_implements:tensorflow.HistogramProto)
       org.tensorflow.framework.HistogramProtoOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
@@ -450,7 +550,7 @@ public  final class HistogramProto extends
       return org.tensorflow.framework.SummaryProtos.internal_static_tensorflow_HistogramProto_descriptor;
     }
 
-    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return org.tensorflow.framework.SummaryProtos.internal_static_tensorflow_HistogramProto_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
@@ -463,12 +563,13 @@ public  final class HistogramProto extends
     }
 
     private Builder(
-        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       super(parent);
       maybeForceBuilderInitialization();
     }
     private void maybeForceBuilderInitialization() {
-      if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+      if (com.google.protobuf.GeneratedMessageV3
+              .alwaysUseFieldBuilders) {
       }
     }
     public Builder clear() {
@@ -531,6 +632,32 @@ public  final class HistogramProto extends
       return result;
     }
 
+    public Builder clone() {
+      return (Builder) super.clone();
+    }
+    public Builder setField(
+        com.google.protobuf.Descriptors.FieldDescriptor field,
+        java.lang.Object value) {
+      return (Builder) super.setField(field, value);
+    }
+    public Builder clearField(
+        com.google.protobuf.Descriptors.FieldDescriptor field) {
+      return (Builder) super.clearField(field);
+    }
+    public Builder clearOneof(
+        com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+      return (Builder) super.clearOneof(oneof);
+    }
+    public Builder setRepeatedField(
+        com.google.protobuf.Descriptors.FieldDescriptor field,
+        int index, java.lang.Object value) {
+      return (Builder) super.setRepeatedField(field, index, value);
+    }
+    public Builder addRepeatedField(
+        com.google.protobuf.Descriptors.FieldDescriptor field,
+        java.lang.Object value) {
+      return (Builder) super.addRepeatedField(field, value);
+    }
     public Builder mergeFrom(com.google.protobuf.Message other) {
       if (other instanceof org.tensorflow.framework.HistogramProto) {
         return mergeFrom((org.tensorflow.framework.HistogramProto)other);
@@ -577,6 +704,7 @@ public  final class HistogramProto extends
         }
         onChanged();
       }
+      this.mergeUnknownFields(other.unknownFields);
       onChanged();
       return this;
     }
@@ -594,7 +722,7 @@ public  final class HistogramProto extends
         parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
         parsedMessage = (org.tensorflow.framework.HistogramProto) e.getUnfinishedMessage();
-        throw e;
+        throw e.unwrapIOException();
       } finally {
         if (parsedMessage != null) {
           mergeFrom(parsedMessage);
@@ -606,13 +734,13 @@ public  final class HistogramProto extends
 
     private double min_ ;
     /**
-     * <code>optional double min = 1;</code>
+     * <code>double min = 1;</code>
      */
     public double getMin() {
       return min_;
     }
     /**
-     * <code>optional double min = 1;</code>
+     * <code>double min = 1;</code>
      */
     public Builder setMin(double value) {
       
@@ -621,7 +749,7 @@ public  final class HistogramProto extends
       return this;
     }
     /**
-     * <code>optional double min = 1;</code>
+     * <code>double min = 1;</code>
      */
     public Builder clearMin() {
       
@@ -632,13 +760,13 @@ public  final class HistogramProto extends
 
     private double max_ ;
     /**
-     * <code>optional double max = 2;</code>
+     * <code>double max = 2;</code>
      */
     public double getMax() {
       return max_;
     }
     /**
-     * <code>optional double max = 2;</code>
+     * <code>double max = 2;</code>
      */
     public Builder setMax(double value) {
       
@@ -647,7 +775,7 @@ public  final class HistogramProto extends
       return this;
     }
     /**
-     * <code>optional double max = 2;</code>
+     * <code>double max = 2;</code>
      */
     public Builder clearMax() {
       
@@ -658,13 +786,13 @@ public  final class HistogramProto extends
 
     private double num_ ;
     /**
-     * <code>optional double num = 3;</code>
+     * <code>double num = 3;</code>
      */
     public double getNum() {
       return num_;
     }
     /**
-     * <code>optional double num = 3;</code>
+     * <code>double num = 3;</code>
      */
     public Builder setNum(double value) {
       
@@ -673,7 +801,7 @@ public  final class HistogramProto extends
       return this;
     }
     /**
-     * <code>optional double num = 3;</code>
+     * <code>double num = 3;</code>
      */
     public Builder clearNum() {
       
@@ -684,13 +812,13 @@ public  final class HistogramProto extends
 
     private double sum_ ;
     /**
-     * <code>optional double sum = 4;</code>
+     * <code>double sum = 4;</code>
      */
     public double getSum() {
       return sum_;
     }
     /**
-     * <code>optional double sum = 4;</code>
+     * <code>double sum = 4;</code>
      */
     public Builder setSum(double value) {
       
@@ -699,7 +827,7 @@ public  final class HistogramProto extends
       return this;
     }
     /**
-     * <code>optional double sum = 4;</code>
+     * <code>double sum = 4;</code>
      */
     public Builder clearSum() {
       
@@ -710,13 +838,13 @@ public  final class HistogramProto extends
 
     private double sumSquares_ ;
     /**
-     * <code>optional double sum_squares = 5;</code>
+     * <code>double sum_squares = 5;</code>
      */
     public double getSumSquares() {
       return sumSquares_;
     }
     /**
-     * <code>optional double sum_squares = 5;</code>
+     * <code>double sum_squares = 5;</code>
      */
     public Builder setSumSquares(double value) {
       
@@ -725,7 +853,7 @@ public  final class HistogramProto extends
       return this;
     }
     /**
-     * <code>optional double sum_squares = 5;</code>
+     * <code>double sum_squares = 5;</code>
      */
     public Builder clearSumSquares() {
       
@@ -742,8 +870,6 @@ public  final class HistogramProto extends
        }
     }
     /**
-     * <code>repeated double bucket_limit = 6 [packed = true];</code>
-     *
      * <pre>
      * Parallel arrays encoding the bucket boundaries and the bucket values.
      * bucket(i) is the count for the bucket i.  The range for
@@ -751,14 +877,14 @@ public  final class HistogramProto extends
      *   i == 0:  -DBL_MAX .. bucket_limit(0)
      *   i != 0:  bucket_limit(i-1) .. bucket_limit(i)
      * </pre>
+     *
+     * <code>repeated double bucket_limit = 6 [packed = true];</code>
      */
     public java.util.List<java.lang.Double>
         getBucketLimitList() {
       return java.util.Collections.unmodifiableList(bucketLimit_);
     }
     /**
-     * <code>repeated double bucket_limit = 6 [packed = true];</code>
-     *
      * <pre>
      * Parallel arrays encoding the bucket boundaries and the bucket values.
      * bucket(i) is the count for the bucket i.  The range for
@@ -766,13 +892,13 @@ public  final class HistogramProto extends
      *   i == 0:  -DBL_MAX .. bucket_limit(0)
      *   i != 0:  bucket_limit(i-1) .. bucket_limit(i)
      * </pre>
+     *
+     * <code>repeated double bucket_limit = 6 [packed = true];</code>
      */
     public int getBucketLimitCount() {
       return bucketLimit_.size();
     }
     /**
-     * <code>repeated double bucket_limit = 6 [packed = true];</code>
-     *
      * <pre>
      * Parallel arrays encoding the bucket boundaries and the bucket values.
      * bucket(i) is the count for the bucket i.  The range for
@@ -780,13 +906,13 @@ public  final class HistogramProto extends
      *   i == 0:  -DBL_MAX .. bucket_limit(0)
      *   i != 0:  bucket_limit(i-1) .. bucket_limit(i)
      * </pre>
+     *
+     * <code>repeated double bucket_limit = 6 [packed = true];</code>
      */
     public double getBucketLimit(int index) {
       return bucketLimit_.get(index);
     }
     /**
-     * <code>repeated double bucket_limit = 6 [packed = true];</code>
-     *
      * <pre>
      * Parallel arrays encoding the bucket boundaries and the bucket values.
      * bucket(i) is the count for the bucket i.  The range for
@@ -794,6 +920,8 @@ public  final class HistogramProto extends
      *   i == 0:  -DBL_MAX .. bucket_limit(0)
      *   i != 0:  bucket_limit(i-1) .. bucket_limit(i)
      * </pre>
+     *
+     * <code>repeated double bucket_limit = 6 [packed = true];</code>
      */
     public Builder setBucketLimit(
         int index, double value) {
@@ -803,8 +931,6 @@ public  final class HistogramProto extends
       return this;
     }
     /**
-     * <code>repeated double bucket_limit = 6 [packed = true];</code>
-     *
      * <pre>
      * Parallel arrays encoding the bucket boundaries and the bucket values.
      * bucket(i) is the count for the bucket i.  The range for
@@ -812,6 +938,8 @@ public  final class HistogramProto extends
      *   i == 0:  -DBL_MAX .. bucket_limit(0)
      *   i != 0:  bucket_limit(i-1) .. bucket_limit(i)
      * </pre>
+     *
+     * <code>repeated double bucket_limit = 6 [packed = true];</code>
      */
     public Builder addBucketLimit(double value) {
       ensureBucketLimitIsMutable();
@@ -820,8 +948,6 @@ public  final class HistogramProto extends
       return this;
     }
     /**
-     * <code>repeated double bucket_limit = 6 [packed = true];</code>
-     *
      * <pre>
      * Parallel arrays encoding the bucket boundaries and the bucket values.
      * bucket(i) is the count for the bucket i.  The range for
@@ -829,6 +955,8 @@ public  final class HistogramProto extends
      *   i == 0:  -DBL_MAX .. bucket_limit(0)
      *   i != 0:  bucket_limit(i-1) .. bucket_limit(i)
      * </pre>
+     *
+     * <code>repeated double bucket_limit = 6 [packed = true];</code>
      */
     public Builder addAllBucketLimit(
         java.lang.Iterable<? extends java.lang.Double> values) {
@@ -839,8 +967,6 @@ public  final class HistogramProto extends
       return this;
     }
     /**
-     * <code>repeated double bucket_limit = 6 [packed = true];</code>
-     *
      * <pre>
      * Parallel arrays encoding the bucket boundaries and the bucket values.
      * bucket(i) is the count for the bucket i.  The range for
@@ -848,6 +974,8 @@ public  final class HistogramProto extends
      *   i == 0:  -DBL_MAX .. bucket_limit(0)
      *   i != 0:  bucket_limit(i-1) .. bucket_limit(i)
      * </pre>
+     *
+     * <code>repeated double bucket_limit = 6 [packed = true];</code>
      */
     public Builder clearBucketLimit() {
       bucketLimit_ = java.util.Collections.emptyList();
@@ -923,12 +1051,12 @@ public  final class HistogramProto extends
     }
     public final Builder setUnknownFields(
         final com.google.protobuf.UnknownFieldSet unknownFields) {
-      return this;
+      return super.setUnknownFieldsProto3(unknownFields);
     }
 
     public final Builder mergeUnknownFields(
         final com.google.protobuf.UnknownFieldSet unknownFields) {
-      return this;
+      return super.mergeUnknownFields(unknownFields);
     }
 
 
@@ -951,16 +1079,7 @@ public  final class HistogramProto extends
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      try {
-        return new HistogramProto(input, extensionRegistry);
-      } catch (RuntimeException e) {
-        if (e.getCause() instanceof
-            com.google.protobuf.InvalidProtocolBufferException) {
-          throw (com.google.protobuf.InvalidProtocolBufferException)
-              e.getCause();
-        }
-        throw e;
-      }
+      return new HistogramProto(input, extensionRegistry);
     }
   };
 

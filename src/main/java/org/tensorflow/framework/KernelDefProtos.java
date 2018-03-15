@@ -6,24 +6,30 @@ package org.tensorflow.framework;
 public final class KernelDefProtos {
   private KernelDefProtos() {}
   public static void registerAllExtensions(
-      com.google.protobuf.ExtensionRegistry registry) {
+      com.google.protobuf.ExtensionRegistryLite registry) {
   }
-  static com.google.protobuf.Descriptors.Descriptor
+
+  public static void registerAllExtensions(
+      com.google.protobuf.ExtensionRegistry registry) {
+    registerAllExtensions(
+        (com.google.protobuf.ExtensionRegistryLite) registry);
+  }
+  static final com.google.protobuf.Descriptors.Descriptor
     internal_static_tensorflow_KernelDef_descriptor;
-  static
-    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_tensorflow_KernelDef_fieldAccessorTable;
-  static com.google.protobuf.Descriptors.Descriptor
+  static final com.google.protobuf.Descriptors.Descriptor
     internal_static_tensorflow_KernelDef_AttrConstraint_descriptor;
-  static
-    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_tensorflow_KernelDef_AttrConstraint_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
     return descriptor;
   }
-  private static com.google.protobuf.Descriptors.FileDescriptor
+  private static  com.google.protobuf.Descriptors.FileDescriptor
       descriptor;
   static {
     java.lang.String[] descriptorData = {
@@ -35,8 +41,8 @@ public final class KernelDefProtos {
       "raint\022\027\n\017host_memory_arg\030\004 \003(\t\022\r\n\005label\030" +
       "\005 \001(\t\032M\n\016AttrConstraint\022\014\n\004name\030\001 \001(\t\022-\n" +
       "\016allowed_values\030\002 \001(\0132\025.tensorflow.AttrV" +
-      "alueB-\n\030org.tensorflow.frameworkB\017Kernel" +
-      "DefProtosP\001b\006proto3"
+      "alueB0\n\030org.tensorflow.frameworkB\017Kernel" +
+      "DefProtosP\001\370\001\001b\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -54,13 +60,13 @@ public final class KernelDefProtos {
     internal_static_tensorflow_KernelDef_descriptor =
       getDescriptor().getMessageTypes().get(0);
     internal_static_tensorflow_KernelDef_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_tensorflow_KernelDef_descriptor,
         new java.lang.String[] { "Op", "DeviceType", "Constraint", "HostMemoryArg", "Label", });
     internal_static_tensorflow_KernelDef_AttrConstraint_descriptor =
       internal_static_tensorflow_KernelDef_descriptor.getNestedTypes().get(0);
     internal_static_tensorflow_KernelDef_AttrConstraint_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_tensorflow_KernelDef_AttrConstraint_descriptor,
         new java.lang.String[] { "Name", "AllowedValues", });
     org.tensorflow.framework.AttrValueProtos.getDescriptor();

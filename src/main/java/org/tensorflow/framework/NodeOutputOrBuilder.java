@@ -8,20 +8,20 @@ public interface NodeOutputOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>optional int32 slot = 1;</code>
+   * <code>int32 slot = 1;</code>
    */
   int getSlot();
 
   /**
-   * <code>optional .tensorflow.TensorDescription tensor_description = 3;</code>
+   * <code>.tensorflow.TensorDescription tensor_description = 3;</code>
    */
   boolean hasTensorDescription();
   /**
-   * <code>optional .tensorflow.TensorDescription tensor_description = 3;</code>
+   * <code>.tensorflow.TensorDescription tensor_description = 3;</code>
    */
   org.tensorflow.framework.TensorDescription getTensorDescription();
   /**
-   * <code>optional .tensorflow.TensorDescription tensor_description = 3;</code>
+   * <code>.tensorflow.TensorDescription tensor_description = 3;</code>
    */
   org.tensorflow.framework.TensorDescriptionOrBuilder getTensorDescriptionOrBuilder();
 }

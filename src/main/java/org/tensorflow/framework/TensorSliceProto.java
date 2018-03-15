@@ -4,18 +4,19 @@
 package org.tensorflow.framework;
 
 /**
- * Protobuf type {@code tensorflow.TensorSliceProto}
- *
  * <pre>
  * Can only be interpreted if you know the corresponding TensorShape.
  * </pre>
+ *
+ * Protobuf type {@code tensorflow.TensorSliceProto}
  */
 public  final class TensorSliceProto extends
-    com.google.protobuf.GeneratedMessage implements
+    com.google.protobuf.GeneratedMessageV3 implements
     // @@protoc_insertion_point(message_implements:tensorflow.TensorSliceProto)
     TensorSliceProtoOrBuilder {
+private static final long serialVersionUID = 0L;
   // Use TensorSliceProto.newBuilder() to construct.
-  private TensorSliceProto(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+  private TensorSliceProto(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
     super(builder);
   }
   private TensorSliceProto() {
@@ -25,13 +26,19 @@ public  final class TensorSliceProto extends
   @java.lang.Override
   public final com.google.protobuf.UnknownFieldSet
   getUnknownFields() {
-    return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
+    return this.unknownFields;
   }
   private TensorSliceProto(
       com.google.protobuf.CodedInputStream input,
-      com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
+      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+      throws com.google.protobuf.InvalidProtocolBufferException {
     this();
+    if (extensionRegistry == null) {
+      throw new java.lang.NullPointerException();
+    }
     int mutable_bitField0_ = 0;
+    com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+        com.google.protobuf.UnknownFieldSet.newBuilder();
     try {
       boolean done = false;
       while (!done) {
@@ -41,7 +48,8 @@ public  final class TensorSliceProto extends
             done = true;
             break;
           default: {
-            if (!input.skipField(tag)) {
+            if (!parseUnknownFieldProto3(
+                input, unknownFields, extensionRegistry, tag)) {
               done = true;
             }
             break;
@@ -51,21 +59,22 @@ public  final class TensorSliceProto extends
               extent_ = new java.util.ArrayList<org.tensorflow.framework.TensorSliceProto.Extent>();
               mutable_bitField0_ |= 0x00000001;
             }
-            extent_.add(input.readMessage(org.tensorflow.framework.TensorSliceProto.Extent.parser(), extensionRegistry));
+            extent_.add(
+                input.readMessage(org.tensorflow.framework.TensorSliceProto.Extent.parser(), extensionRegistry));
             break;
           }
         }
       }
     } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-      throw new RuntimeException(e.setUnfinishedMessage(this));
+      throw e.setUnfinishedMessage(this);
     } catch (java.io.IOException e) {
-      throw new RuntimeException(
-          new com.google.protobuf.InvalidProtocolBufferException(
-              e.getMessage()).setUnfinishedMessage(this));
+      throw new com.google.protobuf.InvalidProtocolBufferException(
+          e).setUnfinishedMessage(this);
     } finally {
       if (((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
         extent_ = java.util.Collections.unmodifiableList(extent_);
       }
+      this.unknownFields = unknownFields.build();
       makeExtensionsImmutable();
     }
   }
@@ -74,7 +83,7 @@ public  final class TensorSliceProto extends
     return org.tensorflow.framework.TensorSliceProtos.internal_static_tensorflow_TensorSliceProto_descriptor;
   }
 
-  protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+  protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
     return org.tensorflow.framework.TensorSliceProtos.internal_static_tensorflow_TensorSliceProto_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
@@ -86,34 +95,35 @@ public  final class TensorSliceProto extends
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>optional int64 start = 1;</code>
-     *
      * <pre>
      * Start index of the slice, starting at 0.
      * </pre>
+     *
+     * <code>int64 start = 1;</code>
      */
     long getStart();
 
     /**
-     * <code>optional int64 length = 2;</code>
+     * <code>int64 length = 2;</code>
      */
     long getLength();
 
     public org.tensorflow.framework.TensorSliceProto.Extent.HasLengthCase getHasLengthCase();
   }
   /**
-   * Protobuf type {@code tensorflow.TensorSliceProto.Extent}
-   *
    * <pre>
    * Extent of the slice in one dimension.
    * </pre>
+   *
+   * Protobuf type {@code tensorflow.TensorSliceProto.Extent}
    */
   public  static final class Extent extends
-      com.google.protobuf.GeneratedMessage implements
+      com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:tensorflow.TensorSliceProto.Extent)
       ExtentOrBuilder {
+  private static final long serialVersionUID = 0L;
     // Use Extent.newBuilder() to construct.
-    private Extent(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+    private Extent(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
     private Extent() {
@@ -123,13 +133,19 @@ public  final class TensorSliceProto extends
     @java.lang.Override
     public final com.google.protobuf.UnknownFieldSet
     getUnknownFields() {
-      return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
+      return this.unknownFields;
     }
     private Extent(
         com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
       this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
       int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
       try {
         boolean done = false;
         while (!done) {
@@ -139,7 +155,8 @@ public  final class TensorSliceProto extends
               done = true;
               break;
             default: {
-              if (!input.skipField(tag)) {
+              if (!parseUnknownFieldProto3(
+                  input, unknownFields, extensionRegistry, tag)) {
                 done = true;
               }
               break;
@@ -157,12 +174,12 @@ public  final class TensorSliceProto extends
           }
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        throw new RuntimeException(e.setUnfinishedMessage(this));
+        throw e.setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
-        throw new RuntimeException(
-            new com.google.protobuf.InvalidProtocolBufferException(
-                e.getMessage()).setUnfinishedMessage(this));
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
       } finally {
+        this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
       }
     }
@@ -171,7 +188,7 @@ public  final class TensorSliceProto extends
       return org.tensorflow.framework.TensorSliceProtos.internal_static_tensorflow_TensorSliceProto_Extent_descriptor;
     }
 
-    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return org.tensorflow.framework.TensorSliceProtos.internal_static_tensorflow_TensorSliceProto_Extent_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
@@ -184,16 +201,23 @@ public  final class TensorSliceProto extends
         implements com.google.protobuf.Internal.EnumLite {
       LENGTH(2),
       HASLENGTH_NOT_SET(0);
-      private int value = 0;
+      private final int value;
       private HasLengthCase(int value) {
         this.value = value;
       }
+      /**
+       * @deprecated Use {@link #forNumber(int)} instead.
+       */
+      @java.lang.Deprecated
       public static HasLengthCase valueOf(int value) {
+        return forNumber(value);
+      }
+
+      public static HasLengthCase forNumber(int value) {
         switch (value) {
           case 2: return LENGTH;
           case 0: return HASLENGTH_NOT_SET;
-          default: throw new java.lang.IllegalArgumentException(
-            "Value is undefined for this oneof enum.");
+          default: return null;
         }
       }
       public int getNumber() {
@@ -203,18 +227,18 @@ public  final class TensorSliceProto extends
 
     public HasLengthCase
     getHasLengthCase() {
-      return HasLengthCase.valueOf(
+      return HasLengthCase.forNumber(
           hasLengthCase_);
     }
 
     public static final int START_FIELD_NUMBER = 1;
     private long start_;
     /**
-     * <code>optional int64 start = 1;</code>
-     *
      * <pre>
      * Start index of the slice, starting at 0.
      * </pre>
+     *
+     * <code>int64 start = 1;</code>
      */
     public long getStart() {
       return start_;
@@ -222,7 +246,7 @@ public  final class TensorSliceProto extends
 
     public static final int LENGTH_FIELD_NUMBER = 2;
     /**
-     * <code>optional int64 length = 2;</code>
+     * <code>int64 length = 2;</code>
      */
     public long getLength() {
       if (hasLengthCase_ == 2) {
@@ -250,6 +274,7 @@ public  final class TensorSliceProto extends
         output.writeInt64(
             2, (long)((java.lang.Long) hasLength_));
       }
+      unknownFields.writeTo(output);
     }
 
     public int getSerializedSize() {
@@ -266,11 +291,74 @@ public  final class TensorSliceProto extends
           .computeInt64Size(
               2, (long)((java.lang.Long) hasLength_));
       }
+      size += unknownFields.getSerializedSize();
       memoizedSize = size;
       return size;
     }
 
-    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof org.tensorflow.framework.TensorSliceProto.Extent)) {
+        return super.equals(obj);
+      }
+      org.tensorflow.framework.TensorSliceProto.Extent other = (org.tensorflow.framework.TensorSliceProto.Extent) obj;
+
+      boolean result = true;
+      result = result && (getStart()
+          == other.getStart());
+      result = result && getHasLengthCase().equals(
+          other.getHasLengthCase());
+      if (!result) return false;
+      switch (hasLengthCase_) {
+        case 2:
+          result = result && (getLength()
+              == other.getLength());
+          break;
+        case 0:
+        default:
+      }
+      result = result && unknownFields.equals(other.unknownFields);
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + START_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getStart());
+      switch (hasLengthCase_) {
+        case 2:
+          hash = (37 * hash) + LENGTH_FIELD_NUMBER;
+          hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+              getLength());
+          break;
+        case 0:
+        default:
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static org.tensorflow.framework.TensorSliceProto.Extent parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static org.tensorflow.framework.TensorSliceProto.Extent parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
     public static org.tensorflow.framework.TensorSliceProto.Extent parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -294,34 +382,40 @@ public  final class TensorSliceProto extends
     }
     public static org.tensorflow.framework.TensorSliceProto.Extent parseFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return PARSER.parseFrom(input);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
     }
     public static org.tensorflow.framework.TensorSliceProto.Extent parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return PARSER.parseFrom(input, extensionRegistry);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
     }
     public static org.tensorflow.framework.TensorSliceProto.Extent parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return PARSER.parseDelimitedFrom(input);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
     }
     public static org.tensorflow.framework.TensorSliceProto.Extent parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return PARSER.parseDelimitedFrom(input, extensionRegistry);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
     public static org.tensorflow.framework.TensorSliceProto.Extent parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
-      return PARSER.parseFrom(input);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
     }
     public static org.tensorflow.framework.TensorSliceProto.Extent parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return PARSER.parseFrom(input, extensionRegistry);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
     public Builder newBuilderForType() { return newBuilder(); }
@@ -338,19 +432,19 @@ public  final class TensorSliceProto extends
 
     @java.lang.Override
     protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
     /**
-     * Protobuf type {@code tensorflow.TensorSliceProto.Extent}
-     *
      * <pre>
      * Extent of the slice in one dimension.
      * </pre>
+     *
+     * Protobuf type {@code tensorflow.TensorSliceProto.Extent}
      */
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
         // @@protoc_insertion_point(builder_implements:tensorflow.TensorSliceProto.Extent)
         org.tensorflow.framework.TensorSliceProto.ExtentOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
@@ -358,7 +452,7 @@ public  final class TensorSliceProto extends
         return org.tensorflow.framework.TensorSliceProtos.internal_static_tensorflow_TensorSliceProto_Extent_descriptor;
       }
 
-      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return org.tensorflow.framework.TensorSliceProtos.internal_static_tensorflow_TensorSliceProto_Extent_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
@@ -371,12 +465,13 @@ public  final class TensorSliceProto extends
       }
 
       private Builder(
-          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
       private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
         }
       }
       public Builder clear() {
@@ -416,6 +511,32 @@ public  final class TensorSliceProto extends
         return result;
       }
 
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return (Builder) super.setField(field, value);
+      }
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof org.tensorflow.framework.TensorSliceProto.Extent) {
           return mergeFrom((org.tensorflow.framework.TensorSliceProto.Extent)other);
@@ -439,6 +560,7 @@ public  final class TensorSliceProto extends
             break;
           }
         }
+        this.mergeUnknownFields(other.unknownFields);
         onChanged();
         return this;
       }
@@ -456,7 +578,7 @@ public  final class TensorSliceProto extends
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
           parsedMessage = (org.tensorflow.framework.TensorSliceProto.Extent) e.getUnfinishedMessage();
-          throw e;
+          throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
             mergeFrom(parsedMessage);
@@ -468,7 +590,7 @@ public  final class TensorSliceProto extends
       private java.lang.Object hasLength_;
       public HasLengthCase
           getHasLengthCase() {
-        return HasLengthCase.valueOf(
+        return HasLengthCase.forNumber(
             hasLengthCase_);
       }
 
@@ -482,21 +604,21 @@ public  final class TensorSliceProto extends
 
       private long start_ ;
       /**
-       * <code>optional int64 start = 1;</code>
-       *
        * <pre>
        * Start index of the slice, starting at 0.
        * </pre>
+       *
+       * <code>int64 start = 1;</code>
        */
       public long getStart() {
         return start_;
       }
       /**
-       * <code>optional int64 start = 1;</code>
-       *
        * <pre>
        * Start index of the slice, starting at 0.
        * </pre>
+       *
+       * <code>int64 start = 1;</code>
        */
       public Builder setStart(long value) {
         
@@ -505,11 +627,11 @@ public  final class TensorSliceProto extends
         return this;
       }
       /**
-       * <code>optional int64 start = 1;</code>
-       *
        * <pre>
        * Start index of the slice, starting at 0.
        * </pre>
+       *
+       * <code>int64 start = 1;</code>
        */
       public Builder clearStart() {
         
@@ -519,7 +641,7 @@ public  final class TensorSliceProto extends
       }
 
       /**
-       * <code>optional int64 length = 2;</code>
+       * <code>int64 length = 2;</code>
        */
       public long getLength() {
         if (hasLengthCase_ == 2) {
@@ -528,7 +650,7 @@ public  final class TensorSliceProto extends
         return 0L;
       }
       /**
-       * <code>optional int64 length = 2;</code>
+       * <code>int64 length = 2;</code>
        */
       public Builder setLength(long value) {
         hasLengthCase_ = 2;
@@ -537,7 +659,7 @@ public  final class TensorSliceProto extends
         return this;
       }
       /**
-       * <code>optional int64 length = 2;</code>
+       * <code>int64 length = 2;</code>
        */
       public Builder clearLength() {
         if (hasLengthCase_ == 2) {
@@ -549,12 +671,12 @@ public  final class TensorSliceProto extends
       }
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return this;
+        return super.setUnknownFieldsProto3(unknownFields);
       }
 
       public final Builder mergeUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return this;
+        return super.mergeUnknownFields(unknownFields);
       }
 
 
@@ -577,16 +699,7 @@ public  final class TensorSliceProto extends
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
-        try {
-          return new Extent(input, extensionRegistry);
-        } catch (RuntimeException e) {
-          if (e.getCause() instanceof
-              com.google.protobuf.InvalidProtocolBufferException) {
-            throw (com.google.protobuf.InvalidProtocolBufferException)
-                e.getCause();
-          }
-          throw e;
-        }
+        return new Extent(input, extensionRegistry);
       }
     };
 
@@ -608,67 +721,67 @@ public  final class TensorSliceProto extends
   public static final int EXTENT_FIELD_NUMBER = 1;
   private java.util.List<org.tensorflow.framework.TensorSliceProto.Extent> extent_;
   /**
-   * <code>repeated .tensorflow.TensorSliceProto.Extent extent = 1;</code>
-   *
    * <pre>
    * Extent of the slice in all tensor dimensions.
    * Must have one entry for each of the dimension of the tensor that this
    * slice belongs to.  The order of sizes is the same as the order of
    * dimensions in the TensorShape.
    * </pre>
+   *
+   * <code>repeated .tensorflow.TensorSliceProto.Extent extent = 1;</code>
    */
   public java.util.List<org.tensorflow.framework.TensorSliceProto.Extent> getExtentList() {
     return extent_;
   }
   /**
-   * <code>repeated .tensorflow.TensorSliceProto.Extent extent = 1;</code>
-   *
    * <pre>
    * Extent of the slice in all tensor dimensions.
    * Must have one entry for each of the dimension of the tensor that this
    * slice belongs to.  The order of sizes is the same as the order of
    * dimensions in the TensorShape.
    * </pre>
+   *
+   * <code>repeated .tensorflow.TensorSliceProto.Extent extent = 1;</code>
    */
   public java.util.List<? extends org.tensorflow.framework.TensorSliceProto.ExtentOrBuilder> 
       getExtentOrBuilderList() {
     return extent_;
   }
   /**
-   * <code>repeated .tensorflow.TensorSliceProto.Extent extent = 1;</code>
-   *
    * <pre>
    * Extent of the slice in all tensor dimensions.
    * Must have one entry for each of the dimension of the tensor that this
    * slice belongs to.  The order of sizes is the same as the order of
    * dimensions in the TensorShape.
    * </pre>
+   *
+   * <code>repeated .tensorflow.TensorSliceProto.Extent extent = 1;</code>
    */
   public int getExtentCount() {
     return extent_.size();
   }
   /**
-   * <code>repeated .tensorflow.TensorSliceProto.Extent extent = 1;</code>
-   *
    * <pre>
    * Extent of the slice in all tensor dimensions.
    * Must have one entry for each of the dimension of the tensor that this
    * slice belongs to.  The order of sizes is the same as the order of
    * dimensions in the TensorShape.
    * </pre>
+   *
+   * <code>repeated .tensorflow.TensorSliceProto.Extent extent = 1;</code>
    */
   public org.tensorflow.framework.TensorSliceProto.Extent getExtent(int index) {
     return extent_.get(index);
   }
   /**
-   * <code>repeated .tensorflow.TensorSliceProto.Extent extent = 1;</code>
-   *
    * <pre>
    * Extent of the slice in all tensor dimensions.
    * Must have one entry for each of the dimension of the tensor that this
    * slice belongs to.  The order of sizes is the same as the order of
    * dimensions in the TensorShape.
    * </pre>
+   *
+   * <code>repeated .tensorflow.TensorSliceProto.Extent extent = 1;</code>
    */
   public org.tensorflow.framework.TensorSliceProto.ExtentOrBuilder getExtentOrBuilder(
       int index) {
@@ -690,6 +803,7 @@ public  final class TensorSliceProto extends
     for (int i = 0; i < extent_.size(); i++) {
       output.writeMessage(1, extent_.get(i));
     }
+    unknownFields.writeTo(output);
   }
 
   public int getSerializedSize() {
@@ -701,11 +815,55 @@ public  final class TensorSliceProto extends
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(1, extent_.get(i));
     }
+    size += unknownFields.getSerializedSize();
     memoizedSize = size;
     return size;
   }
 
-  private static final long serialVersionUID = 0L;
+  @java.lang.Override
+  public boolean equals(final java.lang.Object obj) {
+    if (obj == this) {
+     return true;
+    }
+    if (!(obj instanceof org.tensorflow.framework.TensorSliceProto)) {
+      return super.equals(obj);
+    }
+    org.tensorflow.framework.TensorSliceProto other = (org.tensorflow.framework.TensorSliceProto) obj;
+
+    boolean result = true;
+    result = result && getExtentList()
+        .equals(other.getExtentList());
+    result = result && unknownFields.equals(other.unknownFields);
+    return result;
+  }
+
+  @java.lang.Override
+  public int hashCode() {
+    if (memoizedHashCode != 0) {
+      return memoizedHashCode;
+    }
+    int hash = 41;
+    hash = (19 * hash) + getDescriptor().hashCode();
+    if (getExtentCount() > 0) {
+      hash = (37 * hash) + EXTENT_FIELD_NUMBER;
+      hash = (53 * hash) + getExtentList().hashCode();
+    }
+    hash = (29 * hash) + unknownFields.hashCode();
+    memoizedHashCode = hash;
+    return hash;
+  }
+
+  public static org.tensorflow.framework.TensorSliceProto parseFrom(
+      java.nio.ByteBuffer data)
+      throws com.google.protobuf.InvalidProtocolBufferException {
+    return PARSER.parseFrom(data);
+  }
+  public static org.tensorflow.framework.TensorSliceProto parseFrom(
+      java.nio.ByteBuffer data,
+      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+      throws com.google.protobuf.InvalidProtocolBufferException {
+    return PARSER.parseFrom(data, extensionRegistry);
+  }
   public static org.tensorflow.framework.TensorSliceProto parseFrom(
       com.google.protobuf.ByteString data)
       throws com.google.protobuf.InvalidProtocolBufferException {
@@ -729,34 +887,40 @@ public  final class TensorSliceProto extends
   }
   public static org.tensorflow.framework.TensorSliceProto parseFrom(java.io.InputStream input)
       throws java.io.IOException {
-    return PARSER.parseFrom(input);
+    return com.google.protobuf.GeneratedMessageV3
+        .parseWithIOException(PARSER, input);
   }
   public static org.tensorflow.framework.TensorSliceProto parseFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
-    return PARSER.parseFrom(input, extensionRegistry);
+    return com.google.protobuf.GeneratedMessageV3
+        .parseWithIOException(PARSER, input, extensionRegistry);
   }
   public static org.tensorflow.framework.TensorSliceProto parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
-    return PARSER.parseDelimitedFrom(input);
+    return com.google.protobuf.GeneratedMessageV3
+        .parseDelimitedWithIOException(PARSER, input);
   }
   public static org.tensorflow.framework.TensorSliceProto parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
-    return PARSER.parseDelimitedFrom(input, extensionRegistry);
+    return com.google.protobuf.GeneratedMessageV3
+        .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
   }
   public static org.tensorflow.framework.TensorSliceProto parseFrom(
       com.google.protobuf.CodedInputStream input)
       throws java.io.IOException {
-    return PARSER.parseFrom(input);
+    return com.google.protobuf.GeneratedMessageV3
+        .parseWithIOException(PARSER, input);
   }
   public static org.tensorflow.framework.TensorSliceProto parseFrom(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
-    return PARSER.parseFrom(input, extensionRegistry);
+    return com.google.protobuf.GeneratedMessageV3
+        .parseWithIOException(PARSER, input, extensionRegistry);
   }
 
   public Builder newBuilderForType() { return newBuilder(); }
@@ -773,19 +937,19 @@ public  final class TensorSliceProto extends
 
   @java.lang.Override
   protected Builder newBuilderForType(
-      com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
     Builder builder = new Builder(parent);
     return builder;
   }
   /**
-   * Protobuf type {@code tensorflow.TensorSliceProto}
-   *
    * <pre>
    * Can only be interpreted if you know the corresponding TensorShape.
    * </pre>
+   *
+   * Protobuf type {@code tensorflow.TensorSliceProto}
    */
   public static final class Builder extends
-      com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+      com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
       // @@protoc_insertion_point(builder_implements:tensorflow.TensorSliceProto)
       org.tensorflow.framework.TensorSliceProtoOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
@@ -793,7 +957,7 @@ public  final class TensorSliceProto extends
       return org.tensorflow.framework.TensorSliceProtos.internal_static_tensorflow_TensorSliceProto_descriptor;
     }
 
-    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return org.tensorflow.framework.TensorSliceProtos.internal_static_tensorflow_TensorSliceProto_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
@@ -806,12 +970,13 @@ public  final class TensorSliceProto extends
     }
 
     private Builder(
-        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       super(parent);
       maybeForceBuilderInitialization();
     }
     private void maybeForceBuilderInitialization() {
-      if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+      if (com.google.protobuf.GeneratedMessageV3
+              .alwaysUseFieldBuilders) {
         getExtentFieldBuilder();
       }
     }
@@ -859,6 +1024,32 @@ public  final class TensorSliceProto extends
       return result;
     }
 
+    public Builder clone() {
+      return (Builder) super.clone();
+    }
+    public Builder setField(
+        com.google.protobuf.Descriptors.FieldDescriptor field,
+        java.lang.Object value) {
+      return (Builder) super.setField(field, value);
+    }
+    public Builder clearField(
+        com.google.protobuf.Descriptors.FieldDescriptor field) {
+      return (Builder) super.clearField(field);
+    }
+    public Builder clearOneof(
+        com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+      return (Builder) super.clearOneof(oneof);
+    }
+    public Builder setRepeatedField(
+        com.google.protobuf.Descriptors.FieldDescriptor field,
+        int index, java.lang.Object value) {
+      return (Builder) super.setRepeatedField(field, index, value);
+    }
+    public Builder addRepeatedField(
+        com.google.protobuf.Descriptors.FieldDescriptor field,
+        java.lang.Object value) {
+      return (Builder) super.addRepeatedField(field, value);
+    }
     public Builder mergeFrom(com.google.protobuf.Message other) {
       if (other instanceof org.tensorflow.framework.TensorSliceProto) {
         return mergeFrom((org.tensorflow.framework.TensorSliceProto)other);
@@ -889,13 +1080,14 @@ public  final class TensorSliceProto extends
             extent_ = other.extent_;
             bitField0_ = (bitField0_ & ~0x00000001);
             extentBuilder_ = 
-              com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
+              com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
                  getExtentFieldBuilder() : null;
           } else {
             extentBuilder_.addAllMessages(other.extent_);
           }
         }
       }
+      this.mergeUnknownFields(other.unknownFields);
       onChanged();
       return this;
     }
@@ -913,7 +1105,7 @@ public  final class TensorSliceProto extends
         parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
         parsedMessage = (org.tensorflow.framework.TensorSliceProto) e.getUnfinishedMessage();
-        throw e;
+        throw e.unwrapIOException();
       } finally {
         if (parsedMessage != null) {
           mergeFrom(parsedMessage);
@@ -932,18 +1124,18 @@ public  final class TensorSliceProto extends
        }
     }
 
-    private com.google.protobuf.RepeatedFieldBuilder<
+    private com.google.protobuf.RepeatedFieldBuilderV3<
         org.tensorflow.framework.TensorSliceProto.Extent, org.tensorflow.framework.TensorSliceProto.Extent.Builder, org.tensorflow.framework.TensorSliceProto.ExtentOrBuilder> extentBuilder_;
 
     /**
-     * <code>repeated .tensorflow.TensorSliceProto.Extent extent = 1;</code>
-     *
      * <pre>
      * Extent of the slice in all tensor dimensions.
      * Must have one entry for each of the dimension of the tensor that this
      * slice belongs to.  The order of sizes is the same as the order of
      * dimensions in the TensorShape.
      * </pre>
+     *
+     * <code>repeated .tensorflow.TensorSliceProto.Extent extent = 1;</code>
      */
     public java.util.List<org.tensorflow.framework.TensorSliceProto.Extent> getExtentList() {
       if (extentBuilder_ == null) {
@@ -953,14 +1145,14 @@ public  final class TensorSliceProto extends
       }
     }
     /**
-     * <code>repeated .tensorflow.TensorSliceProto.Extent extent = 1;</code>
-     *
      * <pre>
      * Extent of the slice in all tensor dimensions.
      * Must have one entry for each of the dimension of the tensor that this
      * slice belongs to.  The order of sizes is the same as the order of
      * dimensions in the TensorShape.
      * </pre>
+     *
+     * <code>repeated .tensorflow.TensorSliceProto.Extent extent = 1;</code>
      */
     public int getExtentCount() {
       if (extentBuilder_ == null) {
@@ -970,14 +1162,14 @@ public  final class TensorSliceProto extends
       }
     }
     /**
-     * <code>repeated .tensorflow.TensorSliceProto.Extent extent = 1;</code>
-     *
      * <pre>
      * Extent of the slice in all tensor dimensions.
      * Must have one entry for each of the dimension of the tensor that this
      * slice belongs to.  The order of sizes is the same as the order of
      * dimensions in the TensorShape.
      * </pre>
+     *
+     * <code>repeated .tensorflow.TensorSliceProto.Extent extent = 1;</code>
      */
     public org.tensorflow.framework.TensorSliceProto.Extent getExtent(int index) {
       if (extentBuilder_ == null) {
@@ -987,14 +1179,14 @@ public  final class TensorSliceProto extends
       }
     }
     /**
-     * <code>repeated .tensorflow.TensorSliceProto.Extent extent = 1;</code>
-     *
      * <pre>
      * Extent of the slice in all tensor dimensions.
      * Must have one entry for each of the dimension of the tensor that this
      * slice belongs to.  The order of sizes is the same as the order of
      * dimensions in the TensorShape.
      * </pre>
+     *
+     * <code>repeated .tensorflow.TensorSliceProto.Extent extent = 1;</code>
      */
     public Builder setExtent(
         int index, org.tensorflow.framework.TensorSliceProto.Extent value) {
@@ -1011,14 +1203,14 @@ public  final class TensorSliceProto extends
       return this;
     }
     /**
-     * <code>repeated .tensorflow.TensorSliceProto.Extent extent = 1;</code>
-     *
      * <pre>
      * Extent of the slice in all tensor dimensions.
      * Must have one entry for each of the dimension of the tensor that this
      * slice belongs to.  The order of sizes is the same as the order of
      * dimensions in the TensorShape.
      * </pre>
+     *
+     * <code>repeated .tensorflow.TensorSliceProto.Extent extent = 1;</code>
      */
     public Builder setExtent(
         int index, org.tensorflow.framework.TensorSliceProto.Extent.Builder builderForValue) {
@@ -1032,14 +1224,14 @@ public  final class TensorSliceProto extends
       return this;
     }
     /**
-     * <code>repeated .tensorflow.TensorSliceProto.Extent extent = 1;</code>
-     *
      * <pre>
      * Extent of the slice in all tensor dimensions.
      * Must have one entry for each of the dimension of the tensor that this
      * slice belongs to.  The order of sizes is the same as the order of
      * dimensions in the TensorShape.
      * </pre>
+     *
+     * <code>repeated .tensorflow.TensorSliceProto.Extent extent = 1;</code>
      */
     public Builder addExtent(org.tensorflow.framework.TensorSliceProto.Extent value) {
       if (extentBuilder_ == null) {
@@ -1055,14 +1247,14 @@ public  final class TensorSliceProto extends
       return this;
     }
     /**
-     * <code>repeated .tensorflow.TensorSliceProto.Extent extent = 1;</code>
-     *
      * <pre>
      * Extent of the slice in all tensor dimensions.
      * Must have one entry for each of the dimension of the tensor that this
      * slice belongs to.  The order of sizes is the same as the order of
      * dimensions in the TensorShape.
      * </pre>
+     *
+     * <code>repeated .tensorflow.TensorSliceProto.Extent extent = 1;</code>
      */
     public Builder addExtent(
         int index, org.tensorflow.framework.TensorSliceProto.Extent value) {
@@ -1079,14 +1271,14 @@ public  final class TensorSliceProto extends
       return this;
     }
     /**
-     * <code>repeated .tensorflow.TensorSliceProto.Extent extent = 1;</code>
-     *
      * <pre>
      * Extent of the slice in all tensor dimensions.
      * Must have one entry for each of the dimension of the tensor that this
      * slice belongs to.  The order of sizes is the same as the order of
      * dimensions in the TensorShape.
      * </pre>
+     *
+     * <code>repeated .tensorflow.TensorSliceProto.Extent extent = 1;</code>
      */
     public Builder addExtent(
         org.tensorflow.framework.TensorSliceProto.Extent.Builder builderForValue) {
@@ -1100,14 +1292,14 @@ public  final class TensorSliceProto extends
       return this;
     }
     /**
-     * <code>repeated .tensorflow.TensorSliceProto.Extent extent = 1;</code>
-     *
      * <pre>
      * Extent of the slice in all tensor dimensions.
      * Must have one entry for each of the dimension of the tensor that this
      * slice belongs to.  The order of sizes is the same as the order of
      * dimensions in the TensorShape.
      * </pre>
+     *
+     * <code>repeated .tensorflow.TensorSliceProto.Extent extent = 1;</code>
      */
     public Builder addExtent(
         int index, org.tensorflow.framework.TensorSliceProto.Extent.Builder builderForValue) {
@@ -1121,14 +1313,14 @@ public  final class TensorSliceProto extends
       return this;
     }
     /**
-     * <code>repeated .tensorflow.TensorSliceProto.Extent extent = 1;</code>
-     *
      * <pre>
      * Extent of the slice in all tensor dimensions.
      * Must have one entry for each of the dimension of the tensor that this
      * slice belongs to.  The order of sizes is the same as the order of
      * dimensions in the TensorShape.
      * </pre>
+     *
+     * <code>repeated .tensorflow.TensorSliceProto.Extent extent = 1;</code>
      */
     public Builder addAllExtent(
         java.lang.Iterable<? extends org.tensorflow.framework.TensorSliceProto.Extent> values) {
@@ -1143,14 +1335,14 @@ public  final class TensorSliceProto extends
       return this;
     }
     /**
-     * <code>repeated .tensorflow.TensorSliceProto.Extent extent = 1;</code>
-     *
      * <pre>
      * Extent of the slice in all tensor dimensions.
      * Must have one entry for each of the dimension of the tensor that this
      * slice belongs to.  The order of sizes is the same as the order of
      * dimensions in the TensorShape.
      * </pre>
+     *
+     * <code>repeated .tensorflow.TensorSliceProto.Extent extent = 1;</code>
      */
     public Builder clearExtent() {
       if (extentBuilder_ == null) {
@@ -1163,14 +1355,14 @@ public  final class TensorSliceProto extends
       return this;
     }
     /**
-     * <code>repeated .tensorflow.TensorSliceProto.Extent extent = 1;</code>
-     *
      * <pre>
      * Extent of the slice in all tensor dimensions.
      * Must have one entry for each of the dimension of the tensor that this
      * slice belongs to.  The order of sizes is the same as the order of
      * dimensions in the TensorShape.
      * </pre>
+     *
+     * <code>repeated .tensorflow.TensorSliceProto.Extent extent = 1;</code>
      */
     public Builder removeExtent(int index) {
       if (extentBuilder_ == null) {
@@ -1183,28 +1375,28 @@ public  final class TensorSliceProto extends
       return this;
     }
     /**
-     * <code>repeated .tensorflow.TensorSliceProto.Extent extent = 1;</code>
-     *
      * <pre>
      * Extent of the slice in all tensor dimensions.
      * Must have one entry for each of the dimension of the tensor that this
      * slice belongs to.  The order of sizes is the same as the order of
      * dimensions in the TensorShape.
      * </pre>
+     *
+     * <code>repeated .tensorflow.TensorSliceProto.Extent extent = 1;</code>
      */
     public org.tensorflow.framework.TensorSliceProto.Extent.Builder getExtentBuilder(
         int index) {
       return getExtentFieldBuilder().getBuilder(index);
     }
     /**
-     * <code>repeated .tensorflow.TensorSliceProto.Extent extent = 1;</code>
-     *
      * <pre>
      * Extent of the slice in all tensor dimensions.
      * Must have one entry for each of the dimension of the tensor that this
      * slice belongs to.  The order of sizes is the same as the order of
      * dimensions in the TensorShape.
      * </pre>
+     *
+     * <code>repeated .tensorflow.TensorSliceProto.Extent extent = 1;</code>
      */
     public org.tensorflow.framework.TensorSliceProto.ExtentOrBuilder getExtentOrBuilder(
         int index) {
@@ -1214,14 +1406,14 @@ public  final class TensorSliceProto extends
       }
     }
     /**
-     * <code>repeated .tensorflow.TensorSliceProto.Extent extent = 1;</code>
-     *
      * <pre>
      * Extent of the slice in all tensor dimensions.
      * Must have one entry for each of the dimension of the tensor that this
      * slice belongs to.  The order of sizes is the same as the order of
      * dimensions in the TensorShape.
      * </pre>
+     *
+     * <code>repeated .tensorflow.TensorSliceProto.Extent extent = 1;</code>
      */
     public java.util.List<? extends org.tensorflow.framework.TensorSliceProto.ExtentOrBuilder> 
          getExtentOrBuilderList() {
@@ -1232,28 +1424,28 @@ public  final class TensorSliceProto extends
       }
     }
     /**
-     * <code>repeated .tensorflow.TensorSliceProto.Extent extent = 1;</code>
-     *
      * <pre>
      * Extent of the slice in all tensor dimensions.
      * Must have one entry for each of the dimension of the tensor that this
      * slice belongs to.  The order of sizes is the same as the order of
      * dimensions in the TensorShape.
      * </pre>
+     *
+     * <code>repeated .tensorflow.TensorSliceProto.Extent extent = 1;</code>
      */
     public org.tensorflow.framework.TensorSliceProto.Extent.Builder addExtentBuilder() {
       return getExtentFieldBuilder().addBuilder(
           org.tensorflow.framework.TensorSliceProto.Extent.getDefaultInstance());
     }
     /**
-     * <code>repeated .tensorflow.TensorSliceProto.Extent extent = 1;</code>
-     *
      * <pre>
      * Extent of the slice in all tensor dimensions.
      * Must have one entry for each of the dimension of the tensor that this
      * slice belongs to.  The order of sizes is the same as the order of
      * dimensions in the TensorShape.
      * </pre>
+     *
+     * <code>repeated .tensorflow.TensorSliceProto.Extent extent = 1;</code>
      */
     public org.tensorflow.framework.TensorSliceProto.Extent.Builder addExtentBuilder(
         int index) {
@@ -1261,24 +1453,24 @@ public  final class TensorSliceProto extends
           index, org.tensorflow.framework.TensorSliceProto.Extent.getDefaultInstance());
     }
     /**
-     * <code>repeated .tensorflow.TensorSliceProto.Extent extent = 1;</code>
-     *
      * <pre>
      * Extent of the slice in all tensor dimensions.
      * Must have one entry for each of the dimension of the tensor that this
      * slice belongs to.  The order of sizes is the same as the order of
      * dimensions in the TensorShape.
      * </pre>
+     *
+     * <code>repeated .tensorflow.TensorSliceProto.Extent extent = 1;</code>
      */
     public java.util.List<org.tensorflow.framework.TensorSliceProto.Extent.Builder> 
          getExtentBuilderList() {
       return getExtentFieldBuilder().getBuilderList();
     }
-    private com.google.protobuf.RepeatedFieldBuilder<
+    private com.google.protobuf.RepeatedFieldBuilderV3<
         org.tensorflow.framework.TensorSliceProto.Extent, org.tensorflow.framework.TensorSliceProto.Extent.Builder, org.tensorflow.framework.TensorSliceProto.ExtentOrBuilder> 
         getExtentFieldBuilder() {
       if (extentBuilder_ == null) {
-        extentBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
+        extentBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
             org.tensorflow.framework.TensorSliceProto.Extent, org.tensorflow.framework.TensorSliceProto.Extent.Builder, org.tensorflow.framework.TensorSliceProto.ExtentOrBuilder>(
                 extent_,
                 ((bitField0_ & 0x00000001) == 0x00000001),
@@ -1290,12 +1482,12 @@ public  final class TensorSliceProto extends
     }
     public final Builder setUnknownFields(
         final com.google.protobuf.UnknownFieldSet unknownFields) {
-      return this;
+      return super.setUnknownFieldsProto3(unknownFields);
     }
 
     public final Builder mergeUnknownFields(
         final com.google.protobuf.UnknownFieldSet unknownFields) {
-      return this;
+      return super.mergeUnknownFields(unknownFields);
     }
 
 
@@ -1318,16 +1510,7 @@ public  final class TensorSliceProto extends
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      try {
-        return new TensorSliceProto(input, extensionRegistry);
-      } catch (RuntimeException e) {
-        if (e.getCause() instanceof
-            com.google.protobuf.InvalidProtocolBufferException) {
-          throw (com.google.protobuf.InvalidProtocolBufferException)
-              e.getCause();
-        }
-        throw e;
-      }
+      return new TensorSliceProto(input, extensionRegistry);
     }
   };
 

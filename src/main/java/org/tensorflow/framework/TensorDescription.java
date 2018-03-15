@@ -7,11 +7,12 @@ package org.tensorflow.framework;
  * Protobuf type {@code tensorflow.TensorDescription}
  */
 public  final class TensorDescription extends
-    com.google.protobuf.GeneratedMessage implements
+    com.google.protobuf.GeneratedMessageV3 implements
     // @@protoc_insertion_point(message_implements:tensorflow.TensorDescription)
     TensorDescriptionOrBuilder {
+private static final long serialVersionUID = 0L;
   // Use TensorDescription.newBuilder() to construct.
-  private TensorDescription(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+  private TensorDescription(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
     super(builder);
   }
   private TensorDescription() {
@@ -21,13 +22,19 @@ public  final class TensorDescription extends
   @java.lang.Override
   public final com.google.protobuf.UnknownFieldSet
   getUnknownFields() {
-    return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
+    return this.unknownFields;
   }
   private TensorDescription(
       com.google.protobuf.CodedInputStream input,
-      com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
+      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+      throws com.google.protobuf.InvalidProtocolBufferException {
     this();
+    if (extensionRegistry == null) {
+      throw new java.lang.NullPointerException();
+    }
     int mutable_bitField0_ = 0;
+    com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+        com.google.protobuf.UnknownFieldSet.newBuilder();
     try {
       boolean done = false;
       while (!done) {
@@ -37,7 +44,8 @@ public  final class TensorDescription extends
             done = true;
             break;
           default: {
-            if (!input.skipField(tag)) {
+            if (!parseUnknownFieldProto3(
+                input, unknownFields, extensionRegistry, tag)) {
               done = true;
             }
             break;
@@ -77,12 +85,12 @@ public  final class TensorDescription extends
         }
       }
     } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-      throw new RuntimeException(e.setUnfinishedMessage(this));
+      throw e.setUnfinishedMessage(this);
     } catch (java.io.IOException e) {
-      throw new RuntimeException(
-          new com.google.protobuf.InvalidProtocolBufferException(
-              e.getMessage()).setUnfinishedMessage(this));
+      throw new com.google.protobuf.InvalidProtocolBufferException(
+          e).setUnfinishedMessage(this);
     } finally {
+      this.unknownFields = unknownFields.build();
       makeExtensionsImmutable();
     }
   }
@@ -91,7 +99,7 @@ public  final class TensorDescription extends
     return org.tensorflow.framework.TensorDescriptionProtos.internal_static_tensorflow_TensorDescription_descriptor;
   }
 
-  protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+  protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
     return org.tensorflow.framework.TensorDescriptionProtos.internal_static_tensorflow_TensorDescription_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
@@ -101,21 +109,21 @@ public  final class TensorDescription extends
   public static final int DTYPE_FIELD_NUMBER = 1;
   private int dtype_;
   /**
-   * <code>optional .tensorflow.DataType dtype = 1;</code>
-   *
    * <pre>
    * Data type of tensor elements
    * </pre>
+   *
+   * <code>.tensorflow.DataType dtype = 1;</code>
    */
   public int getDtypeValue() {
     return dtype_;
   }
   /**
-   * <code>optional .tensorflow.DataType dtype = 1;</code>
-   *
    * <pre>
    * Data type of tensor elements
    * </pre>
+   *
+   * <code>.tensorflow.DataType dtype = 1;</code>
    */
   public org.tensorflow.framework.DataType getDtype() {
     org.tensorflow.framework.DataType result = org.tensorflow.framework.DataType.valueOf(dtype_);
@@ -125,31 +133,31 @@ public  final class TensorDescription extends
   public static final int SHAPE_FIELD_NUMBER = 2;
   private org.tensorflow.framework.TensorShapeProto shape_;
   /**
-   * <code>optional .tensorflow.TensorShapeProto shape = 2;</code>
-   *
    * <pre>
    * Shape of the tensor.
    * </pre>
+   *
+   * <code>.tensorflow.TensorShapeProto shape = 2;</code>
    */
   public boolean hasShape() {
     return shape_ != null;
   }
   /**
-   * <code>optional .tensorflow.TensorShapeProto shape = 2;</code>
-   *
    * <pre>
    * Shape of the tensor.
    * </pre>
+   *
+   * <code>.tensorflow.TensorShapeProto shape = 2;</code>
    */
   public org.tensorflow.framework.TensorShapeProto getShape() {
     return shape_ == null ? org.tensorflow.framework.TensorShapeProto.getDefaultInstance() : shape_;
   }
   /**
-   * <code>optional .tensorflow.TensorShapeProto shape = 2;</code>
-   *
    * <pre>
    * Shape of the tensor.
    * </pre>
+   *
+   * <code>.tensorflow.TensorShapeProto shape = 2;</code>
    */
   public org.tensorflow.framework.TensorShapeProtoOrBuilder getShapeOrBuilder() {
     return getShape();
@@ -158,31 +166,31 @@ public  final class TensorDescription extends
   public static final int ALLOCATION_DESCRIPTION_FIELD_NUMBER = 4;
   private org.tensorflow.framework.AllocationDescription allocationDescription_;
   /**
-   * <code>optional .tensorflow.AllocationDescription allocation_description = 4;</code>
-   *
    * <pre>
    * Information about the size and allocator used for the data
    * </pre>
+   *
+   * <code>.tensorflow.AllocationDescription allocation_description = 4;</code>
    */
   public boolean hasAllocationDescription() {
     return allocationDescription_ != null;
   }
   /**
-   * <code>optional .tensorflow.AllocationDescription allocation_description = 4;</code>
-   *
    * <pre>
    * Information about the size and allocator used for the data
    * </pre>
+   *
+   * <code>.tensorflow.AllocationDescription allocation_description = 4;</code>
    */
   public org.tensorflow.framework.AllocationDescription getAllocationDescription() {
     return allocationDescription_ == null ? org.tensorflow.framework.AllocationDescription.getDefaultInstance() : allocationDescription_;
   }
   /**
-   * <code>optional .tensorflow.AllocationDescription allocation_description = 4;</code>
-   *
    * <pre>
    * Information about the size and allocator used for the data
    * </pre>
+   *
+   * <code>.tensorflow.AllocationDescription allocation_description = 4;</code>
    */
   public org.tensorflow.framework.AllocationDescriptionOrBuilder getAllocationDescriptionOrBuilder() {
     return getAllocationDescription();
@@ -209,6 +217,7 @@ public  final class TensorDescription extends
     if (allocationDescription_ != null) {
       output.writeMessage(4, getAllocationDescription());
     }
+    unknownFields.writeTo(output);
   }
 
   public int getSerializedSize() {
@@ -228,11 +237,70 @@ public  final class TensorDescription extends
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(4, getAllocationDescription());
     }
+    size += unknownFields.getSerializedSize();
     memoizedSize = size;
     return size;
   }
 
-  private static final long serialVersionUID = 0L;
+  @java.lang.Override
+  public boolean equals(final java.lang.Object obj) {
+    if (obj == this) {
+     return true;
+    }
+    if (!(obj instanceof org.tensorflow.framework.TensorDescription)) {
+      return super.equals(obj);
+    }
+    org.tensorflow.framework.TensorDescription other = (org.tensorflow.framework.TensorDescription) obj;
+
+    boolean result = true;
+    result = result && dtype_ == other.dtype_;
+    result = result && (hasShape() == other.hasShape());
+    if (hasShape()) {
+      result = result && getShape()
+          .equals(other.getShape());
+    }
+    result = result && (hasAllocationDescription() == other.hasAllocationDescription());
+    if (hasAllocationDescription()) {
+      result = result && getAllocationDescription()
+          .equals(other.getAllocationDescription());
+    }
+    result = result && unknownFields.equals(other.unknownFields);
+    return result;
+  }
+
+  @java.lang.Override
+  public int hashCode() {
+    if (memoizedHashCode != 0) {
+      return memoizedHashCode;
+    }
+    int hash = 41;
+    hash = (19 * hash) + getDescriptor().hashCode();
+    hash = (37 * hash) + DTYPE_FIELD_NUMBER;
+    hash = (53 * hash) + dtype_;
+    if (hasShape()) {
+      hash = (37 * hash) + SHAPE_FIELD_NUMBER;
+      hash = (53 * hash) + getShape().hashCode();
+    }
+    if (hasAllocationDescription()) {
+      hash = (37 * hash) + ALLOCATION_DESCRIPTION_FIELD_NUMBER;
+      hash = (53 * hash) + getAllocationDescription().hashCode();
+    }
+    hash = (29 * hash) + unknownFields.hashCode();
+    memoizedHashCode = hash;
+    return hash;
+  }
+
+  public static org.tensorflow.framework.TensorDescription parseFrom(
+      java.nio.ByteBuffer data)
+      throws com.google.protobuf.InvalidProtocolBufferException {
+    return PARSER.parseFrom(data);
+  }
+  public static org.tensorflow.framework.TensorDescription parseFrom(
+      java.nio.ByteBuffer data,
+      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+      throws com.google.protobuf.InvalidProtocolBufferException {
+    return PARSER.parseFrom(data, extensionRegistry);
+  }
   public static org.tensorflow.framework.TensorDescription parseFrom(
       com.google.protobuf.ByteString data)
       throws com.google.protobuf.InvalidProtocolBufferException {
@@ -256,34 +324,40 @@ public  final class TensorDescription extends
   }
   public static org.tensorflow.framework.TensorDescription parseFrom(java.io.InputStream input)
       throws java.io.IOException {
-    return PARSER.parseFrom(input);
+    return com.google.protobuf.GeneratedMessageV3
+        .parseWithIOException(PARSER, input);
   }
   public static org.tensorflow.framework.TensorDescription parseFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
-    return PARSER.parseFrom(input, extensionRegistry);
+    return com.google.protobuf.GeneratedMessageV3
+        .parseWithIOException(PARSER, input, extensionRegistry);
   }
   public static org.tensorflow.framework.TensorDescription parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
-    return PARSER.parseDelimitedFrom(input);
+    return com.google.protobuf.GeneratedMessageV3
+        .parseDelimitedWithIOException(PARSER, input);
   }
   public static org.tensorflow.framework.TensorDescription parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
-    return PARSER.parseDelimitedFrom(input, extensionRegistry);
+    return com.google.protobuf.GeneratedMessageV3
+        .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
   }
   public static org.tensorflow.framework.TensorDescription parseFrom(
       com.google.protobuf.CodedInputStream input)
       throws java.io.IOException {
-    return PARSER.parseFrom(input);
+    return com.google.protobuf.GeneratedMessageV3
+        .parseWithIOException(PARSER, input);
   }
   public static org.tensorflow.framework.TensorDescription parseFrom(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
-    return PARSER.parseFrom(input, extensionRegistry);
+    return com.google.protobuf.GeneratedMessageV3
+        .parseWithIOException(PARSER, input, extensionRegistry);
   }
 
   public Builder newBuilderForType() { return newBuilder(); }
@@ -300,7 +374,7 @@ public  final class TensorDescription extends
 
   @java.lang.Override
   protected Builder newBuilderForType(
-      com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
     Builder builder = new Builder(parent);
     return builder;
   }
@@ -308,7 +382,7 @@ public  final class TensorDescription extends
    * Protobuf type {@code tensorflow.TensorDescription}
    */
   public static final class Builder extends
-      com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+      com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
       // @@protoc_insertion_point(builder_implements:tensorflow.TensorDescription)
       org.tensorflow.framework.TensorDescriptionOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
@@ -316,7 +390,7 @@ public  final class TensorDescription extends
       return org.tensorflow.framework.TensorDescriptionProtos.internal_static_tensorflow_TensorDescription_descriptor;
     }
 
-    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return org.tensorflow.framework.TensorDescriptionProtos.internal_static_tensorflow_TensorDescription_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
@@ -329,12 +403,13 @@ public  final class TensorDescription extends
     }
 
     private Builder(
-        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       super(parent);
       maybeForceBuilderInitialization();
     }
     private void maybeForceBuilderInitialization() {
-      if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+      if (com.google.protobuf.GeneratedMessageV3
+              .alwaysUseFieldBuilders) {
       }
     }
     public Builder clear() {
@@ -390,6 +465,32 @@ public  final class TensorDescription extends
       return result;
     }
 
+    public Builder clone() {
+      return (Builder) super.clone();
+    }
+    public Builder setField(
+        com.google.protobuf.Descriptors.FieldDescriptor field,
+        java.lang.Object value) {
+      return (Builder) super.setField(field, value);
+    }
+    public Builder clearField(
+        com.google.protobuf.Descriptors.FieldDescriptor field) {
+      return (Builder) super.clearField(field);
+    }
+    public Builder clearOneof(
+        com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+      return (Builder) super.clearOneof(oneof);
+    }
+    public Builder setRepeatedField(
+        com.google.protobuf.Descriptors.FieldDescriptor field,
+        int index, java.lang.Object value) {
+      return (Builder) super.setRepeatedField(field, index, value);
+    }
+    public Builder addRepeatedField(
+        com.google.protobuf.Descriptors.FieldDescriptor field,
+        java.lang.Object value) {
+      return (Builder) super.addRepeatedField(field, value);
+    }
     public Builder mergeFrom(com.google.protobuf.Message other) {
       if (other instanceof org.tensorflow.framework.TensorDescription) {
         return mergeFrom((org.tensorflow.framework.TensorDescription)other);
@@ -410,6 +511,7 @@ public  final class TensorDescription extends
       if (other.hasAllocationDescription()) {
         mergeAllocationDescription(other.getAllocationDescription());
       }
+      this.mergeUnknownFields(other.unknownFields);
       onChanged();
       return this;
     }
@@ -427,7 +529,7 @@ public  final class TensorDescription extends
         parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
         parsedMessage = (org.tensorflow.framework.TensorDescription) e.getUnfinishedMessage();
-        throw e;
+        throw e.unwrapIOException();
       } finally {
         if (parsedMessage != null) {
           mergeFrom(parsedMessage);
@@ -438,21 +540,21 @@ public  final class TensorDescription extends
 
     private int dtype_ = 0;
     /**
-     * <code>optional .tensorflow.DataType dtype = 1;</code>
-     *
      * <pre>
      * Data type of tensor elements
      * </pre>
+     *
+     * <code>.tensorflow.DataType dtype = 1;</code>
      */
     public int getDtypeValue() {
       return dtype_;
     }
     /**
-     * <code>optional .tensorflow.DataType dtype = 1;</code>
-     *
      * <pre>
      * Data type of tensor elements
      * </pre>
+     *
+     * <code>.tensorflow.DataType dtype = 1;</code>
      */
     public Builder setDtypeValue(int value) {
       dtype_ = value;
@@ -460,22 +562,22 @@ public  final class TensorDescription extends
       return this;
     }
     /**
-     * <code>optional .tensorflow.DataType dtype = 1;</code>
-     *
      * <pre>
      * Data type of tensor elements
      * </pre>
+     *
+     * <code>.tensorflow.DataType dtype = 1;</code>
      */
     public org.tensorflow.framework.DataType getDtype() {
       org.tensorflow.framework.DataType result = org.tensorflow.framework.DataType.valueOf(dtype_);
       return result == null ? org.tensorflow.framework.DataType.UNRECOGNIZED : result;
     }
     /**
-     * <code>optional .tensorflow.DataType dtype = 1;</code>
-     *
      * <pre>
      * Data type of tensor elements
      * </pre>
+     *
+     * <code>.tensorflow.DataType dtype = 1;</code>
      */
     public Builder setDtype(org.tensorflow.framework.DataType value) {
       if (value == null) {
@@ -487,11 +589,11 @@ public  final class TensorDescription extends
       return this;
     }
     /**
-     * <code>optional .tensorflow.DataType dtype = 1;</code>
-     *
      * <pre>
      * Data type of tensor elements
      * </pre>
+     *
+     * <code>.tensorflow.DataType dtype = 1;</code>
      */
     public Builder clearDtype() {
       
@@ -501,24 +603,24 @@ public  final class TensorDescription extends
     }
 
     private org.tensorflow.framework.TensorShapeProto shape_ = null;
-    private com.google.protobuf.SingleFieldBuilder<
+    private com.google.protobuf.SingleFieldBuilderV3<
         org.tensorflow.framework.TensorShapeProto, org.tensorflow.framework.TensorShapeProto.Builder, org.tensorflow.framework.TensorShapeProtoOrBuilder> shapeBuilder_;
     /**
-     * <code>optional .tensorflow.TensorShapeProto shape = 2;</code>
-     *
      * <pre>
      * Shape of the tensor.
      * </pre>
+     *
+     * <code>.tensorflow.TensorShapeProto shape = 2;</code>
      */
     public boolean hasShape() {
       return shapeBuilder_ != null || shape_ != null;
     }
     /**
-     * <code>optional .tensorflow.TensorShapeProto shape = 2;</code>
-     *
      * <pre>
      * Shape of the tensor.
      * </pre>
+     *
+     * <code>.tensorflow.TensorShapeProto shape = 2;</code>
      */
     public org.tensorflow.framework.TensorShapeProto getShape() {
       if (shapeBuilder_ == null) {
@@ -528,11 +630,11 @@ public  final class TensorDescription extends
       }
     }
     /**
-     * <code>optional .tensorflow.TensorShapeProto shape = 2;</code>
-     *
      * <pre>
      * Shape of the tensor.
      * </pre>
+     *
+     * <code>.tensorflow.TensorShapeProto shape = 2;</code>
      */
     public Builder setShape(org.tensorflow.framework.TensorShapeProto value) {
       if (shapeBuilder_ == null) {
@@ -548,11 +650,11 @@ public  final class TensorDescription extends
       return this;
     }
     /**
-     * <code>optional .tensorflow.TensorShapeProto shape = 2;</code>
-     *
      * <pre>
      * Shape of the tensor.
      * </pre>
+     *
+     * <code>.tensorflow.TensorShapeProto shape = 2;</code>
      */
     public Builder setShape(
         org.tensorflow.framework.TensorShapeProto.Builder builderForValue) {
@@ -566,11 +668,11 @@ public  final class TensorDescription extends
       return this;
     }
     /**
-     * <code>optional .tensorflow.TensorShapeProto shape = 2;</code>
-     *
      * <pre>
      * Shape of the tensor.
      * </pre>
+     *
+     * <code>.tensorflow.TensorShapeProto shape = 2;</code>
      */
     public Builder mergeShape(org.tensorflow.framework.TensorShapeProto value) {
       if (shapeBuilder_ == null) {
@@ -588,11 +690,11 @@ public  final class TensorDescription extends
       return this;
     }
     /**
-     * <code>optional .tensorflow.TensorShapeProto shape = 2;</code>
-     *
      * <pre>
      * Shape of the tensor.
      * </pre>
+     *
+     * <code>.tensorflow.TensorShapeProto shape = 2;</code>
      */
     public Builder clearShape() {
       if (shapeBuilder_ == null) {
@@ -606,11 +708,11 @@ public  final class TensorDescription extends
       return this;
     }
     /**
-     * <code>optional .tensorflow.TensorShapeProto shape = 2;</code>
-     *
      * <pre>
      * Shape of the tensor.
      * </pre>
+     *
+     * <code>.tensorflow.TensorShapeProto shape = 2;</code>
      */
     public org.tensorflow.framework.TensorShapeProto.Builder getShapeBuilder() {
       
@@ -618,11 +720,11 @@ public  final class TensorDescription extends
       return getShapeFieldBuilder().getBuilder();
     }
     /**
-     * <code>optional .tensorflow.TensorShapeProto shape = 2;</code>
-     *
      * <pre>
      * Shape of the tensor.
      * </pre>
+     *
+     * <code>.tensorflow.TensorShapeProto shape = 2;</code>
      */
     public org.tensorflow.framework.TensorShapeProtoOrBuilder getShapeOrBuilder() {
       if (shapeBuilder_ != null) {
@@ -633,17 +735,17 @@ public  final class TensorDescription extends
       }
     }
     /**
-     * <code>optional .tensorflow.TensorShapeProto shape = 2;</code>
-     *
      * <pre>
      * Shape of the tensor.
      * </pre>
+     *
+     * <code>.tensorflow.TensorShapeProto shape = 2;</code>
      */
-    private com.google.protobuf.SingleFieldBuilder<
+    private com.google.protobuf.SingleFieldBuilderV3<
         org.tensorflow.framework.TensorShapeProto, org.tensorflow.framework.TensorShapeProto.Builder, org.tensorflow.framework.TensorShapeProtoOrBuilder> 
         getShapeFieldBuilder() {
       if (shapeBuilder_ == null) {
-        shapeBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+        shapeBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
             org.tensorflow.framework.TensorShapeProto, org.tensorflow.framework.TensorShapeProto.Builder, org.tensorflow.framework.TensorShapeProtoOrBuilder>(
                 getShape(),
                 getParentForChildren(),
@@ -654,24 +756,24 @@ public  final class TensorDescription extends
     }
 
     private org.tensorflow.framework.AllocationDescription allocationDescription_ = null;
-    private com.google.protobuf.SingleFieldBuilder<
+    private com.google.protobuf.SingleFieldBuilderV3<
         org.tensorflow.framework.AllocationDescription, org.tensorflow.framework.AllocationDescription.Builder, org.tensorflow.framework.AllocationDescriptionOrBuilder> allocationDescriptionBuilder_;
     /**
-     * <code>optional .tensorflow.AllocationDescription allocation_description = 4;</code>
-     *
      * <pre>
      * Information about the size and allocator used for the data
      * </pre>
+     *
+     * <code>.tensorflow.AllocationDescription allocation_description = 4;</code>
      */
     public boolean hasAllocationDescription() {
       return allocationDescriptionBuilder_ != null || allocationDescription_ != null;
     }
     /**
-     * <code>optional .tensorflow.AllocationDescription allocation_description = 4;</code>
-     *
      * <pre>
      * Information about the size and allocator used for the data
      * </pre>
+     *
+     * <code>.tensorflow.AllocationDescription allocation_description = 4;</code>
      */
     public org.tensorflow.framework.AllocationDescription getAllocationDescription() {
       if (allocationDescriptionBuilder_ == null) {
@@ -681,11 +783,11 @@ public  final class TensorDescription extends
       }
     }
     /**
-     * <code>optional .tensorflow.AllocationDescription allocation_description = 4;</code>
-     *
      * <pre>
      * Information about the size and allocator used for the data
      * </pre>
+     *
+     * <code>.tensorflow.AllocationDescription allocation_description = 4;</code>
      */
     public Builder setAllocationDescription(org.tensorflow.framework.AllocationDescription value) {
       if (allocationDescriptionBuilder_ == null) {
@@ -701,11 +803,11 @@ public  final class TensorDescription extends
       return this;
     }
     /**
-     * <code>optional .tensorflow.AllocationDescription allocation_description = 4;</code>
-     *
      * <pre>
      * Information about the size and allocator used for the data
      * </pre>
+     *
+     * <code>.tensorflow.AllocationDescription allocation_description = 4;</code>
      */
     public Builder setAllocationDescription(
         org.tensorflow.framework.AllocationDescription.Builder builderForValue) {
@@ -719,11 +821,11 @@ public  final class TensorDescription extends
       return this;
     }
     /**
-     * <code>optional .tensorflow.AllocationDescription allocation_description = 4;</code>
-     *
      * <pre>
      * Information about the size and allocator used for the data
      * </pre>
+     *
+     * <code>.tensorflow.AllocationDescription allocation_description = 4;</code>
      */
     public Builder mergeAllocationDescription(org.tensorflow.framework.AllocationDescription value) {
       if (allocationDescriptionBuilder_ == null) {
@@ -741,11 +843,11 @@ public  final class TensorDescription extends
       return this;
     }
     /**
-     * <code>optional .tensorflow.AllocationDescription allocation_description = 4;</code>
-     *
      * <pre>
      * Information about the size and allocator used for the data
      * </pre>
+     *
+     * <code>.tensorflow.AllocationDescription allocation_description = 4;</code>
      */
     public Builder clearAllocationDescription() {
       if (allocationDescriptionBuilder_ == null) {
@@ -759,11 +861,11 @@ public  final class TensorDescription extends
       return this;
     }
     /**
-     * <code>optional .tensorflow.AllocationDescription allocation_description = 4;</code>
-     *
      * <pre>
      * Information about the size and allocator used for the data
      * </pre>
+     *
+     * <code>.tensorflow.AllocationDescription allocation_description = 4;</code>
      */
     public org.tensorflow.framework.AllocationDescription.Builder getAllocationDescriptionBuilder() {
       
@@ -771,11 +873,11 @@ public  final class TensorDescription extends
       return getAllocationDescriptionFieldBuilder().getBuilder();
     }
     /**
-     * <code>optional .tensorflow.AllocationDescription allocation_description = 4;</code>
-     *
      * <pre>
      * Information about the size and allocator used for the data
      * </pre>
+     *
+     * <code>.tensorflow.AllocationDescription allocation_description = 4;</code>
      */
     public org.tensorflow.framework.AllocationDescriptionOrBuilder getAllocationDescriptionOrBuilder() {
       if (allocationDescriptionBuilder_ != null) {
@@ -786,17 +888,17 @@ public  final class TensorDescription extends
       }
     }
     /**
-     * <code>optional .tensorflow.AllocationDescription allocation_description = 4;</code>
-     *
      * <pre>
      * Information about the size and allocator used for the data
      * </pre>
+     *
+     * <code>.tensorflow.AllocationDescription allocation_description = 4;</code>
      */
-    private com.google.protobuf.SingleFieldBuilder<
+    private com.google.protobuf.SingleFieldBuilderV3<
         org.tensorflow.framework.AllocationDescription, org.tensorflow.framework.AllocationDescription.Builder, org.tensorflow.framework.AllocationDescriptionOrBuilder> 
         getAllocationDescriptionFieldBuilder() {
       if (allocationDescriptionBuilder_ == null) {
-        allocationDescriptionBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+        allocationDescriptionBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
             org.tensorflow.framework.AllocationDescription, org.tensorflow.framework.AllocationDescription.Builder, org.tensorflow.framework.AllocationDescriptionOrBuilder>(
                 getAllocationDescription(),
                 getParentForChildren(),
@@ -807,12 +909,12 @@ public  final class TensorDescription extends
     }
     public final Builder setUnknownFields(
         final com.google.protobuf.UnknownFieldSet unknownFields) {
-      return this;
+      return super.setUnknownFieldsProto3(unknownFields);
     }
 
     public final Builder mergeUnknownFields(
         final com.google.protobuf.UnknownFieldSet unknownFields) {
-      return this;
+      return super.mergeUnknownFields(unknownFields);
     }
 
 
@@ -835,16 +937,7 @@ public  final class TensorDescription extends
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      try {
-        return new TensorDescription(input, extensionRegistry);
-      } catch (RuntimeException e) {
-        if (e.getCause() instanceof
-            com.google.protobuf.InvalidProtocolBufferException) {
-          throw (com.google.protobuf.InvalidProtocolBufferException)
-              e.getCause();
-        }
-        throw e;
-      }
+      return new TensorDescription(input, extensionRegistry);
     }
   };
 

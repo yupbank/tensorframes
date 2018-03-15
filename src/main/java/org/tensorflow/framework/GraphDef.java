@@ -4,18 +4,19 @@
 package org.tensorflow.framework;
 
 /**
- * Protobuf type {@code tensorflow.GraphDef}
- *
  * <pre>
  * Represents the graph of operations
  * </pre>
+ *
+ * Protobuf type {@code tensorflow.GraphDef}
  */
 public  final class GraphDef extends
-    com.google.protobuf.GeneratedMessage implements
+    com.google.protobuf.GeneratedMessageV3 implements
     // @@protoc_insertion_point(message_implements:tensorflow.GraphDef)
     GraphDefOrBuilder {
+private static final long serialVersionUID = 0L;
   // Use GraphDef.newBuilder() to construct.
-  private GraphDef(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+  private GraphDef(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
     super(builder);
   }
   private GraphDef() {
@@ -26,13 +27,19 @@ public  final class GraphDef extends
   @java.lang.Override
   public final com.google.protobuf.UnknownFieldSet
   getUnknownFields() {
-    return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
+    return this.unknownFields;
   }
   private GraphDef(
       com.google.protobuf.CodedInputStream input,
-      com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
+      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+      throws com.google.protobuf.InvalidProtocolBufferException {
     this();
+    if (extensionRegistry == null) {
+      throw new java.lang.NullPointerException();
+    }
     int mutable_bitField0_ = 0;
+    com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+        com.google.protobuf.UnknownFieldSet.newBuilder();
     try {
       boolean done = false;
       while (!done) {
@@ -42,7 +49,8 @@ public  final class GraphDef extends
             done = true;
             break;
           default: {
-            if (!input.skipField(tag)) {
+            if (!parseUnknownFieldProto3(
+                input, unknownFields, extensionRegistry, tag)) {
               done = true;
             }
             break;
@@ -52,7 +60,8 @@ public  final class GraphDef extends
               node_ = new java.util.ArrayList<org.tensorflow.framework.NodeDef>();
               mutable_bitField0_ |= 0x00000001;
             }
-            node_.add(input.readMessage(org.tensorflow.framework.NodeDef.parser(), extensionRegistry));
+            node_.add(
+                input.readMessage(org.tensorflow.framework.NodeDef.parser(), extensionRegistry));
             break;
           }
           case 18: {
@@ -89,15 +98,15 @@ public  final class GraphDef extends
         }
       }
     } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-      throw new RuntimeException(e.setUnfinishedMessage(this));
+      throw e.setUnfinishedMessage(this);
     } catch (java.io.IOException e) {
-      throw new RuntimeException(
-          new com.google.protobuf.InvalidProtocolBufferException(
-              e.getMessage()).setUnfinishedMessage(this));
+      throw new com.google.protobuf.InvalidProtocolBufferException(
+          e).setUnfinishedMessage(this);
     } finally {
       if (((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
         node_ = java.util.Collections.unmodifiableList(node_);
       }
+      this.unknownFields = unknownFields.build();
       makeExtensionsImmutable();
     }
   }
@@ -106,7 +115,7 @@ public  final class GraphDef extends
     return org.tensorflow.framework.GraphProtos.internal_static_tensorflow_GraphDef_descriptor;
   }
 
-  protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+  protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
     return org.tensorflow.framework.GraphProtos.internal_static_tensorflow_GraphDef_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
@@ -152,37 +161,37 @@ public  final class GraphDef extends
   public static final int VERSIONS_FIELD_NUMBER = 4;
   private org.tensorflow.framework.VersionDef versions_;
   /**
-   * <code>optional .tensorflow.VersionDef versions = 4;</code>
-   *
    * <pre>
    * Compatibility versions of the graph.  See core/public/version.h for version
    * history.  The GraphDef version is distinct from the TensorFlow version, and
    * each release of TensorFlow will support a range of GraphDef versions.
    * </pre>
+   *
+   * <code>.tensorflow.VersionDef versions = 4;</code>
    */
   public boolean hasVersions() {
     return versions_ != null;
   }
   /**
-   * <code>optional .tensorflow.VersionDef versions = 4;</code>
-   *
    * <pre>
    * Compatibility versions of the graph.  See core/public/version.h for version
    * history.  The GraphDef version is distinct from the TensorFlow version, and
    * each release of TensorFlow will support a range of GraphDef versions.
    * </pre>
+   *
+   * <code>.tensorflow.VersionDef versions = 4;</code>
    */
   public org.tensorflow.framework.VersionDef getVersions() {
     return versions_ == null ? org.tensorflow.framework.VersionDef.getDefaultInstance() : versions_;
   }
   /**
-   * <code>optional .tensorflow.VersionDef versions = 4;</code>
-   *
    * <pre>
    * Compatibility versions of the graph.  See core/public/version.h for version
    * history.  The GraphDef version is distinct from the TensorFlow version, and
    * each release of TensorFlow will support a range of GraphDef versions.
    * </pre>
+   *
+   * <code>.tensorflow.VersionDef versions = 4;</code>
    */
   public org.tensorflow.framework.VersionDefOrBuilder getVersionsOrBuilder() {
     return getVersions();
@@ -191,13 +200,13 @@ public  final class GraphDef extends
   public static final int VERSION_FIELD_NUMBER = 3;
   private int version_;
   /**
-   * <code>optional int32 version = 3 [deprecated = true];</code>
-   *
    * <pre>
    * Deprecated single version field; use versions above instead.  Since all
    * GraphDef changes before "versions" was introduced were forward
    * compatible, this field is entirely ignored.
    * </pre>
+   *
+   * <code>int32 version = 3 [deprecated = true];</code>
    */
   @java.lang.Deprecated public int getVersion() {
     return version_;
@@ -206,8 +215,6 @@ public  final class GraphDef extends
   public static final int LIBRARY_FIELD_NUMBER = 2;
   private org.tensorflow.framework.FunctionDefLibrary library_;
   /**
-   * <code>optional .tensorflow.FunctionDefLibrary library = 2;</code>
-   *
    * <pre>
    * EXPERIMENTAL. DO NOT USE OR DEPEND ON THIS YET.
    * "library" provides user-defined functions.
@@ -217,7 +224,7 @@ public  final class GraphDef extends
    *     different orgs. E.g.,
    *     { "/google/nn", { ... }},
    *     { "/google/vision", { ... }}
-   *     { "/org_foo/module_bar", {...}}
+   *     { "/org_foo/module_bar", { ... }}
    *     map&lt;string, FunctionDefLib&gt; named_lib;
    *   * If node[i].op is the name of one function in "library",
    *     node[i] is deemed as a function call. Otherwise, node[i].op
@@ -232,13 +239,13 @@ public  final class GraphDef extends
    *     consumer does not start until all return values of the callee
    *     function are ready.
    * </pre>
+   *
+   * <code>.tensorflow.FunctionDefLibrary library = 2;</code>
    */
   public boolean hasLibrary() {
     return library_ != null;
   }
   /**
-   * <code>optional .tensorflow.FunctionDefLibrary library = 2;</code>
-   *
    * <pre>
    * EXPERIMENTAL. DO NOT USE OR DEPEND ON THIS YET.
    * "library" provides user-defined functions.
@@ -248,7 +255,7 @@ public  final class GraphDef extends
    *     different orgs. E.g.,
    *     { "/google/nn", { ... }},
    *     { "/google/vision", { ... }}
-   *     { "/org_foo/module_bar", {...}}
+   *     { "/org_foo/module_bar", { ... }}
    *     map&lt;string, FunctionDefLib&gt; named_lib;
    *   * If node[i].op is the name of one function in "library",
    *     node[i] is deemed as a function call. Otherwise, node[i].op
@@ -263,13 +270,13 @@ public  final class GraphDef extends
    *     consumer does not start until all return values of the callee
    *     function are ready.
    * </pre>
+   *
+   * <code>.tensorflow.FunctionDefLibrary library = 2;</code>
    */
   public org.tensorflow.framework.FunctionDefLibrary getLibrary() {
     return library_ == null ? org.tensorflow.framework.FunctionDefLibrary.getDefaultInstance() : library_;
   }
   /**
-   * <code>optional .tensorflow.FunctionDefLibrary library = 2;</code>
-   *
    * <pre>
    * EXPERIMENTAL. DO NOT USE OR DEPEND ON THIS YET.
    * "library" provides user-defined functions.
@@ -279,7 +286,7 @@ public  final class GraphDef extends
    *     different orgs. E.g.,
    *     { "/google/nn", { ... }},
    *     { "/google/vision", { ... }}
-   *     { "/org_foo/module_bar", {...}}
+   *     { "/org_foo/module_bar", { ... }}
    *     map&lt;string, FunctionDefLib&gt; named_lib;
    *   * If node[i].op is the name of one function in "library",
    *     node[i] is deemed as a function call. Otherwise, node[i].op
@@ -294,6 +301,8 @@ public  final class GraphDef extends
    *     consumer does not start until all return values of the callee
    *     function are ready.
    * </pre>
+   *
+   * <code>.tensorflow.FunctionDefLibrary library = 2;</code>
    */
   public org.tensorflow.framework.FunctionDefLibraryOrBuilder getLibraryOrBuilder() {
     return getLibrary();
@@ -323,6 +332,7 @@ public  final class GraphDef extends
     if (versions_ != null) {
       output.writeMessage(4, getVersions());
     }
+    unknownFields.writeTo(output);
   }
 
   public int getSerializedSize() {
@@ -346,11 +356,77 @@ public  final class GraphDef extends
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(4, getVersions());
     }
+    size += unknownFields.getSerializedSize();
     memoizedSize = size;
     return size;
   }
 
-  private static final long serialVersionUID = 0L;
+  @java.lang.Override
+  public boolean equals(final java.lang.Object obj) {
+    if (obj == this) {
+     return true;
+    }
+    if (!(obj instanceof org.tensorflow.framework.GraphDef)) {
+      return super.equals(obj);
+    }
+    org.tensorflow.framework.GraphDef other = (org.tensorflow.framework.GraphDef) obj;
+
+    boolean result = true;
+    result = result && getNodeList()
+        .equals(other.getNodeList());
+    result = result && (hasVersions() == other.hasVersions());
+    if (hasVersions()) {
+      result = result && getVersions()
+          .equals(other.getVersions());
+    }
+    result = result && (getVersion()
+        == other.getVersion());
+    result = result && (hasLibrary() == other.hasLibrary());
+    if (hasLibrary()) {
+      result = result && getLibrary()
+          .equals(other.getLibrary());
+    }
+    result = result && unknownFields.equals(other.unknownFields);
+    return result;
+  }
+
+  @java.lang.Override
+  public int hashCode() {
+    if (memoizedHashCode != 0) {
+      return memoizedHashCode;
+    }
+    int hash = 41;
+    hash = (19 * hash) + getDescriptor().hashCode();
+    if (getNodeCount() > 0) {
+      hash = (37 * hash) + NODE_FIELD_NUMBER;
+      hash = (53 * hash) + getNodeList().hashCode();
+    }
+    if (hasVersions()) {
+      hash = (37 * hash) + VERSIONS_FIELD_NUMBER;
+      hash = (53 * hash) + getVersions().hashCode();
+    }
+    hash = (37 * hash) + VERSION_FIELD_NUMBER;
+    hash = (53 * hash) + getVersion();
+    if (hasLibrary()) {
+      hash = (37 * hash) + LIBRARY_FIELD_NUMBER;
+      hash = (53 * hash) + getLibrary().hashCode();
+    }
+    hash = (29 * hash) + unknownFields.hashCode();
+    memoizedHashCode = hash;
+    return hash;
+  }
+
+  public static org.tensorflow.framework.GraphDef parseFrom(
+      java.nio.ByteBuffer data)
+      throws com.google.protobuf.InvalidProtocolBufferException {
+    return PARSER.parseFrom(data);
+  }
+  public static org.tensorflow.framework.GraphDef parseFrom(
+      java.nio.ByteBuffer data,
+      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+      throws com.google.protobuf.InvalidProtocolBufferException {
+    return PARSER.parseFrom(data, extensionRegistry);
+  }
   public static org.tensorflow.framework.GraphDef parseFrom(
       com.google.protobuf.ByteString data)
       throws com.google.protobuf.InvalidProtocolBufferException {
@@ -374,34 +450,40 @@ public  final class GraphDef extends
   }
   public static org.tensorflow.framework.GraphDef parseFrom(java.io.InputStream input)
       throws java.io.IOException {
-    return PARSER.parseFrom(input);
+    return com.google.protobuf.GeneratedMessageV3
+        .parseWithIOException(PARSER, input);
   }
   public static org.tensorflow.framework.GraphDef parseFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
-    return PARSER.parseFrom(input, extensionRegistry);
+    return com.google.protobuf.GeneratedMessageV3
+        .parseWithIOException(PARSER, input, extensionRegistry);
   }
   public static org.tensorflow.framework.GraphDef parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
-    return PARSER.parseDelimitedFrom(input);
+    return com.google.protobuf.GeneratedMessageV3
+        .parseDelimitedWithIOException(PARSER, input);
   }
   public static org.tensorflow.framework.GraphDef parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
-    return PARSER.parseDelimitedFrom(input, extensionRegistry);
+    return com.google.protobuf.GeneratedMessageV3
+        .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
   }
   public static org.tensorflow.framework.GraphDef parseFrom(
       com.google.protobuf.CodedInputStream input)
       throws java.io.IOException {
-    return PARSER.parseFrom(input);
+    return com.google.protobuf.GeneratedMessageV3
+        .parseWithIOException(PARSER, input);
   }
   public static org.tensorflow.framework.GraphDef parseFrom(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
-    return PARSER.parseFrom(input, extensionRegistry);
+    return com.google.protobuf.GeneratedMessageV3
+        .parseWithIOException(PARSER, input, extensionRegistry);
   }
 
   public Builder newBuilderForType() { return newBuilder(); }
@@ -418,19 +500,19 @@ public  final class GraphDef extends
 
   @java.lang.Override
   protected Builder newBuilderForType(
-      com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
     Builder builder = new Builder(parent);
     return builder;
   }
   /**
-   * Protobuf type {@code tensorflow.GraphDef}
-   *
    * <pre>
    * Represents the graph of operations
    * </pre>
+   *
+   * Protobuf type {@code tensorflow.GraphDef}
    */
   public static final class Builder extends
-      com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+      com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
       // @@protoc_insertion_point(builder_implements:tensorflow.GraphDef)
       org.tensorflow.framework.GraphDefOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
@@ -438,7 +520,7 @@ public  final class GraphDef extends
       return org.tensorflow.framework.GraphProtos.internal_static_tensorflow_GraphDef_descriptor;
     }
 
-    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return org.tensorflow.framework.GraphProtos.internal_static_tensorflow_GraphDef_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
@@ -451,12 +533,13 @@ public  final class GraphDef extends
     }
 
     private Builder(
-        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       super(parent);
       maybeForceBuilderInitialization();
     }
     private void maybeForceBuilderInitialization() {
-      if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+      if (com.google.protobuf.GeneratedMessageV3
+              .alwaysUseFieldBuilders) {
         getNodeFieldBuilder();
       }
     }
@@ -531,6 +614,32 @@ public  final class GraphDef extends
       return result;
     }
 
+    public Builder clone() {
+      return (Builder) super.clone();
+    }
+    public Builder setField(
+        com.google.protobuf.Descriptors.FieldDescriptor field,
+        java.lang.Object value) {
+      return (Builder) super.setField(field, value);
+    }
+    public Builder clearField(
+        com.google.protobuf.Descriptors.FieldDescriptor field) {
+      return (Builder) super.clearField(field);
+    }
+    public Builder clearOneof(
+        com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+      return (Builder) super.clearOneof(oneof);
+    }
+    public Builder setRepeatedField(
+        com.google.protobuf.Descriptors.FieldDescriptor field,
+        int index, java.lang.Object value) {
+      return (Builder) super.setRepeatedField(field, index, value);
+    }
+    public Builder addRepeatedField(
+        com.google.protobuf.Descriptors.FieldDescriptor field,
+        java.lang.Object value) {
+      return (Builder) super.addRepeatedField(field, value);
+    }
     public Builder mergeFrom(com.google.protobuf.Message other) {
       if (other instanceof org.tensorflow.framework.GraphDef) {
         return mergeFrom((org.tensorflow.framework.GraphDef)other);
@@ -561,7 +670,7 @@ public  final class GraphDef extends
             node_ = other.node_;
             bitField0_ = (bitField0_ & ~0x00000001);
             nodeBuilder_ = 
-              com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
+              com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
                  getNodeFieldBuilder() : null;
           } else {
             nodeBuilder_.addAllMessages(other.node_);
@@ -577,6 +686,7 @@ public  final class GraphDef extends
       if (other.hasLibrary()) {
         mergeLibrary(other.getLibrary());
       }
+      this.mergeUnknownFields(other.unknownFields);
       onChanged();
       return this;
     }
@@ -594,7 +704,7 @@ public  final class GraphDef extends
         parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
         parsedMessage = (org.tensorflow.framework.GraphDef) e.getUnfinishedMessage();
-        throw e;
+        throw e.unwrapIOException();
       } finally {
         if (parsedMessage != null) {
           mergeFrom(parsedMessage);
@@ -613,7 +723,7 @@ public  final class GraphDef extends
        }
     }
 
-    private com.google.protobuf.RepeatedFieldBuilder<
+    private com.google.protobuf.RepeatedFieldBuilderV3<
         org.tensorflow.framework.NodeDef, org.tensorflow.framework.NodeDef.Builder, org.tensorflow.framework.NodeDefOrBuilder> nodeBuilder_;
 
     /**
@@ -829,11 +939,11 @@ public  final class GraphDef extends
          getNodeBuilderList() {
       return getNodeFieldBuilder().getBuilderList();
     }
-    private com.google.protobuf.RepeatedFieldBuilder<
+    private com.google.protobuf.RepeatedFieldBuilderV3<
         org.tensorflow.framework.NodeDef, org.tensorflow.framework.NodeDef.Builder, org.tensorflow.framework.NodeDefOrBuilder> 
         getNodeFieldBuilder() {
       if (nodeBuilder_ == null) {
-        nodeBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
+        nodeBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
             org.tensorflow.framework.NodeDef, org.tensorflow.framework.NodeDef.Builder, org.tensorflow.framework.NodeDefOrBuilder>(
                 node_,
                 ((bitField0_ & 0x00000001) == 0x00000001),
@@ -845,28 +955,28 @@ public  final class GraphDef extends
     }
 
     private org.tensorflow.framework.VersionDef versions_ = null;
-    private com.google.protobuf.SingleFieldBuilder<
+    private com.google.protobuf.SingleFieldBuilderV3<
         org.tensorflow.framework.VersionDef, org.tensorflow.framework.VersionDef.Builder, org.tensorflow.framework.VersionDefOrBuilder> versionsBuilder_;
     /**
-     * <code>optional .tensorflow.VersionDef versions = 4;</code>
-     *
      * <pre>
      * Compatibility versions of the graph.  See core/public/version.h for version
      * history.  The GraphDef version is distinct from the TensorFlow version, and
      * each release of TensorFlow will support a range of GraphDef versions.
      * </pre>
+     *
+     * <code>.tensorflow.VersionDef versions = 4;</code>
      */
     public boolean hasVersions() {
       return versionsBuilder_ != null || versions_ != null;
     }
     /**
-     * <code>optional .tensorflow.VersionDef versions = 4;</code>
-     *
      * <pre>
      * Compatibility versions of the graph.  See core/public/version.h for version
      * history.  The GraphDef version is distinct from the TensorFlow version, and
      * each release of TensorFlow will support a range of GraphDef versions.
      * </pre>
+     *
+     * <code>.tensorflow.VersionDef versions = 4;</code>
      */
     public org.tensorflow.framework.VersionDef getVersions() {
       if (versionsBuilder_ == null) {
@@ -876,13 +986,13 @@ public  final class GraphDef extends
       }
     }
     /**
-     * <code>optional .tensorflow.VersionDef versions = 4;</code>
-     *
      * <pre>
      * Compatibility versions of the graph.  See core/public/version.h for version
      * history.  The GraphDef version is distinct from the TensorFlow version, and
      * each release of TensorFlow will support a range of GraphDef versions.
      * </pre>
+     *
+     * <code>.tensorflow.VersionDef versions = 4;</code>
      */
     public Builder setVersions(org.tensorflow.framework.VersionDef value) {
       if (versionsBuilder_ == null) {
@@ -898,13 +1008,13 @@ public  final class GraphDef extends
       return this;
     }
     /**
-     * <code>optional .tensorflow.VersionDef versions = 4;</code>
-     *
      * <pre>
      * Compatibility versions of the graph.  See core/public/version.h for version
      * history.  The GraphDef version is distinct from the TensorFlow version, and
      * each release of TensorFlow will support a range of GraphDef versions.
      * </pre>
+     *
+     * <code>.tensorflow.VersionDef versions = 4;</code>
      */
     public Builder setVersions(
         org.tensorflow.framework.VersionDef.Builder builderForValue) {
@@ -918,13 +1028,13 @@ public  final class GraphDef extends
       return this;
     }
     /**
-     * <code>optional .tensorflow.VersionDef versions = 4;</code>
-     *
      * <pre>
      * Compatibility versions of the graph.  See core/public/version.h for version
      * history.  The GraphDef version is distinct from the TensorFlow version, and
      * each release of TensorFlow will support a range of GraphDef versions.
      * </pre>
+     *
+     * <code>.tensorflow.VersionDef versions = 4;</code>
      */
     public Builder mergeVersions(org.tensorflow.framework.VersionDef value) {
       if (versionsBuilder_ == null) {
@@ -942,13 +1052,13 @@ public  final class GraphDef extends
       return this;
     }
     /**
-     * <code>optional .tensorflow.VersionDef versions = 4;</code>
-     *
      * <pre>
      * Compatibility versions of the graph.  See core/public/version.h for version
      * history.  The GraphDef version is distinct from the TensorFlow version, and
      * each release of TensorFlow will support a range of GraphDef versions.
      * </pre>
+     *
+     * <code>.tensorflow.VersionDef versions = 4;</code>
      */
     public Builder clearVersions() {
       if (versionsBuilder_ == null) {
@@ -962,13 +1072,13 @@ public  final class GraphDef extends
       return this;
     }
     /**
-     * <code>optional .tensorflow.VersionDef versions = 4;</code>
-     *
      * <pre>
      * Compatibility versions of the graph.  See core/public/version.h for version
      * history.  The GraphDef version is distinct from the TensorFlow version, and
      * each release of TensorFlow will support a range of GraphDef versions.
      * </pre>
+     *
+     * <code>.tensorflow.VersionDef versions = 4;</code>
      */
     public org.tensorflow.framework.VersionDef.Builder getVersionsBuilder() {
       
@@ -976,13 +1086,13 @@ public  final class GraphDef extends
       return getVersionsFieldBuilder().getBuilder();
     }
     /**
-     * <code>optional .tensorflow.VersionDef versions = 4;</code>
-     *
      * <pre>
      * Compatibility versions of the graph.  See core/public/version.h for version
      * history.  The GraphDef version is distinct from the TensorFlow version, and
      * each release of TensorFlow will support a range of GraphDef versions.
      * </pre>
+     *
+     * <code>.tensorflow.VersionDef versions = 4;</code>
      */
     public org.tensorflow.framework.VersionDefOrBuilder getVersionsOrBuilder() {
       if (versionsBuilder_ != null) {
@@ -993,19 +1103,19 @@ public  final class GraphDef extends
       }
     }
     /**
-     * <code>optional .tensorflow.VersionDef versions = 4;</code>
-     *
      * <pre>
      * Compatibility versions of the graph.  See core/public/version.h for version
      * history.  The GraphDef version is distinct from the TensorFlow version, and
      * each release of TensorFlow will support a range of GraphDef versions.
      * </pre>
+     *
+     * <code>.tensorflow.VersionDef versions = 4;</code>
      */
-    private com.google.protobuf.SingleFieldBuilder<
+    private com.google.protobuf.SingleFieldBuilderV3<
         org.tensorflow.framework.VersionDef, org.tensorflow.framework.VersionDef.Builder, org.tensorflow.framework.VersionDefOrBuilder> 
         getVersionsFieldBuilder() {
       if (versionsBuilder_ == null) {
-        versionsBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+        versionsBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
             org.tensorflow.framework.VersionDef, org.tensorflow.framework.VersionDef.Builder, org.tensorflow.framework.VersionDefOrBuilder>(
                 getVersions(),
                 getParentForChildren(),
@@ -1017,25 +1127,25 @@ public  final class GraphDef extends
 
     private int version_ ;
     /**
-     * <code>optional int32 version = 3 [deprecated = true];</code>
-     *
      * <pre>
      * Deprecated single version field; use versions above instead.  Since all
      * GraphDef changes before "versions" was introduced were forward
      * compatible, this field is entirely ignored.
      * </pre>
+     *
+     * <code>int32 version = 3 [deprecated = true];</code>
      */
     @java.lang.Deprecated public int getVersion() {
       return version_;
     }
     /**
-     * <code>optional int32 version = 3 [deprecated = true];</code>
-     *
      * <pre>
      * Deprecated single version field; use versions above instead.  Since all
      * GraphDef changes before "versions" was introduced were forward
      * compatible, this field is entirely ignored.
      * </pre>
+     *
+     * <code>int32 version = 3 [deprecated = true];</code>
      */
     @java.lang.Deprecated public Builder setVersion(int value) {
       
@@ -1044,13 +1154,13 @@ public  final class GraphDef extends
       return this;
     }
     /**
-     * <code>optional int32 version = 3 [deprecated = true];</code>
-     *
      * <pre>
      * Deprecated single version field; use versions above instead.  Since all
      * GraphDef changes before "versions" was introduced were forward
      * compatible, this field is entirely ignored.
      * </pre>
+     *
+     * <code>int32 version = 3 [deprecated = true];</code>
      */
     @java.lang.Deprecated public Builder clearVersion() {
       
@@ -1060,11 +1170,9 @@ public  final class GraphDef extends
     }
 
     private org.tensorflow.framework.FunctionDefLibrary library_ = null;
-    private com.google.protobuf.SingleFieldBuilder<
+    private com.google.protobuf.SingleFieldBuilderV3<
         org.tensorflow.framework.FunctionDefLibrary, org.tensorflow.framework.FunctionDefLibrary.Builder, org.tensorflow.framework.FunctionDefLibraryOrBuilder> libraryBuilder_;
     /**
-     * <code>optional .tensorflow.FunctionDefLibrary library = 2;</code>
-     *
      * <pre>
      * EXPERIMENTAL. DO NOT USE OR DEPEND ON THIS YET.
      * "library" provides user-defined functions.
@@ -1074,7 +1182,7 @@ public  final class GraphDef extends
      *     different orgs. E.g.,
      *     { "/google/nn", { ... }},
      *     { "/google/vision", { ... }}
-     *     { "/org_foo/module_bar", {...}}
+     *     { "/org_foo/module_bar", { ... }}
      *     map&lt;string, FunctionDefLib&gt; named_lib;
      *   * If node[i].op is the name of one function in "library",
      *     node[i] is deemed as a function call. Otherwise, node[i].op
@@ -1089,13 +1197,13 @@ public  final class GraphDef extends
      *     consumer does not start until all return values of the callee
      *     function are ready.
      * </pre>
+     *
+     * <code>.tensorflow.FunctionDefLibrary library = 2;</code>
      */
     public boolean hasLibrary() {
       return libraryBuilder_ != null || library_ != null;
     }
     /**
-     * <code>optional .tensorflow.FunctionDefLibrary library = 2;</code>
-     *
      * <pre>
      * EXPERIMENTAL. DO NOT USE OR DEPEND ON THIS YET.
      * "library" provides user-defined functions.
@@ -1105,7 +1213,7 @@ public  final class GraphDef extends
      *     different orgs. E.g.,
      *     { "/google/nn", { ... }},
      *     { "/google/vision", { ... }}
-     *     { "/org_foo/module_bar", {...}}
+     *     { "/org_foo/module_bar", { ... }}
      *     map&lt;string, FunctionDefLib&gt; named_lib;
      *   * If node[i].op is the name of one function in "library",
      *     node[i] is deemed as a function call. Otherwise, node[i].op
@@ -1120,6 +1228,8 @@ public  final class GraphDef extends
      *     consumer does not start until all return values of the callee
      *     function are ready.
      * </pre>
+     *
+     * <code>.tensorflow.FunctionDefLibrary library = 2;</code>
      */
     public org.tensorflow.framework.FunctionDefLibrary getLibrary() {
       if (libraryBuilder_ == null) {
@@ -1129,8 +1239,6 @@ public  final class GraphDef extends
       }
     }
     /**
-     * <code>optional .tensorflow.FunctionDefLibrary library = 2;</code>
-     *
      * <pre>
      * EXPERIMENTAL. DO NOT USE OR DEPEND ON THIS YET.
      * "library" provides user-defined functions.
@@ -1140,7 +1248,7 @@ public  final class GraphDef extends
      *     different orgs. E.g.,
      *     { "/google/nn", { ... }},
      *     { "/google/vision", { ... }}
-     *     { "/org_foo/module_bar", {...}}
+     *     { "/org_foo/module_bar", { ... }}
      *     map&lt;string, FunctionDefLib&gt; named_lib;
      *   * If node[i].op is the name of one function in "library",
      *     node[i] is deemed as a function call. Otherwise, node[i].op
@@ -1155,6 +1263,8 @@ public  final class GraphDef extends
      *     consumer does not start until all return values of the callee
      *     function are ready.
      * </pre>
+     *
+     * <code>.tensorflow.FunctionDefLibrary library = 2;</code>
      */
     public Builder setLibrary(org.tensorflow.framework.FunctionDefLibrary value) {
       if (libraryBuilder_ == null) {
@@ -1170,8 +1280,6 @@ public  final class GraphDef extends
       return this;
     }
     /**
-     * <code>optional .tensorflow.FunctionDefLibrary library = 2;</code>
-     *
      * <pre>
      * EXPERIMENTAL. DO NOT USE OR DEPEND ON THIS YET.
      * "library" provides user-defined functions.
@@ -1181,7 +1289,7 @@ public  final class GraphDef extends
      *     different orgs. E.g.,
      *     { "/google/nn", { ... }},
      *     { "/google/vision", { ... }}
-     *     { "/org_foo/module_bar", {...}}
+     *     { "/org_foo/module_bar", { ... }}
      *     map&lt;string, FunctionDefLib&gt; named_lib;
      *   * If node[i].op is the name of one function in "library",
      *     node[i] is deemed as a function call. Otherwise, node[i].op
@@ -1196,6 +1304,8 @@ public  final class GraphDef extends
      *     consumer does not start until all return values of the callee
      *     function are ready.
      * </pre>
+     *
+     * <code>.tensorflow.FunctionDefLibrary library = 2;</code>
      */
     public Builder setLibrary(
         org.tensorflow.framework.FunctionDefLibrary.Builder builderForValue) {
@@ -1209,8 +1319,6 @@ public  final class GraphDef extends
       return this;
     }
     /**
-     * <code>optional .tensorflow.FunctionDefLibrary library = 2;</code>
-     *
      * <pre>
      * EXPERIMENTAL. DO NOT USE OR DEPEND ON THIS YET.
      * "library" provides user-defined functions.
@@ -1220,7 +1328,7 @@ public  final class GraphDef extends
      *     different orgs. E.g.,
      *     { "/google/nn", { ... }},
      *     { "/google/vision", { ... }}
-     *     { "/org_foo/module_bar", {...}}
+     *     { "/org_foo/module_bar", { ... }}
      *     map&lt;string, FunctionDefLib&gt; named_lib;
      *   * If node[i].op is the name of one function in "library",
      *     node[i] is deemed as a function call. Otherwise, node[i].op
@@ -1235,6 +1343,8 @@ public  final class GraphDef extends
      *     consumer does not start until all return values of the callee
      *     function are ready.
      * </pre>
+     *
+     * <code>.tensorflow.FunctionDefLibrary library = 2;</code>
      */
     public Builder mergeLibrary(org.tensorflow.framework.FunctionDefLibrary value) {
       if (libraryBuilder_ == null) {
@@ -1252,8 +1362,6 @@ public  final class GraphDef extends
       return this;
     }
     /**
-     * <code>optional .tensorflow.FunctionDefLibrary library = 2;</code>
-     *
      * <pre>
      * EXPERIMENTAL. DO NOT USE OR DEPEND ON THIS YET.
      * "library" provides user-defined functions.
@@ -1263,7 +1371,7 @@ public  final class GraphDef extends
      *     different orgs. E.g.,
      *     { "/google/nn", { ... }},
      *     { "/google/vision", { ... }}
-     *     { "/org_foo/module_bar", {...}}
+     *     { "/org_foo/module_bar", { ... }}
      *     map&lt;string, FunctionDefLib&gt; named_lib;
      *   * If node[i].op is the name of one function in "library",
      *     node[i] is deemed as a function call. Otherwise, node[i].op
@@ -1278,6 +1386,8 @@ public  final class GraphDef extends
      *     consumer does not start until all return values of the callee
      *     function are ready.
      * </pre>
+     *
+     * <code>.tensorflow.FunctionDefLibrary library = 2;</code>
      */
     public Builder clearLibrary() {
       if (libraryBuilder_ == null) {
@@ -1291,8 +1401,6 @@ public  final class GraphDef extends
       return this;
     }
     /**
-     * <code>optional .tensorflow.FunctionDefLibrary library = 2;</code>
-     *
      * <pre>
      * EXPERIMENTAL. DO NOT USE OR DEPEND ON THIS YET.
      * "library" provides user-defined functions.
@@ -1302,7 +1410,7 @@ public  final class GraphDef extends
      *     different orgs. E.g.,
      *     { "/google/nn", { ... }},
      *     { "/google/vision", { ... }}
-     *     { "/org_foo/module_bar", {...}}
+     *     { "/org_foo/module_bar", { ... }}
      *     map&lt;string, FunctionDefLib&gt; named_lib;
      *   * If node[i].op is the name of one function in "library",
      *     node[i] is deemed as a function call. Otherwise, node[i].op
@@ -1317,6 +1425,8 @@ public  final class GraphDef extends
      *     consumer does not start until all return values of the callee
      *     function are ready.
      * </pre>
+     *
+     * <code>.tensorflow.FunctionDefLibrary library = 2;</code>
      */
     public org.tensorflow.framework.FunctionDefLibrary.Builder getLibraryBuilder() {
       
@@ -1324,8 +1434,6 @@ public  final class GraphDef extends
       return getLibraryFieldBuilder().getBuilder();
     }
     /**
-     * <code>optional .tensorflow.FunctionDefLibrary library = 2;</code>
-     *
      * <pre>
      * EXPERIMENTAL. DO NOT USE OR DEPEND ON THIS YET.
      * "library" provides user-defined functions.
@@ -1335,7 +1443,7 @@ public  final class GraphDef extends
      *     different orgs. E.g.,
      *     { "/google/nn", { ... }},
      *     { "/google/vision", { ... }}
-     *     { "/org_foo/module_bar", {...}}
+     *     { "/org_foo/module_bar", { ... }}
      *     map&lt;string, FunctionDefLib&gt; named_lib;
      *   * If node[i].op is the name of one function in "library",
      *     node[i] is deemed as a function call. Otherwise, node[i].op
@@ -1350,6 +1458,8 @@ public  final class GraphDef extends
      *     consumer does not start until all return values of the callee
      *     function are ready.
      * </pre>
+     *
+     * <code>.tensorflow.FunctionDefLibrary library = 2;</code>
      */
     public org.tensorflow.framework.FunctionDefLibraryOrBuilder getLibraryOrBuilder() {
       if (libraryBuilder_ != null) {
@@ -1360,8 +1470,6 @@ public  final class GraphDef extends
       }
     }
     /**
-     * <code>optional .tensorflow.FunctionDefLibrary library = 2;</code>
-     *
      * <pre>
      * EXPERIMENTAL. DO NOT USE OR DEPEND ON THIS YET.
      * "library" provides user-defined functions.
@@ -1371,7 +1479,7 @@ public  final class GraphDef extends
      *     different orgs. E.g.,
      *     { "/google/nn", { ... }},
      *     { "/google/vision", { ... }}
-     *     { "/org_foo/module_bar", {...}}
+     *     { "/org_foo/module_bar", { ... }}
      *     map&lt;string, FunctionDefLib&gt; named_lib;
      *   * If node[i].op is the name of one function in "library",
      *     node[i] is deemed as a function call. Otherwise, node[i].op
@@ -1386,12 +1494,14 @@ public  final class GraphDef extends
      *     consumer does not start until all return values of the callee
      *     function are ready.
      * </pre>
+     *
+     * <code>.tensorflow.FunctionDefLibrary library = 2;</code>
      */
-    private com.google.protobuf.SingleFieldBuilder<
+    private com.google.protobuf.SingleFieldBuilderV3<
         org.tensorflow.framework.FunctionDefLibrary, org.tensorflow.framework.FunctionDefLibrary.Builder, org.tensorflow.framework.FunctionDefLibraryOrBuilder> 
         getLibraryFieldBuilder() {
       if (libraryBuilder_ == null) {
-        libraryBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+        libraryBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
             org.tensorflow.framework.FunctionDefLibrary, org.tensorflow.framework.FunctionDefLibrary.Builder, org.tensorflow.framework.FunctionDefLibraryOrBuilder>(
                 getLibrary(),
                 getParentForChildren(),
@@ -1402,12 +1512,12 @@ public  final class GraphDef extends
     }
     public final Builder setUnknownFields(
         final com.google.protobuf.UnknownFieldSet unknownFields) {
-      return this;
+      return super.setUnknownFieldsProto3(unknownFields);
     }
 
     public final Builder mergeUnknownFields(
         final com.google.protobuf.UnknownFieldSet unknownFields) {
-      return this;
+      return super.mergeUnknownFields(unknownFields);
     }
 
 
@@ -1430,16 +1540,7 @@ public  final class GraphDef extends
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      try {
-        return new GraphDef(input, extensionRegistry);
-      } catch (RuntimeException e) {
-        if (e.getCause() instanceof
-            com.google.protobuf.InvalidProtocolBufferException) {
-          throw (com.google.protobuf.InvalidProtocolBufferException)
-              e.getCause();
-        }
-        throw e;
-      }
+      return new GraphDef(input, extensionRegistry);
     }
   };
 

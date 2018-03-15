@@ -4,18 +4,19 @@
 package org.tensorflow.framework;
 
 /**
- * Protobuf type {@code tensorflow.TensorShapeProto}
- *
  * <pre>
  * Dimensions of a tensor.
  * </pre>
+ *
+ * Protobuf type {@code tensorflow.TensorShapeProto}
  */
 public  final class TensorShapeProto extends
-    com.google.protobuf.GeneratedMessage implements
+    com.google.protobuf.GeneratedMessageV3 implements
     // @@protoc_insertion_point(message_implements:tensorflow.TensorShapeProto)
     TensorShapeProtoOrBuilder {
+private static final long serialVersionUID = 0L;
   // Use TensorShapeProto.newBuilder() to construct.
-  private TensorShapeProto(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+  private TensorShapeProto(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
     super(builder);
   }
   private TensorShapeProto() {
@@ -26,13 +27,19 @@ public  final class TensorShapeProto extends
   @java.lang.Override
   public final com.google.protobuf.UnknownFieldSet
   getUnknownFields() {
-    return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
+    return this.unknownFields;
   }
   private TensorShapeProto(
       com.google.protobuf.CodedInputStream input,
-      com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
+      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+      throws com.google.protobuf.InvalidProtocolBufferException {
     this();
+    if (extensionRegistry == null) {
+      throw new java.lang.NullPointerException();
+    }
     int mutable_bitField0_ = 0;
+    com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+        com.google.protobuf.UnknownFieldSet.newBuilder();
     try {
       boolean done = false;
       while (!done) {
@@ -42,7 +49,8 @@ public  final class TensorShapeProto extends
             done = true;
             break;
           default: {
-            if (!input.skipField(tag)) {
+            if (!parseUnknownFieldProto3(
+                input, unknownFields, extensionRegistry, tag)) {
               done = true;
             }
             break;
@@ -52,7 +60,8 @@ public  final class TensorShapeProto extends
               dim_ = new java.util.ArrayList<org.tensorflow.framework.TensorShapeProto.Dim>();
               mutable_bitField0_ |= 0x00000001;
             }
-            dim_.add(input.readMessage(org.tensorflow.framework.TensorShapeProto.Dim.parser(), extensionRegistry));
+            dim_.add(
+                input.readMessage(org.tensorflow.framework.TensorShapeProto.Dim.parser(), extensionRegistry));
             break;
           }
           case 24: {
@@ -63,15 +72,15 @@ public  final class TensorShapeProto extends
         }
       }
     } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-      throw new RuntimeException(e.setUnfinishedMessage(this));
+      throw e.setUnfinishedMessage(this);
     } catch (java.io.IOException e) {
-      throw new RuntimeException(
-          new com.google.protobuf.InvalidProtocolBufferException(
-              e.getMessage()).setUnfinishedMessage(this));
+      throw new com.google.protobuf.InvalidProtocolBufferException(
+          e).setUnfinishedMessage(this);
     } finally {
       if (((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
         dim_ = java.util.Collections.unmodifiableList(dim_);
       }
+      this.unknownFields = unknownFields.build();
       makeExtensionsImmutable();
     }
   }
@@ -80,7 +89,7 @@ public  final class TensorShapeProto extends
     return org.tensorflow.framework.TensorShapeProtos.internal_static_tensorflow_TensorShapeProto_descriptor;
   }
 
-  protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+  protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
     return org.tensorflow.framework.TensorShapeProtos.internal_static_tensorflow_TensorShapeProto_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
@@ -92,8 +101,6 @@ public  final class TensorShapeProto extends
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>optional int64 size = 1;</code>
-     *
      * <pre>
      * Size of the tensor in that dimension.
      * This value must be &gt;= -1, but values of -1 are reserved for "unknown"
@@ -101,40 +108,43 @@ public  final class TensorShapeProto extends
      * that work with TensorShapeProto may fail at runtime when deserializing
      * a TensorShapeProto containing a dim value of -1.
      * </pre>
+     *
+     * <code>int64 size = 1;</code>
      */
     long getSize();
 
     /**
-     * <code>optional string name = 2;</code>
-     *
      * <pre>
      * Optional name of the tensor dimension.
      * </pre>
+     *
+     * <code>string name = 2;</code>
      */
     java.lang.String getName();
     /**
-     * <code>optional string name = 2;</code>
-     *
      * <pre>
      * Optional name of the tensor dimension.
      * </pre>
+     *
+     * <code>string name = 2;</code>
      */
     com.google.protobuf.ByteString
         getNameBytes();
   }
   /**
-   * Protobuf type {@code tensorflow.TensorShapeProto.Dim}
-   *
    * <pre>
    * One dimension of the tensor.
    * </pre>
+   *
+   * Protobuf type {@code tensorflow.TensorShapeProto.Dim}
    */
   public  static final class Dim extends
-      com.google.protobuf.GeneratedMessage implements
+      com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:tensorflow.TensorShapeProto.Dim)
       DimOrBuilder {
+  private static final long serialVersionUID = 0L;
     // Use Dim.newBuilder() to construct.
-    private Dim(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+    private Dim(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
     private Dim() {
@@ -145,13 +155,19 @@ public  final class TensorShapeProto extends
     @java.lang.Override
     public final com.google.protobuf.UnknownFieldSet
     getUnknownFields() {
-      return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
+      return this.unknownFields;
     }
     private Dim(
         com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
       this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
       int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
       try {
         boolean done = false;
         while (!done) {
@@ -161,7 +177,8 @@ public  final class TensorShapeProto extends
               done = true;
               break;
             default: {
-              if (!input.skipField(tag)) {
+              if (!parseUnknownFieldProto3(
+                  input, unknownFields, extensionRegistry, tag)) {
                 done = true;
               }
               break;
@@ -172,7 +189,7 @@ public  final class TensorShapeProto extends
               break;
             }
             case 18: {
-              String s = input.readStringRequireUtf8();
+              java.lang.String s = input.readStringRequireUtf8();
 
               name_ = s;
               break;
@@ -180,12 +197,12 @@ public  final class TensorShapeProto extends
           }
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        throw new RuntimeException(e.setUnfinishedMessage(this));
+        throw e.setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
-        throw new RuntimeException(
-            new com.google.protobuf.InvalidProtocolBufferException(
-                e.getMessage()).setUnfinishedMessage(this));
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
       } finally {
+        this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
       }
     }
@@ -194,7 +211,7 @@ public  final class TensorShapeProto extends
       return org.tensorflow.framework.TensorShapeProtos.internal_static_tensorflow_TensorShapeProto_Dim_descriptor;
     }
 
-    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return org.tensorflow.framework.TensorShapeProtos.internal_static_tensorflow_TensorShapeProto_Dim_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
@@ -204,8 +221,6 @@ public  final class TensorShapeProto extends
     public static final int SIZE_FIELD_NUMBER = 1;
     private long size_;
     /**
-     * <code>optional int64 size = 1;</code>
-     *
      * <pre>
      * Size of the tensor in that dimension.
      * This value must be &gt;= -1, but values of -1 are reserved for "unknown"
@@ -213,6 +228,8 @@ public  final class TensorShapeProto extends
      * that work with TensorShapeProto may fail at runtime when deserializing
      * a TensorShapeProto containing a dim value of -1.
      * </pre>
+     *
+     * <code>int64 size = 1;</code>
      */
     public long getSize() {
       return size_;
@@ -221,11 +238,11 @@ public  final class TensorShapeProto extends
     public static final int NAME_FIELD_NUMBER = 2;
     private volatile java.lang.Object name_;
     /**
-     * <code>optional string name = 2;</code>
-     *
      * <pre>
      * Optional name of the tensor dimension.
      * </pre>
+     *
+     * <code>string name = 2;</code>
      */
     public java.lang.String getName() {
       java.lang.Object ref = name_;
@@ -240,11 +257,11 @@ public  final class TensorShapeProto extends
       }
     }
     /**
-     * <code>optional string name = 2;</code>
-     *
      * <pre>
      * Optional name of the tensor dimension.
      * </pre>
+     *
+     * <code>string name = 2;</code>
      */
     public com.google.protobuf.ByteString
         getNameBytes() {
@@ -276,8 +293,9 @@ public  final class TensorShapeProto extends
         output.writeInt64(1, size_);
       }
       if (!getNameBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessage.writeString(output, 2, name_);
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, name_);
       }
+      unknownFields.writeTo(output);
     }
 
     public int getSerializedSize() {
@@ -290,13 +308,60 @@ public  final class TensorShapeProto extends
           .computeInt64Size(1, size_);
       }
       if (!getNameBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessage.computeStringSize(2, name_);
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, name_);
       }
+      size += unknownFields.getSerializedSize();
       memoizedSize = size;
       return size;
     }
 
-    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof org.tensorflow.framework.TensorShapeProto.Dim)) {
+        return super.equals(obj);
+      }
+      org.tensorflow.framework.TensorShapeProto.Dim other = (org.tensorflow.framework.TensorShapeProto.Dim) obj;
+
+      boolean result = true;
+      result = result && (getSize()
+          == other.getSize());
+      result = result && getName()
+          .equals(other.getName());
+      result = result && unknownFields.equals(other.unknownFields);
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + SIZE_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getSize());
+      hash = (37 * hash) + NAME_FIELD_NUMBER;
+      hash = (53 * hash) + getName().hashCode();
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static org.tensorflow.framework.TensorShapeProto.Dim parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static org.tensorflow.framework.TensorShapeProto.Dim parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
     public static org.tensorflow.framework.TensorShapeProto.Dim parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -320,34 +385,40 @@ public  final class TensorShapeProto extends
     }
     public static org.tensorflow.framework.TensorShapeProto.Dim parseFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return PARSER.parseFrom(input);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
     }
     public static org.tensorflow.framework.TensorShapeProto.Dim parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return PARSER.parseFrom(input, extensionRegistry);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
     }
     public static org.tensorflow.framework.TensorShapeProto.Dim parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return PARSER.parseDelimitedFrom(input);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
     }
     public static org.tensorflow.framework.TensorShapeProto.Dim parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return PARSER.parseDelimitedFrom(input, extensionRegistry);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
     public static org.tensorflow.framework.TensorShapeProto.Dim parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
-      return PARSER.parseFrom(input);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
     }
     public static org.tensorflow.framework.TensorShapeProto.Dim parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return PARSER.parseFrom(input, extensionRegistry);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
     public Builder newBuilderForType() { return newBuilder(); }
@@ -364,19 +435,19 @@ public  final class TensorShapeProto extends
 
     @java.lang.Override
     protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
     /**
-     * Protobuf type {@code tensorflow.TensorShapeProto.Dim}
-     *
      * <pre>
      * One dimension of the tensor.
      * </pre>
+     *
+     * Protobuf type {@code tensorflow.TensorShapeProto.Dim}
      */
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
         // @@protoc_insertion_point(builder_implements:tensorflow.TensorShapeProto.Dim)
         org.tensorflow.framework.TensorShapeProto.DimOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
@@ -384,7 +455,7 @@ public  final class TensorShapeProto extends
         return org.tensorflow.framework.TensorShapeProtos.internal_static_tensorflow_TensorShapeProto_Dim_descriptor;
       }
 
-      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return org.tensorflow.framework.TensorShapeProtos.internal_static_tensorflow_TensorShapeProto_Dim_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
@@ -397,12 +468,13 @@ public  final class TensorShapeProto extends
       }
 
       private Builder(
-          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
       private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
         }
       }
       public Builder clear() {
@@ -439,6 +511,32 @@ public  final class TensorShapeProto extends
         return result;
       }
 
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return (Builder) super.setField(field, value);
+      }
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof org.tensorflow.framework.TensorShapeProto.Dim) {
           return mergeFrom((org.tensorflow.framework.TensorShapeProto.Dim)other);
@@ -457,6 +555,7 @@ public  final class TensorShapeProto extends
           name_ = other.name_;
           onChanged();
         }
+        this.mergeUnknownFields(other.unknownFields);
         onChanged();
         return this;
       }
@@ -474,7 +573,7 @@ public  final class TensorShapeProto extends
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
           parsedMessage = (org.tensorflow.framework.TensorShapeProto.Dim) e.getUnfinishedMessage();
-          throw e;
+          throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
             mergeFrom(parsedMessage);
@@ -485,8 +584,6 @@ public  final class TensorShapeProto extends
 
       private long size_ ;
       /**
-       * <code>optional int64 size = 1;</code>
-       *
        * <pre>
        * Size of the tensor in that dimension.
        * This value must be &gt;= -1, but values of -1 are reserved for "unknown"
@@ -494,13 +591,13 @@ public  final class TensorShapeProto extends
        * that work with TensorShapeProto may fail at runtime when deserializing
        * a TensorShapeProto containing a dim value of -1.
        * </pre>
+       *
+       * <code>int64 size = 1;</code>
        */
       public long getSize() {
         return size_;
       }
       /**
-       * <code>optional int64 size = 1;</code>
-       *
        * <pre>
        * Size of the tensor in that dimension.
        * This value must be &gt;= -1, but values of -1 are reserved for "unknown"
@@ -508,6 +605,8 @@ public  final class TensorShapeProto extends
        * that work with TensorShapeProto may fail at runtime when deserializing
        * a TensorShapeProto containing a dim value of -1.
        * </pre>
+       *
+       * <code>int64 size = 1;</code>
        */
       public Builder setSize(long value) {
         
@@ -516,8 +615,6 @@ public  final class TensorShapeProto extends
         return this;
       }
       /**
-       * <code>optional int64 size = 1;</code>
-       *
        * <pre>
        * Size of the tensor in that dimension.
        * This value must be &gt;= -1, but values of -1 are reserved for "unknown"
@@ -525,6 +622,8 @@ public  final class TensorShapeProto extends
        * that work with TensorShapeProto may fail at runtime when deserializing
        * a TensorShapeProto containing a dim value of -1.
        * </pre>
+       *
+       * <code>int64 size = 1;</code>
        */
       public Builder clearSize() {
         
@@ -535,11 +634,11 @@ public  final class TensorShapeProto extends
 
       private java.lang.Object name_ = "";
       /**
-       * <code>optional string name = 2;</code>
-       *
        * <pre>
        * Optional name of the tensor dimension.
        * </pre>
+       *
+       * <code>string name = 2;</code>
        */
       public java.lang.String getName() {
         java.lang.Object ref = name_;
@@ -554,11 +653,11 @@ public  final class TensorShapeProto extends
         }
       }
       /**
-       * <code>optional string name = 2;</code>
-       *
        * <pre>
        * Optional name of the tensor dimension.
        * </pre>
+       *
+       * <code>string name = 2;</code>
        */
       public com.google.protobuf.ByteString
           getNameBytes() {
@@ -574,11 +673,11 @@ public  final class TensorShapeProto extends
         }
       }
       /**
-       * <code>optional string name = 2;</code>
-       *
        * <pre>
        * Optional name of the tensor dimension.
        * </pre>
+       *
+       * <code>string name = 2;</code>
        */
       public Builder setName(
           java.lang.String value) {
@@ -591,11 +690,11 @@ public  final class TensorShapeProto extends
         return this;
       }
       /**
-       * <code>optional string name = 2;</code>
-       *
        * <pre>
        * Optional name of the tensor dimension.
        * </pre>
+       *
+       * <code>string name = 2;</code>
        */
       public Builder clearName() {
         
@@ -604,11 +703,11 @@ public  final class TensorShapeProto extends
         return this;
       }
       /**
-       * <code>optional string name = 2;</code>
-       *
        * <pre>
        * Optional name of the tensor dimension.
        * </pre>
+       *
+       * <code>string name = 2;</code>
        */
       public Builder setNameBytes(
           com.google.protobuf.ByteString value) {
@@ -623,12 +722,12 @@ public  final class TensorShapeProto extends
       }
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return this;
+        return super.setUnknownFieldsProto3(unknownFields);
       }
 
       public final Builder mergeUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return this;
+        return super.mergeUnknownFields(unknownFields);
       }
 
 
@@ -651,16 +750,7 @@ public  final class TensorShapeProto extends
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
-        try {
-          return new Dim(input, extensionRegistry);
-        } catch (RuntimeException e) {
-          if (e.getCause() instanceof
-              com.google.protobuf.InvalidProtocolBufferException) {
-            throw (com.google.protobuf.InvalidProtocolBufferException)
-                e.getCause();
-          }
-          throw e;
-        }
+        return new Dim(input, extensionRegistry);
       }
     };
 
@@ -683,8 +773,6 @@ public  final class TensorShapeProto extends
   public static final int DIM_FIELD_NUMBER = 2;
   private java.util.List<org.tensorflow.framework.TensorShapeProto.Dim> dim_;
   /**
-   * <code>repeated .tensorflow.TensorShapeProto.Dim dim = 2;</code>
-   *
    * <pre>
    * Dimensions of the tensor, such as {"input", 30}, {"output", 40}
    * for a 30 x 40 2D tensor.  If an entry has size -1, this
@@ -697,13 +785,13 @@ public  final class TensorShapeProto extends
    * in-memory layout of RowMajor Eigen tensors.
    * If "dim.size()" &gt; 0, "unknown_rank" must be false.
    * </pre>
+   *
+   * <code>repeated .tensorflow.TensorShapeProto.Dim dim = 2;</code>
    */
   public java.util.List<org.tensorflow.framework.TensorShapeProto.Dim> getDimList() {
     return dim_;
   }
   /**
-   * <code>repeated .tensorflow.TensorShapeProto.Dim dim = 2;</code>
-   *
    * <pre>
    * Dimensions of the tensor, such as {"input", 30}, {"output", 40}
    * for a 30 x 40 2D tensor.  If an entry has size -1, this
@@ -716,14 +804,14 @@ public  final class TensorShapeProto extends
    * in-memory layout of RowMajor Eigen tensors.
    * If "dim.size()" &gt; 0, "unknown_rank" must be false.
    * </pre>
+   *
+   * <code>repeated .tensorflow.TensorShapeProto.Dim dim = 2;</code>
    */
   public java.util.List<? extends org.tensorflow.framework.TensorShapeProto.DimOrBuilder> 
       getDimOrBuilderList() {
     return dim_;
   }
   /**
-   * <code>repeated .tensorflow.TensorShapeProto.Dim dim = 2;</code>
-   *
    * <pre>
    * Dimensions of the tensor, such as {"input", 30}, {"output", 40}
    * for a 30 x 40 2D tensor.  If an entry has size -1, this
@@ -736,13 +824,13 @@ public  final class TensorShapeProto extends
    * in-memory layout of RowMajor Eigen tensors.
    * If "dim.size()" &gt; 0, "unknown_rank" must be false.
    * </pre>
+   *
+   * <code>repeated .tensorflow.TensorShapeProto.Dim dim = 2;</code>
    */
   public int getDimCount() {
     return dim_.size();
   }
   /**
-   * <code>repeated .tensorflow.TensorShapeProto.Dim dim = 2;</code>
-   *
    * <pre>
    * Dimensions of the tensor, such as {"input", 30}, {"output", 40}
    * for a 30 x 40 2D tensor.  If an entry has size -1, this
@@ -755,13 +843,13 @@ public  final class TensorShapeProto extends
    * in-memory layout of RowMajor Eigen tensors.
    * If "dim.size()" &gt; 0, "unknown_rank" must be false.
    * </pre>
+   *
+   * <code>repeated .tensorflow.TensorShapeProto.Dim dim = 2;</code>
    */
   public org.tensorflow.framework.TensorShapeProto.Dim getDim(int index) {
     return dim_.get(index);
   }
   /**
-   * <code>repeated .tensorflow.TensorShapeProto.Dim dim = 2;</code>
-   *
    * <pre>
    * Dimensions of the tensor, such as {"input", 30}, {"output", 40}
    * for a 30 x 40 2D tensor.  If an entry has size -1, this
@@ -774,6 +862,8 @@ public  final class TensorShapeProto extends
    * in-memory layout of RowMajor Eigen tensors.
    * If "dim.size()" &gt; 0, "unknown_rank" must be false.
    * </pre>
+   *
+   * <code>repeated .tensorflow.TensorShapeProto.Dim dim = 2;</code>
    */
   public org.tensorflow.framework.TensorShapeProto.DimOrBuilder getDimOrBuilder(
       int index) {
@@ -783,12 +873,12 @@ public  final class TensorShapeProto extends
   public static final int UNKNOWN_RANK_FIELD_NUMBER = 3;
   private boolean unknownRank_;
   /**
-   * <code>optional bool unknown_rank = 3;</code>
-   *
    * <pre>
    * If true, the number of dimensions in the shape is unknown.
    * If true, "dim.size()" must be 0.
    * </pre>
+   *
+   * <code>bool unknown_rank = 3;</code>
    */
   public boolean getUnknownRank() {
     return unknownRank_;
@@ -812,6 +902,7 @@ public  final class TensorShapeProto extends
     if (unknownRank_ != false) {
       output.writeBool(3, unknownRank_);
     }
+    unknownFields.writeTo(output);
   }
 
   public int getSerializedSize() {
@@ -827,11 +918,60 @@ public  final class TensorShapeProto extends
       size += com.google.protobuf.CodedOutputStream
         .computeBoolSize(3, unknownRank_);
     }
+    size += unknownFields.getSerializedSize();
     memoizedSize = size;
     return size;
   }
 
-  private static final long serialVersionUID = 0L;
+  @java.lang.Override
+  public boolean equals(final java.lang.Object obj) {
+    if (obj == this) {
+     return true;
+    }
+    if (!(obj instanceof org.tensorflow.framework.TensorShapeProto)) {
+      return super.equals(obj);
+    }
+    org.tensorflow.framework.TensorShapeProto other = (org.tensorflow.framework.TensorShapeProto) obj;
+
+    boolean result = true;
+    result = result && getDimList()
+        .equals(other.getDimList());
+    result = result && (getUnknownRank()
+        == other.getUnknownRank());
+    result = result && unknownFields.equals(other.unknownFields);
+    return result;
+  }
+
+  @java.lang.Override
+  public int hashCode() {
+    if (memoizedHashCode != 0) {
+      return memoizedHashCode;
+    }
+    int hash = 41;
+    hash = (19 * hash) + getDescriptor().hashCode();
+    if (getDimCount() > 0) {
+      hash = (37 * hash) + DIM_FIELD_NUMBER;
+      hash = (53 * hash) + getDimList().hashCode();
+    }
+    hash = (37 * hash) + UNKNOWN_RANK_FIELD_NUMBER;
+    hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+        getUnknownRank());
+    hash = (29 * hash) + unknownFields.hashCode();
+    memoizedHashCode = hash;
+    return hash;
+  }
+
+  public static org.tensorflow.framework.TensorShapeProto parseFrom(
+      java.nio.ByteBuffer data)
+      throws com.google.protobuf.InvalidProtocolBufferException {
+    return PARSER.parseFrom(data);
+  }
+  public static org.tensorflow.framework.TensorShapeProto parseFrom(
+      java.nio.ByteBuffer data,
+      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+      throws com.google.protobuf.InvalidProtocolBufferException {
+    return PARSER.parseFrom(data, extensionRegistry);
+  }
   public static org.tensorflow.framework.TensorShapeProto parseFrom(
       com.google.protobuf.ByteString data)
       throws com.google.protobuf.InvalidProtocolBufferException {
@@ -855,34 +995,40 @@ public  final class TensorShapeProto extends
   }
   public static org.tensorflow.framework.TensorShapeProto parseFrom(java.io.InputStream input)
       throws java.io.IOException {
-    return PARSER.parseFrom(input);
+    return com.google.protobuf.GeneratedMessageV3
+        .parseWithIOException(PARSER, input);
   }
   public static org.tensorflow.framework.TensorShapeProto parseFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
-    return PARSER.parseFrom(input, extensionRegistry);
+    return com.google.protobuf.GeneratedMessageV3
+        .parseWithIOException(PARSER, input, extensionRegistry);
   }
   public static org.tensorflow.framework.TensorShapeProto parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
-    return PARSER.parseDelimitedFrom(input);
+    return com.google.protobuf.GeneratedMessageV3
+        .parseDelimitedWithIOException(PARSER, input);
   }
   public static org.tensorflow.framework.TensorShapeProto parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
-    return PARSER.parseDelimitedFrom(input, extensionRegistry);
+    return com.google.protobuf.GeneratedMessageV3
+        .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
   }
   public static org.tensorflow.framework.TensorShapeProto parseFrom(
       com.google.protobuf.CodedInputStream input)
       throws java.io.IOException {
-    return PARSER.parseFrom(input);
+    return com.google.protobuf.GeneratedMessageV3
+        .parseWithIOException(PARSER, input);
   }
   public static org.tensorflow.framework.TensorShapeProto parseFrom(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
-    return PARSER.parseFrom(input, extensionRegistry);
+    return com.google.protobuf.GeneratedMessageV3
+        .parseWithIOException(PARSER, input, extensionRegistry);
   }
 
   public Builder newBuilderForType() { return newBuilder(); }
@@ -899,19 +1045,19 @@ public  final class TensorShapeProto extends
 
   @java.lang.Override
   protected Builder newBuilderForType(
-      com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
     Builder builder = new Builder(parent);
     return builder;
   }
   /**
-   * Protobuf type {@code tensorflow.TensorShapeProto}
-   *
    * <pre>
    * Dimensions of a tensor.
    * </pre>
+   *
+   * Protobuf type {@code tensorflow.TensorShapeProto}
    */
   public static final class Builder extends
-      com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+      com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
       // @@protoc_insertion_point(builder_implements:tensorflow.TensorShapeProto)
       org.tensorflow.framework.TensorShapeProtoOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
@@ -919,7 +1065,7 @@ public  final class TensorShapeProto extends
       return org.tensorflow.framework.TensorShapeProtos.internal_static_tensorflow_TensorShapeProto_descriptor;
     }
 
-    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return org.tensorflow.framework.TensorShapeProtos.internal_static_tensorflow_TensorShapeProto_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
@@ -932,12 +1078,13 @@ public  final class TensorShapeProto extends
     }
 
     private Builder(
-        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       super(parent);
       maybeForceBuilderInitialization();
     }
     private void maybeForceBuilderInitialization() {
-      if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+      if (com.google.protobuf.GeneratedMessageV3
+              .alwaysUseFieldBuilders) {
         getDimFieldBuilder();
       }
     }
@@ -990,6 +1137,32 @@ public  final class TensorShapeProto extends
       return result;
     }
 
+    public Builder clone() {
+      return (Builder) super.clone();
+    }
+    public Builder setField(
+        com.google.protobuf.Descriptors.FieldDescriptor field,
+        java.lang.Object value) {
+      return (Builder) super.setField(field, value);
+    }
+    public Builder clearField(
+        com.google.protobuf.Descriptors.FieldDescriptor field) {
+      return (Builder) super.clearField(field);
+    }
+    public Builder clearOneof(
+        com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+      return (Builder) super.clearOneof(oneof);
+    }
+    public Builder setRepeatedField(
+        com.google.protobuf.Descriptors.FieldDescriptor field,
+        int index, java.lang.Object value) {
+      return (Builder) super.setRepeatedField(field, index, value);
+    }
+    public Builder addRepeatedField(
+        com.google.protobuf.Descriptors.FieldDescriptor field,
+        java.lang.Object value) {
+      return (Builder) super.addRepeatedField(field, value);
+    }
     public Builder mergeFrom(com.google.protobuf.Message other) {
       if (other instanceof org.tensorflow.framework.TensorShapeProto) {
         return mergeFrom((org.tensorflow.framework.TensorShapeProto)other);
@@ -1020,7 +1193,7 @@ public  final class TensorShapeProto extends
             dim_ = other.dim_;
             bitField0_ = (bitField0_ & ~0x00000001);
             dimBuilder_ = 
-              com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
+              com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
                  getDimFieldBuilder() : null;
           } else {
             dimBuilder_.addAllMessages(other.dim_);
@@ -1030,6 +1203,7 @@ public  final class TensorShapeProto extends
       if (other.getUnknownRank() != false) {
         setUnknownRank(other.getUnknownRank());
       }
+      this.mergeUnknownFields(other.unknownFields);
       onChanged();
       return this;
     }
@@ -1047,7 +1221,7 @@ public  final class TensorShapeProto extends
         parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
         parsedMessage = (org.tensorflow.framework.TensorShapeProto) e.getUnfinishedMessage();
-        throw e;
+        throw e.unwrapIOException();
       } finally {
         if (parsedMessage != null) {
           mergeFrom(parsedMessage);
@@ -1066,12 +1240,10 @@ public  final class TensorShapeProto extends
        }
     }
 
-    private com.google.protobuf.RepeatedFieldBuilder<
+    private com.google.protobuf.RepeatedFieldBuilderV3<
         org.tensorflow.framework.TensorShapeProto.Dim, org.tensorflow.framework.TensorShapeProto.Dim.Builder, org.tensorflow.framework.TensorShapeProto.DimOrBuilder> dimBuilder_;
 
     /**
-     * <code>repeated .tensorflow.TensorShapeProto.Dim dim = 2;</code>
-     *
      * <pre>
      * Dimensions of the tensor, such as {"input", 30}, {"output", 40}
      * for a 30 x 40 2D tensor.  If an entry has size -1, this
@@ -1084,6 +1256,8 @@ public  final class TensorShapeProto extends
      * in-memory layout of RowMajor Eigen tensors.
      * If "dim.size()" &gt; 0, "unknown_rank" must be false.
      * </pre>
+     *
+     * <code>repeated .tensorflow.TensorShapeProto.Dim dim = 2;</code>
      */
     public java.util.List<org.tensorflow.framework.TensorShapeProto.Dim> getDimList() {
       if (dimBuilder_ == null) {
@@ -1093,8 +1267,6 @@ public  final class TensorShapeProto extends
       }
     }
     /**
-     * <code>repeated .tensorflow.TensorShapeProto.Dim dim = 2;</code>
-     *
      * <pre>
      * Dimensions of the tensor, such as {"input", 30}, {"output", 40}
      * for a 30 x 40 2D tensor.  If an entry has size -1, this
@@ -1107,6 +1279,8 @@ public  final class TensorShapeProto extends
      * in-memory layout of RowMajor Eigen tensors.
      * If "dim.size()" &gt; 0, "unknown_rank" must be false.
      * </pre>
+     *
+     * <code>repeated .tensorflow.TensorShapeProto.Dim dim = 2;</code>
      */
     public int getDimCount() {
       if (dimBuilder_ == null) {
@@ -1116,8 +1290,6 @@ public  final class TensorShapeProto extends
       }
     }
     /**
-     * <code>repeated .tensorflow.TensorShapeProto.Dim dim = 2;</code>
-     *
      * <pre>
      * Dimensions of the tensor, such as {"input", 30}, {"output", 40}
      * for a 30 x 40 2D tensor.  If an entry has size -1, this
@@ -1130,6 +1302,8 @@ public  final class TensorShapeProto extends
      * in-memory layout of RowMajor Eigen tensors.
      * If "dim.size()" &gt; 0, "unknown_rank" must be false.
      * </pre>
+     *
+     * <code>repeated .tensorflow.TensorShapeProto.Dim dim = 2;</code>
      */
     public org.tensorflow.framework.TensorShapeProto.Dim getDim(int index) {
       if (dimBuilder_ == null) {
@@ -1139,8 +1313,6 @@ public  final class TensorShapeProto extends
       }
     }
     /**
-     * <code>repeated .tensorflow.TensorShapeProto.Dim dim = 2;</code>
-     *
      * <pre>
      * Dimensions of the tensor, such as {"input", 30}, {"output", 40}
      * for a 30 x 40 2D tensor.  If an entry has size -1, this
@@ -1153,6 +1325,8 @@ public  final class TensorShapeProto extends
      * in-memory layout of RowMajor Eigen tensors.
      * If "dim.size()" &gt; 0, "unknown_rank" must be false.
      * </pre>
+     *
+     * <code>repeated .tensorflow.TensorShapeProto.Dim dim = 2;</code>
      */
     public Builder setDim(
         int index, org.tensorflow.framework.TensorShapeProto.Dim value) {
@@ -1169,8 +1343,6 @@ public  final class TensorShapeProto extends
       return this;
     }
     /**
-     * <code>repeated .tensorflow.TensorShapeProto.Dim dim = 2;</code>
-     *
      * <pre>
      * Dimensions of the tensor, such as {"input", 30}, {"output", 40}
      * for a 30 x 40 2D tensor.  If an entry has size -1, this
@@ -1183,6 +1355,8 @@ public  final class TensorShapeProto extends
      * in-memory layout of RowMajor Eigen tensors.
      * If "dim.size()" &gt; 0, "unknown_rank" must be false.
      * </pre>
+     *
+     * <code>repeated .tensorflow.TensorShapeProto.Dim dim = 2;</code>
      */
     public Builder setDim(
         int index, org.tensorflow.framework.TensorShapeProto.Dim.Builder builderForValue) {
@@ -1196,8 +1370,6 @@ public  final class TensorShapeProto extends
       return this;
     }
     /**
-     * <code>repeated .tensorflow.TensorShapeProto.Dim dim = 2;</code>
-     *
      * <pre>
      * Dimensions of the tensor, such as {"input", 30}, {"output", 40}
      * for a 30 x 40 2D tensor.  If an entry has size -1, this
@@ -1210,6 +1382,8 @@ public  final class TensorShapeProto extends
      * in-memory layout of RowMajor Eigen tensors.
      * If "dim.size()" &gt; 0, "unknown_rank" must be false.
      * </pre>
+     *
+     * <code>repeated .tensorflow.TensorShapeProto.Dim dim = 2;</code>
      */
     public Builder addDim(org.tensorflow.framework.TensorShapeProto.Dim value) {
       if (dimBuilder_ == null) {
@@ -1225,8 +1399,6 @@ public  final class TensorShapeProto extends
       return this;
     }
     /**
-     * <code>repeated .tensorflow.TensorShapeProto.Dim dim = 2;</code>
-     *
      * <pre>
      * Dimensions of the tensor, such as {"input", 30}, {"output", 40}
      * for a 30 x 40 2D tensor.  If an entry has size -1, this
@@ -1239,6 +1411,8 @@ public  final class TensorShapeProto extends
      * in-memory layout of RowMajor Eigen tensors.
      * If "dim.size()" &gt; 0, "unknown_rank" must be false.
      * </pre>
+     *
+     * <code>repeated .tensorflow.TensorShapeProto.Dim dim = 2;</code>
      */
     public Builder addDim(
         int index, org.tensorflow.framework.TensorShapeProto.Dim value) {
@@ -1255,8 +1429,6 @@ public  final class TensorShapeProto extends
       return this;
     }
     /**
-     * <code>repeated .tensorflow.TensorShapeProto.Dim dim = 2;</code>
-     *
      * <pre>
      * Dimensions of the tensor, such as {"input", 30}, {"output", 40}
      * for a 30 x 40 2D tensor.  If an entry has size -1, this
@@ -1269,6 +1441,8 @@ public  final class TensorShapeProto extends
      * in-memory layout of RowMajor Eigen tensors.
      * If "dim.size()" &gt; 0, "unknown_rank" must be false.
      * </pre>
+     *
+     * <code>repeated .tensorflow.TensorShapeProto.Dim dim = 2;</code>
      */
     public Builder addDim(
         org.tensorflow.framework.TensorShapeProto.Dim.Builder builderForValue) {
@@ -1282,8 +1456,6 @@ public  final class TensorShapeProto extends
       return this;
     }
     /**
-     * <code>repeated .tensorflow.TensorShapeProto.Dim dim = 2;</code>
-     *
      * <pre>
      * Dimensions of the tensor, such as {"input", 30}, {"output", 40}
      * for a 30 x 40 2D tensor.  If an entry has size -1, this
@@ -1296,6 +1468,8 @@ public  final class TensorShapeProto extends
      * in-memory layout of RowMajor Eigen tensors.
      * If "dim.size()" &gt; 0, "unknown_rank" must be false.
      * </pre>
+     *
+     * <code>repeated .tensorflow.TensorShapeProto.Dim dim = 2;</code>
      */
     public Builder addDim(
         int index, org.tensorflow.framework.TensorShapeProto.Dim.Builder builderForValue) {
@@ -1309,8 +1483,6 @@ public  final class TensorShapeProto extends
       return this;
     }
     /**
-     * <code>repeated .tensorflow.TensorShapeProto.Dim dim = 2;</code>
-     *
      * <pre>
      * Dimensions of the tensor, such as {"input", 30}, {"output", 40}
      * for a 30 x 40 2D tensor.  If an entry has size -1, this
@@ -1323,6 +1495,8 @@ public  final class TensorShapeProto extends
      * in-memory layout of RowMajor Eigen tensors.
      * If "dim.size()" &gt; 0, "unknown_rank" must be false.
      * </pre>
+     *
+     * <code>repeated .tensorflow.TensorShapeProto.Dim dim = 2;</code>
      */
     public Builder addAllDim(
         java.lang.Iterable<? extends org.tensorflow.framework.TensorShapeProto.Dim> values) {
@@ -1337,8 +1511,6 @@ public  final class TensorShapeProto extends
       return this;
     }
     /**
-     * <code>repeated .tensorflow.TensorShapeProto.Dim dim = 2;</code>
-     *
      * <pre>
      * Dimensions of the tensor, such as {"input", 30}, {"output", 40}
      * for a 30 x 40 2D tensor.  If an entry has size -1, this
@@ -1351,6 +1523,8 @@ public  final class TensorShapeProto extends
      * in-memory layout of RowMajor Eigen tensors.
      * If "dim.size()" &gt; 0, "unknown_rank" must be false.
      * </pre>
+     *
+     * <code>repeated .tensorflow.TensorShapeProto.Dim dim = 2;</code>
      */
     public Builder clearDim() {
       if (dimBuilder_ == null) {
@@ -1363,8 +1537,6 @@ public  final class TensorShapeProto extends
       return this;
     }
     /**
-     * <code>repeated .tensorflow.TensorShapeProto.Dim dim = 2;</code>
-     *
      * <pre>
      * Dimensions of the tensor, such as {"input", 30}, {"output", 40}
      * for a 30 x 40 2D tensor.  If an entry has size -1, this
@@ -1377,6 +1549,8 @@ public  final class TensorShapeProto extends
      * in-memory layout of RowMajor Eigen tensors.
      * If "dim.size()" &gt; 0, "unknown_rank" must be false.
      * </pre>
+     *
+     * <code>repeated .tensorflow.TensorShapeProto.Dim dim = 2;</code>
      */
     public Builder removeDim(int index) {
       if (dimBuilder_ == null) {
@@ -1389,8 +1563,6 @@ public  final class TensorShapeProto extends
       return this;
     }
     /**
-     * <code>repeated .tensorflow.TensorShapeProto.Dim dim = 2;</code>
-     *
      * <pre>
      * Dimensions of the tensor, such as {"input", 30}, {"output", 40}
      * for a 30 x 40 2D tensor.  If an entry has size -1, this
@@ -1403,14 +1575,14 @@ public  final class TensorShapeProto extends
      * in-memory layout of RowMajor Eigen tensors.
      * If "dim.size()" &gt; 0, "unknown_rank" must be false.
      * </pre>
+     *
+     * <code>repeated .tensorflow.TensorShapeProto.Dim dim = 2;</code>
      */
     public org.tensorflow.framework.TensorShapeProto.Dim.Builder getDimBuilder(
         int index) {
       return getDimFieldBuilder().getBuilder(index);
     }
     /**
-     * <code>repeated .tensorflow.TensorShapeProto.Dim dim = 2;</code>
-     *
      * <pre>
      * Dimensions of the tensor, such as {"input", 30}, {"output", 40}
      * for a 30 x 40 2D tensor.  If an entry has size -1, this
@@ -1423,6 +1595,8 @@ public  final class TensorShapeProto extends
      * in-memory layout of RowMajor Eigen tensors.
      * If "dim.size()" &gt; 0, "unknown_rank" must be false.
      * </pre>
+     *
+     * <code>repeated .tensorflow.TensorShapeProto.Dim dim = 2;</code>
      */
     public org.tensorflow.framework.TensorShapeProto.DimOrBuilder getDimOrBuilder(
         int index) {
@@ -1432,8 +1606,6 @@ public  final class TensorShapeProto extends
       }
     }
     /**
-     * <code>repeated .tensorflow.TensorShapeProto.Dim dim = 2;</code>
-     *
      * <pre>
      * Dimensions of the tensor, such as {"input", 30}, {"output", 40}
      * for a 30 x 40 2D tensor.  If an entry has size -1, this
@@ -1446,6 +1618,8 @@ public  final class TensorShapeProto extends
      * in-memory layout of RowMajor Eigen tensors.
      * If "dim.size()" &gt; 0, "unknown_rank" must be false.
      * </pre>
+     *
+     * <code>repeated .tensorflow.TensorShapeProto.Dim dim = 2;</code>
      */
     public java.util.List<? extends org.tensorflow.framework.TensorShapeProto.DimOrBuilder> 
          getDimOrBuilderList() {
@@ -1456,8 +1630,6 @@ public  final class TensorShapeProto extends
       }
     }
     /**
-     * <code>repeated .tensorflow.TensorShapeProto.Dim dim = 2;</code>
-     *
      * <pre>
      * Dimensions of the tensor, such as {"input", 30}, {"output", 40}
      * for a 30 x 40 2D tensor.  If an entry has size -1, this
@@ -1470,14 +1642,14 @@ public  final class TensorShapeProto extends
      * in-memory layout of RowMajor Eigen tensors.
      * If "dim.size()" &gt; 0, "unknown_rank" must be false.
      * </pre>
+     *
+     * <code>repeated .tensorflow.TensorShapeProto.Dim dim = 2;</code>
      */
     public org.tensorflow.framework.TensorShapeProto.Dim.Builder addDimBuilder() {
       return getDimFieldBuilder().addBuilder(
           org.tensorflow.framework.TensorShapeProto.Dim.getDefaultInstance());
     }
     /**
-     * <code>repeated .tensorflow.TensorShapeProto.Dim dim = 2;</code>
-     *
      * <pre>
      * Dimensions of the tensor, such as {"input", 30}, {"output", 40}
      * for a 30 x 40 2D tensor.  If an entry has size -1, this
@@ -1490,6 +1662,8 @@ public  final class TensorShapeProto extends
      * in-memory layout of RowMajor Eigen tensors.
      * If "dim.size()" &gt; 0, "unknown_rank" must be false.
      * </pre>
+     *
+     * <code>repeated .tensorflow.TensorShapeProto.Dim dim = 2;</code>
      */
     public org.tensorflow.framework.TensorShapeProto.Dim.Builder addDimBuilder(
         int index) {
@@ -1497,8 +1671,6 @@ public  final class TensorShapeProto extends
           index, org.tensorflow.framework.TensorShapeProto.Dim.getDefaultInstance());
     }
     /**
-     * <code>repeated .tensorflow.TensorShapeProto.Dim dim = 2;</code>
-     *
      * <pre>
      * Dimensions of the tensor, such as {"input", 30}, {"output", 40}
      * for a 30 x 40 2D tensor.  If an entry has size -1, this
@@ -1511,16 +1683,18 @@ public  final class TensorShapeProto extends
      * in-memory layout of RowMajor Eigen tensors.
      * If "dim.size()" &gt; 0, "unknown_rank" must be false.
      * </pre>
+     *
+     * <code>repeated .tensorflow.TensorShapeProto.Dim dim = 2;</code>
      */
     public java.util.List<org.tensorflow.framework.TensorShapeProto.Dim.Builder> 
          getDimBuilderList() {
       return getDimFieldBuilder().getBuilderList();
     }
-    private com.google.protobuf.RepeatedFieldBuilder<
+    private com.google.protobuf.RepeatedFieldBuilderV3<
         org.tensorflow.framework.TensorShapeProto.Dim, org.tensorflow.framework.TensorShapeProto.Dim.Builder, org.tensorflow.framework.TensorShapeProto.DimOrBuilder> 
         getDimFieldBuilder() {
       if (dimBuilder_ == null) {
-        dimBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
+        dimBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
             org.tensorflow.framework.TensorShapeProto.Dim, org.tensorflow.framework.TensorShapeProto.Dim.Builder, org.tensorflow.framework.TensorShapeProto.DimOrBuilder>(
                 dim_,
                 ((bitField0_ & 0x00000001) == 0x00000001),
@@ -1533,23 +1707,23 @@ public  final class TensorShapeProto extends
 
     private boolean unknownRank_ ;
     /**
-     * <code>optional bool unknown_rank = 3;</code>
-     *
      * <pre>
      * If true, the number of dimensions in the shape is unknown.
      * If true, "dim.size()" must be 0.
      * </pre>
+     *
+     * <code>bool unknown_rank = 3;</code>
      */
     public boolean getUnknownRank() {
       return unknownRank_;
     }
     /**
-     * <code>optional bool unknown_rank = 3;</code>
-     *
      * <pre>
      * If true, the number of dimensions in the shape is unknown.
      * If true, "dim.size()" must be 0.
      * </pre>
+     *
+     * <code>bool unknown_rank = 3;</code>
      */
     public Builder setUnknownRank(boolean value) {
       
@@ -1558,12 +1732,12 @@ public  final class TensorShapeProto extends
       return this;
     }
     /**
-     * <code>optional bool unknown_rank = 3;</code>
-     *
      * <pre>
      * If true, the number of dimensions in the shape is unknown.
      * If true, "dim.size()" must be 0.
      * </pre>
+     *
+     * <code>bool unknown_rank = 3;</code>
      */
     public Builder clearUnknownRank() {
       
@@ -1573,12 +1747,12 @@ public  final class TensorShapeProto extends
     }
     public final Builder setUnknownFields(
         final com.google.protobuf.UnknownFieldSet unknownFields) {
-      return this;
+      return super.setUnknownFieldsProto3(unknownFields);
     }
 
     public final Builder mergeUnknownFields(
         final com.google.protobuf.UnknownFieldSet unknownFields) {
-      return this;
+      return super.mergeUnknownFields(unknownFields);
     }
 
 
@@ -1601,16 +1775,7 @@ public  final class TensorShapeProto extends
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      try {
-        return new TensorShapeProto(input, extensionRegistry);
-      } catch (RuntimeException e) {
-        if (e.getCause() instanceof
-            com.google.protobuf.InvalidProtocolBufferException) {
-          throw (com.google.protobuf.InvalidProtocolBufferException)
-              e.getCause();
-        }
-        throw e;
-      }
+      return new TensorShapeProto(input, extensionRegistry);
     }
   };
 

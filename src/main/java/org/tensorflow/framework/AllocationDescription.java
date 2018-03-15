@@ -7,11 +7,12 @@ package org.tensorflow.framework;
  * Protobuf type {@code tensorflow.AllocationDescription}
  */
 public  final class AllocationDescription extends
-    com.google.protobuf.GeneratedMessage implements
+    com.google.protobuf.GeneratedMessageV3 implements
     // @@protoc_insertion_point(message_implements:tensorflow.AllocationDescription)
     AllocationDescriptionOrBuilder {
+private static final long serialVersionUID = 0L;
   // Use AllocationDescription.newBuilder() to construct.
-  private AllocationDescription(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+  private AllocationDescription(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
     super(builder);
   }
   private AllocationDescription() {
@@ -20,18 +21,25 @@ public  final class AllocationDescription extends
     allocatorName_ = "";
     allocationId_ = 0L;
     hasSingleReference_ = false;
+    ptr_ = 0L;
   }
 
   @java.lang.Override
   public final com.google.protobuf.UnknownFieldSet
   getUnknownFields() {
-    return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
+    return this.unknownFields;
   }
   private AllocationDescription(
       com.google.protobuf.CodedInputStream input,
-      com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
+      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+      throws com.google.protobuf.InvalidProtocolBufferException {
     this();
+    if (extensionRegistry == null) {
+      throw new java.lang.NullPointerException();
+    }
     int mutable_bitField0_ = 0;
+    com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+        com.google.protobuf.UnknownFieldSet.newBuilder();
     try {
       boolean done = false;
       while (!done) {
@@ -41,7 +49,8 @@ public  final class AllocationDescription extends
             done = true;
             break;
           default: {
-            if (!input.skipField(tag)) {
+            if (!parseUnknownFieldProto3(
+                input, unknownFields, extensionRegistry, tag)) {
               done = true;
             }
             break;
@@ -57,7 +66,7 @@ public  final class AllocationDescription extends
             break;
           }
           case 26: {
-            String s = input.readStringRequireUtf8();
+            java.lang.String s = input.readStringRequireUtf8();
 
             allocatorName_ = s;
             break;
@@ -72,15 +81,20 @@ public  final class AllocationDescription extends
             hasSingleReference_ = input.readBool();
             break;
           }
+          case 48: {
+
+            ptr_ = input.readUInt64();
+            break;
+          }
         }
       }
     } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-      throw new RuntimeException(e.setUnfinishedMessage(this));
+      throw e.setUnfinishedMessage(this);
     } catch (java.io.IOException e) {
-      throw new RuntimeException(
-          new com.google.protobuf.InvalidProtocolBufferException(
-              e.getMessage()).setUnfinishedMessage(this));
+      throw new com.google.protobuf.InvalidProtocolBufferException(
+          e).setUnfinishedMessage(this);
     } finally {
+      this.unknownFields = unknownFields.build();
       makeExtensionsImmutable();
     }
   }
@@ -89,7 +103,7 @@ public  final class AllocationDescription extends
     return org.tensorflow.framework.AllocationDescriptionProtos.internal_static_tensorflow_AllocationDescription_descriptor;
   }
 
-  protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+  protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
     return org.tensorflow.framework.AllocationDescriptionProtos.internal_static_tensorflow_AllocationDescription_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
@@ -99,11 +113,11 @@ public  final class AllocationDescription extends
   public static final int REQUESTED_BYTES_FIELD_NUMBER = 1;
   private long requestedBytes_;
   /**
-   * <code>optional int64 requested_bytes = 1;</code>
-   *
    * <pre>
    * Total number of bytes requested
    * </pre>
+   *
+   * <code>int64 requested_bytes = 1;</code>
    */
   public long getRequestedBytes() {
     return requestedBytes_;
@@ -112,11 +126,11 @@ public  final class AllocationDescription extends
   public static final int ALLOCATED_BYTES_FIELD_NUMBER = 2;
   private long allocatedBytes_;
   /**
-   * <code>optional int64 allocated_bytes = 2;</code>
-   *
    * <pre>
    * Total number of bytes allocated if known
    * </pre>
+   *
+   * <code>int64 allocated_bytes = 2;</code>
    */
   public long getAllocatedBytes() {
     return allocatedBytes_;
@@ -125,11 +139,11 @@ public  final class AllocationDescription extends
   public static final int ALLOCATOR_NAME_FIELD_NUMBER = 3;
   private volatile java.lang.Object allocatorName_;
   /**
-   * <code>optional string allocator_name = 3;</code>
-   *
    * <pre>
    * Name of the allocator used
    * </pre>
+   *
+   * <code>string allocator_name = 3;</code>
    */
   public java.lang.String getAllocatorName() {
     java.lang.Object ref = allocatorName_;
@@ -144,11 +158,11 @@ public  final class AllocationDescription extends
     }
   }
   /**
-   * <code>optional string allocator_name = 3;</code>
-   *
    * <pre>
    * Name of the allocator used
    * </pre>
+   *
+   * <code>string allocator_name = 3;</code>
    */
   public com.google.protobuf.ByteString
       getAllocatorNameBytes() {
@@ -167,11 +181,11 @@ public  final class AllocationDescription extends
   public static final int ALLOCATION_ID_FIELD_NUMBER = 4;
   private long allocationId_;
   /**
-   * <code>optional int64 allocation_id = 4;</code>
-   *
    * <pre>
    * Identifier of the allocated buffer if known
    * </pre>
+   *
+   * <code>int64 allocation_id = 4;</code>
    */
   public long getAllocationId() {
     return allocationId_;
@@ -180,14 +194,27 @@ public  final class AllocationDescription extends
   public static final int HAS_SINGLE_REFERENCE_FIELD_NUMBER = 5;
   private boolean hasSingleReference_;
   /**
-   * <code>optional bool has_single_reference = 5;</code>
-   *
    * <pre>
    * Set if this tensor only has one remaining reference
    * </pre>
+   *
+   * <code>bool has_single_reference = 5;</code>
    */
   public boolean getHasSingleReference() {
     return hasSingleReference_;
+  }
+
+  public static final int PTR_FIELD_NUMBER = 6;
+  private long ptr_;
+  /**
+   * <pre>
+   * Address of the allocation.
+   * </pre>
+   *
+   * <code>uint64 ptr = 6;</code>
+   */
+  public long getPtr() {
+    return ptr_;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -209,7 +236,7 @@ public  final class AllocationDescription extends
       output.writeInt64(2, allocatedBytes_);
     }
     if (!getAllocatorNameBytes().isEmpty()) {
-      com.google.protobuf.GeneratedMessage.writeString(output, 3, allocatorName_);
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 3, allocatorName_);
     }
     if (allocationId_ != 0L) {
       output.writeInt64(4, allocationId_);
@@ -217,6 +244,10 @@ public  final class AllocationDescription extends
     if (hasSingleReference_ != false) {
       output.writeBool(5, hasSingleReference_);
     }
+    if (ptr_ != 0L) {
+      output.writeUInt64(6, ptr_);
+    }
+    unknownFields.writeTo(output);
   }
 
   public int getSerializedSize() {
@@ -233,7 +264,7 @@ public  final class AllocationDescription extends
         .computeInt64Size(2, allocatedBytes_);
     }
     if (!getAllocatorNameBytes().isEmpty()) {
-      size += com.google.protobuf.GeneratedMessage.computeStringSize(3, allocatorName_);
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, allocatorName_);
     }
     if (allocationId_ != 0L) {
       size += com.google.protobuf.CodedOutputStream
@@ -243,11 +274,82 @@ public  final class AllocationDescription extends
       size += com.google.protobuf.CodedOutputStream
         .computeBoolSize(5, hasSingleReference_);
     }
+    if (ptr_ != 0L) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeUInt64Size(6, ptr_);
+    }
+    size += unknownFields.getSerializedSize();
     memoizedSize = size;
     return size;
   }
 
-  private static final long serialVersionUID = 0L;
+  @java.lang.Override
+  public boolean equals(final java.lang.Object obj) {
+    if (obj == this) {
+     return true;
+    }
+    if (!(obj instanceof org.tensorflow.framework.AllocationDescription)) {
+      return super.equals(obj);
+    }
+    org.tensorflow.framework.AllocationDescription other = (org.tensorflow.framework.AllocationDescription) obj;
+
+    boolean result = true;
+    result = result && (getRequestedBytes()
+        == other.getRequestedBytes());
+    result = result && (getAllocatedBytes()
+        == other.getAllocatedBytes());
+    result = result && getAllocatorName()
+        .equals(other.getAllocatorName());
+    result = result && (getAllocationId()
+        == other.getAllocationId());
+    result = result && (getHasSingleReference()
+        == other.getHasSingleReference());
+    result = result && (getPtr()
+        == other.getPtr());
+    result = result && unknownFields.equals(other.unknownFields);
+    return result;
+  }
+
+  @java.lang.Override
+  public int hashCode() {
+    if (memoizedHashCode != 0) {
+      return memoizedHashCode;
+    }
+    int hash = 41;
+    hash = (19 * hash) + getDescriptor().hashCode();
+    hash = (37 * hash) + REQUESTED_BYTES_FIELD_NUMBER;
+    hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+        getRequestedBytes());
+    hash = (37 * hash) + ALLOCATED_BYTES_FIELD_NUMBER;
+    hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+        getAllocatedBytes());
+    hash = (37 * hash) + ALLOCATOR_NAME_FIELD_NUMBER;
+    hash = (53 * hash) + getAllocatorName().hashCode();
+    hash = (37 * hash) + ALLOCATION_ID_FIELD_NUMBER;
+    hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+        getAllocationId());
+    hash = (37 * hash) + HAS_SINGLE_REFERENCE_FIELD_NUMBER;
+    hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+        getHasSingleReference());
+    hash = (37 * hash) + PTR_FIELD_NUMBER;
+    hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+        getPtr());
+    hash = (29 * hash) + unknownFields.hashCode();
+    memoizedHashCode = hash;
+    return hash;
+  }
+
+  public static org.tensorflow.framework.AllocationDescription parseFrom(
+      java.nio.ByteBuffer data)
+      throws com.google.protobuf.InvalidProtocolBufferException {
+    return PARSER.parseFrom(data);
+  }
+  public static org.tensorflow.framework.AllocationDescription parseFrom(
+      java.nio.ByteBuffer data,
+      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+      throws com.google.protobuf.InvalidProtocolBufferException {
+    return PARSER.parseFrom(data, extensionRegistry);
+  }
   public static org.tensorflow.framework.AllocationDescription parseFrom(
       com.google.protobuf.ByteString data)
       throws com.google.protobuf.InvalidProtocolBufferException {
@@ -271,34 +373,40 @@ public  final class AllocationDescription extends
   }
   public static org.tensorflow.framework.AllocationDescription parseFrom(java.io.InputStream input)
       throws java.io.IOException {
-    return PARSER.parseFrom(input);
+    return com.google.protobuf.GeneratedMessageV3
+        .parseWithIOException(PARSER, input);
   }
   public static org.tensorflow.framework.AllocationDescription parseFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
-    return PARSER.parseFrom(input, extensionRegistry);
+    return com.google.protobuf.GeneratedMessageV3
+        .parseWithIOException(PARSER, input, extensionRegistry);
   }
   public static org.tensorflow.framework.AllocationDescription parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
-    return PARSER.parseDelimitedFrom(input);
+    return com.google.protobuf.GeneratedMessageV3
+        .parseDelimitedWithIOException(PARSER, input);
   }
   public static org.tensorflow.framework.AllocationDescription parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
-    return PARSER.parseDelimitedFrom(input, extensionRegistry);
+    return com.google.protobuf.GeneratedMessageV3
+        .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
   }
   public static org.tensorflow.framework.AllocationDescription parseFrom(
       com.google.protobuf.CodedInputStream input)
       throws java.io.IOException {
-    return PARSER.parseFrom(input);
+    return com.google.protobuf.GeneratedMessageV3
+        .parseWithIOException(PARSER, input);
   }
   public static org.tensorflow.framework.AllocationDescription parseFrom(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
-    return PARSER.parseFrom(input, extensionRegistry);
+    return com.google.protobuf.GeneratedMessageV3
+        .parseWithIOException(PARSER, input, extensionRegistry);
   }
 
   public Builder newBuilderForType() { return newBuilder(); }
@@ -315,7 +423,7 @@ public  final class AllocationDescription extends
 
   @java.lang.Override
   protected Builder newBuilderForType(
-      com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
     Builder builder = new Builder(parent);
     return builder;
   }
@@ -323,7 +431,7 @@ public  final class AllocationDescription extends
    * Protobuf type {@code tensorflow.AllocationDescription}
    */
   public static final class Builder extends
-      com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+      com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
       // @@protoc_insertion_point(builder_implements:tensorflow.AllocationDescription)
       org.tensorflow.framework.AllocationDescriptionOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
@@ -331,7 +439,7 @@ public  final class AllocationDescription extends
       return org.tensorflow.framework.AllocationDescriptionProtos.internal_static_tensorflow_AllocationDescription_descriptor;
     }
 
-    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return org.tensorflow.framework.AllocationDescriptionProtos.internal_static_tensorflow_AllocationDescription_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
@@ -344,12 +452,13 @@ public  final class AllocationDescription extends
     }
 
     private Builder(
-        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       super(parent);
       maybeForceBuilderInitialization();
     }
     private void maybeForceBuilderInitialization() {
-      if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+      if (com.google.protobuf.GeneratedMessageV3
+              .alwaysUseFieldBuilders) {
       }
     }
     public Builder clear() {
@@ -363,6 +472,8 @@ public  final class AllocationDescription extends
       allocationId_ = 0L;
 
       hasSingleReference_ = false;
+
+      ptr_ = 0L;
 
       return this;
     }
@@ -391,10 +502,37 @@ public  final class AllocationDescription extends
       result.allocatorName_ = allocatorName_;
       result.allocationId_ = allocationId_;
       result.hasSingleReference_ = hasSingleReference_;
+      result.ptr_ = ptr_;
       onBuilt();
       return result;
     }
 
+    public Builder clone() {
+      return (Builder) super.clone();
+    }
+    public Builder setField(
+        com.google.protobuf.Descriptors.FieldDescriptor field,
+        java.lang.Object value) {
+      return (Builder) super.setField(field, value);
+    }
+    public Builder clearField(
+        com.google.protobuf.Descriptors.FieldDescriptor field) {
+      return (Builder) super.clearField(field);
+    }
+    public Builder clearOneof(
+        com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+      return (Builder) super.clearOneof(oneof);
+    }
+    public Builder setRepeatedField(
+        com.google.protobuf.Descriptors.FieldDescriptor field,
+        int index, java.lang.Object value) {
+      return (Builder) super.setRepeatedField(field, index, value);
+    }
+    public Builder addRepeatedField(
+        com.google.protobuf.Descriptors.FieldDescriptor field,
+        java.lang.Object value) {
+      return (Builder) super.addRepeatedField(field, value);
+    }
     public Builder mergeFrom(com.google.protobuf.Message other) {
       if (other instanceof org.tensorflow.framework.AllocationDescription) {
         return mergeFrom((org.tensorflow.framework.AllocationDescription)other);
@@ -422,6 +560,10 @@ public  final class AllocationDescription extends
       if (other.getHasSingleReference() != false) {
         setHasSingleReference(other.getHasSingleReference());
       }
+      if (other.getPtr() != 0L) {
+        setPtr(other.getPtr());
+      }
+      this.mergeUnknownFields(other.unknownFields);
       onChanged();
       return this;
     }
@@ -439,7 +581,7 @@ public  final class AllocationDescription extends
         parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
         parsedMessage = (org.tensorflow.framework.AllocationDescription) e.getUnfinishedMessage();
-        throw e;
+        throw e.unwrapIOException();
       } finally {
         if (parsedMessage != null) {
           mergeFrom(parsedMessage);
@@ -450,21 +592,21 @@ public  final class AllocationDescription extends
 
     private long requestedBytes_ ;
     /**
-     * <code>optional int64 requested_bytes = 1;</code>
-     *
      * <pre>
      * Total number of bytes requested
      * </pre>
+     *
+     * <code>int64 requested_bytes = 1;</code>
      */
     public long getRequestedBytes() {
       return requestedBytes_;
     }
     /**
-     * <code>optional int64 requested_bytes = 1;</code>
-     *
      * <pre>
      * Total number of bytes requested
      * </pre>
+     *
+     * <code>int64 requested_bytes = 1;</code>
      */
     public Builder setRequestedBytes(long value) {
       
@@ -473,11 +615,11 @@ public  final class AllocationDescription extends
       return this;
     }
     /**
-     * <code>optional int64 requested_bytes = 1;</code>
-     *
      * <pre>
      * Total number of bytes requested
      * </pre>
+     *
+     * <code>int64 requested_bytes = 1;</code>
      */
     public Builder clearRequestedBytes() {
       
@@ -488,21 +630,21 @@ public  final class AllocationDescription extends
 
     private long allocatedBytes_ ;
     /**
-     * <code>optional int64 allocated_bytes = 2;</code>
-     *
      * <pre>
      * Total number of bytes allocated if known
      * </pre>
+     *
+     * <code>int64 allocated_bytes = 2;</code>
      */
     public long getAllocatedBytes() {
       return allocatedBytes_;
     }
     /**
-     * <code>optional int64 allocated_bytes = 2;</code>
-     *
      * <pre>
      * Total number of bytes allocated if known
      * </pre>
+     *
+     * <code>int64 allocated_bytes = 2;</code>
      */
     public Builder setAllocatedBytes(long value) {
       
@@ -511,11 +653,11 @@ public  final class AllocationDescription extends
       return this;
     }
     /**
-     * <code>optional int64 allocated_bytes = 2;</code>
-     *
      * <pre>
      * Total number of bytes allocated if known
      * </pre>
+     *
+     * <code>int64 allocated_bytes = 2;</code>
      */
     public Builder clearAllocatedBytes() {
       
@@ -526,11 +668,11 @@ public  final class AllocationDescription extends
 
     private java.lang.Object allocatorName_ = "";
     /**
-     * <code>optional string allocator_name = 3;</code>
-     *
      * <pre>
      * Name of the allocator used
      * </pre>
+     *
+     * <code>string allocator_name = 3;</code>
      */
     public java.lang.String getAllocatorName() {
       java.lang.Object ref = allocatorName_;
@@ -545,11 +687,11 @@ public  final class AllocationDescription extends
       }
     }
     /**
-     * <code>optional string allocator_name = 3;</code>
-     *
      * <pre>
      * Name of the allocator used
      * </pre>
+     *
+     * <code>string allocator_name = 3;</code>
      */
     public com.google.protobuf.ByteString
         getAllocatorNameBytes() {
@@ -565,11 +707,11 @@ public  final class AllocationDescription extends
       }
     }
     /**
-     * <code>optional string allocator_name = 3;</code>
-     *
      * <pre>
      * Name of the allocator used
      * </pre>
+     *
+     * <code>string allocator_name = 3;</code>
      */
     public Builder setAllocatorName(
         java.lang.String value) {
@@ -582,11 +724,11 @@ public  final class AllocationDescription extends
       return this;
     }
     /**
-     * <code>optional string allocator_name = 3;</code>
-     *
      * <pre>
      * Name of the allocator used
      * </pre>
+     *
+     * <code>string allocator_name = 3;</code>
      */
     public Builder clearAllocatorName() {
       
@@ -595,11 +737,11 @@ public  final class AllocationDescription extends
       return this;
     }
     /**
-     * <code>optional string allocator_name = 3;</code>
-     *
      * <pre>
      * Name of the allocator used
      * </pre>
+     *
+     * <code>string allocator_name = 3;</code>
      */
     public Builder setAllocatorNameBytes(
         com.google.protobuf.ByteString value) {
@@ -615,21 +757,21 @@ public  final class AllocationDescription extends
 
     private long allocationId_ ;
     /**
-     * <code>optional int64 allocation_id = 4;</code>
-     *
      * <pre>
      * Identifier of the allocated buffer if known
      * </pre>
+     *
+     * <code>int64 allocation_id = 4;</code>
      */
     public long getAllocationId() {
       return allocationId_;
     }
     /**
-     * <code>optional int64 allocation_id = 4;</code>
-     *
      * <pre>
      * Identifier of the allocated buffer if known
      * </pre>
+     *
+     * <code>int64 allocation_id = 4;</code>
      */
     public Builder setAllocationId(long value) {
       
@@ -638,11 +780,11 @@ public  final class AllocationDescription extends
       return this;
     }
     /**
-     * <code>optional int64 allocation_id = 4;</code>
-     *
      * <pre>
      * Identifier of the allocated buffer if known
      * </pre>
+     *
+     * <code>int64 allocation_id = 4;</code>
      */
     public Builder clearAllocationId() {
       
@@ -653,21 +795,21 @@ public  final class AllocationDescription extends
 
     private boolean hasSingleReference_ ;
     /**
-     * <code>optional bool has_single_reference = 5;</code>
-     *
      * <pre>
      * Set if this tensor only has one remaining reference
      * </pre>
+     *
+     * <code>bool has_single_reference = 5;</code>
      */
     public boolean getHasSingleReference() {
       return hasSingleReference_;
     }
     /**
-     * <code>optional bool has_single_reference = 5;</code>
-     *
      * <pre>
      * Set if this tensor only has one remaining reference
      * </pre>
+     *
+     * <code>bool has_single_reference = 5;</code>
      */
     public Builder setHasSingleReference(boolean value) {
       
@@ -676,11 +818,11 @@ public  final class AllocationDescription extends
       return this;
     }
     /**
-     * <code>optional bool has_single_reference = 5;</code>
-     *
      * <pre>
      * Set if this tensor only has one remaining reference
      * </pre>
+     *
+     * <code>bool has_single_reference = 5;</code>
      */
     public Builder clearHasSingleReference() {
       
@@ -688,14 +830,52 @@ public  final class AllocationDescription extends
       onChanged();
       return this;
     }
+
+    private long ptr_ ;
+    /**
+     * <pre>
+     * Address of the allocation.
+     * </pre>
+     *
+     * <code>uint64 ptr = 6;</code>
+     */
+    public long getPtr() {
+      return ptr_;
+    }
+    /**
+     * <pre>
+     * Address of the allocation.
+     * </pre>
+     *
+     * <code>uint64 ptr = 6;</code>
+     */
+    public Builder setPtr(long value) {
+      
+      ptr_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * Address of the allocation.
+     * </pre>
+     *
+     * <code>uint64 ptr = 6;</code>
+     */
+    public Builder clearPtr() {
+      
+      ptr_ = 0L;
+      onChanged();
+      return this;
+    }
     public final Builder setUnknownFields(
         final com.google.protobuf.UnknownFieldSet unknownFields) {
-      return this;
+      return super.setUnknownFieldsProto3(unknownFields);
     }
 
     public final Builder mergeUnknownFields(
         final com.google.protobuf.UnknownFieldSet unknownFields) {
-      return this;
+      return super.mergeUnknownFields(unknownFields);
     }
 
 
@@ -718,16 +898,7 @@ public  final class AllocationDescription extends
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      try {
-        return new AllocationDescription(input, extensionRegistry);
-      } catch (RuntimeException e) {
-        if (e.getCause() instanceof
-            com.google.protobuf.InvalidProtocolBufferException) {
-          throw (com.google.protobuf.InvalidProtocolBufferException)
-              e.getCause();
-        }
-        throw e;
-      }
+      return new AllocationDescription(input, extensionRegistry);
     }
   };
 

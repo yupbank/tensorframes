@@ -6,24 +6,30 @@ package org.tensorflow.framework;
 public final class TensorSliceProtos {
   private TensorSliceProtos() {}
   public static void registerAllExtensions(
-      com.google.protobuf.ExtensionRegistry registry) {
+      com.google.protobuf.ExtensionRegistryLite registry) {
   }
-  static com.google.protobuf.Descriptors.Descriptor
+
+  public static void registerAllExtensions(
+      com.google.protobuf.ExtensionRegistry registry) {
+    registerAllExtensions(
+        (com.google.protobuf.ExtensionRegistryLite) registry);
+  }
+  static final com.google.protobuf.Descriptors.Descriptor
     internal_static_tensorflow_TensorSliceProto_descriptor;
-  static
-    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_tensorflow_TensorSliceProto_fieldAccessorTable;
-  static com.google.protobuf.Descriptors.Descriptor
+  static final com.google.protobuf.Descriptors.Descriptor
     internal_static_tensorflow_TensorSliceProto_Extent_descriptor;
-  static
-    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_tensorflow_TensorSliceProto_Extent_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
     return descriptor;
   }
-  private static com.google.protobuf.Descriptors.FileDescriptor
+  private static  com.google.protobuf.Descriptors.FileDescriptor
       descriptor;
   static {
     java.lang.String[] descriptorData = {
@@ -31,9 +37,9 @@ public final class TensorSliceProtos {
       ".proto\022\ntensorflow\"\200\001\n\020TensorSliceProto\022" +
       "3\n\006extent\030\001 \003(\0132#.tensorflow.TensorSlice" +
       "Proto.Extent\0327\n\006Extent\022\r\n\005start\030\001 \001(\003\022\020\n" +
-      "\006length\030\002 \001(\003H\000B\014\n\nhas_lengthB/\n\030org.ten" +
-      "sorflow.frameworkB\021TensorSliceProtosP\001b\006" +
-      "proto3"
+      "\006length\030\002 \001(\003H\000B\014\n\nhas_lengthB2\n\030org.ten" +
+      "sorflow.frameworkB\021TensorSliceProtosP\001\370\001" +
+      "\001b\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -50,13 +56,13 @@ public final class TensorSliceProtos {
     internal_static_tensorflow_TensorSliceProto_descriptor =
       getDescriptor().getMessageTypes().get(0);
     internal_static_tensorflow_TensorSliceProto_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_tensorflow_TensorSliceProto_descriptor,
         new java.lang.String[] { "Extent", });
     internal_static_tensorflow_TensorSliceProto_Extent_descriptor =
       internal_static_tensorflow_TensorSliceProto_descriptor.getNestedTypes().get(0);
     internal_static_tensorflow_TensorSliceProto_Extent_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_tensorflow_TensorSliceProto_Extent_descriptor,
         new java.lang.String[] { "Start", "Length", "HasLength", });
   }

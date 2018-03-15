@@ -32,50 +32,48 @@ public interface GraphDefOrBuilder extends
       int index);
 
   /**
-   * <code>optional .tensorflow.VersionDef versions = 4;</code>
-   *
    * <pre>
    * Compatibility versions of the graph.  See core/public/version.h for version
    * history.  The GraphDef version is distinct from the TensorFlow version, and
    * each release of TensorFlow will support a range of GraphDef versions.
    * </pre>
+   *
+   * <code>.tensorflow.VersionDef versions = 4;</code>
    */
   boolean hasVersions();
   /**
-   * <code>optional .tensorflow.VersionDef versions = 4;</code>
-   *
    * <pre>
    * Compatibility versions of the graph.  See core/public/version.h for version
    * history.  The GraphDef version is distinct from the TensorFlow version, and
    * each release of TensorFlow will support a range of GraphDef versions.
    * </pre>
+   *
+   * <code>.tensorflow.VersionDef versions = 4;</code>
    */
   org.tensorflow.framework.VersionDef getVersions();
   /**
-   * <code>optional .tensorflow.VersionDef versions = 4;</code>
-   *
    * <pre>
    * Compatibility versions of the graph.  See core/public/version.h for version
    * history.  The GraphDef version is distinct from the TensorFlow version, and
    * each release of TensorFlow will support a range of GraphDef versions.
    * </pre>
+   *
+   * <code>.tensorflow.VersionDef versions = 4;</code>
    */
   org.tensorflow.framework.VersionDefOrBuilder getVersionsOrBuilder();
 
   /**
-   * <code>optional int32 version = 3 [deprecated = true];</code>
-   *
    * <pre>
    * Deprecated single version field; use versions above instead.  Since all
    * GraphDef changes before "versions" was introduced were forward
    * compatible, this field is entirely ignored.
    * </pre>
+   *
+   * <code>int32 version = 3 [deprecated = true];</code>
    */
   @java.lang.Deprecated int getVersion();
 
   /**
-   * <code>optional .tensorflow.FunctionDefLibrary library = 2;</code>
-   *
    * <pre>
    * EXPERIMENTAL. DO NOT USE OR DEPEND ON THIS YET.
    * "library" provides user-defined functions.
@@ -85,7 +83,7 @@ public interface GraphDefOrBuilder extends
    *     different orgs. E.g.,
    *     { "/google/nn", { ... }},
    *     { "/google/vision", { ... }}
-   *     { "/org_foo/module_bar", {...}}
+   *     { "/org_foo/module_bar", { ... }}
    *     map&lt;string, FunctionDefLib&gt; named_lib;
    *   * If node[i].op is the name of one function in "library",
    *     node[i] is deemed as a function call. Otherwise, node[i].op
@@ -100,11 +98,11 @@ public interface GraphDefOrBuilder extends
    *     consumer does not start until all return values of the callee
    *     function are ready.
    * </pre>
+   *
+   * <code>.tensorflow.FunctionDefLibrary library = 2;</code>
    */
   boolean hasLibrary();
   /**
-   * <code>optional .tensorflow.FunctionDefLibrary library = 2;</code>
-   *
    * <pre>
    * EXPERIMENTAL. DO NOT USE OR DEPEND ON THIS YET.
    * "library" provides user-defined functions.
@@ -114,7 +112,7 @@ public interface GraphDefOrBuilder extends
    *     different orgs. E.g.,
    *     { "/google/nn", { ... }},
    *     { "/google/vision", { ... }}
-   *     { "/org_foo/module_bar", {...}}
+   *     { "/org_foo/module_bar", { ... }}
    *     map&lt;string, FunctionDefLib&gt; named_lib;
    *   * If node[i].op is the name of one function in "library",
    *     node[i] is deemed as a function call. Otherwise, node[i].op
@@ -129,11 +127,11 @@ public interface GraphDefOrBuilder extends
    *     consumer does not start until all return values of the callee
    *     function are ready.
    * </pre>
+   *
+   * <code>.tensorflow.FunctionDefLibrary library = 2;</code>
    */
   org.tensorflow.framework.FunctionDefLibrary getLibrary();
   /**
-   * <code>optional .tensorflow.FunctionDefLibrary library = 2;</code>
-   *
    * <pre>
    * EXPERIMENTAL. DO NOT USE OR DEPEND ON THIS YET.
    * "library" provides user-defined functions.
@@ -143,7 +141,7 @@ public interface GraphDefOrBuilder extends
    *     different orgs. E.g.,
    *     { "/google/nn", { ... }},
    *     { "/google/vision", { ... }}
-   *     { "/org_foo/module_bar", {...}}
+   *     { "/org_foo/module_bar", { ... }}
    *     map&lt;string, FunctionDefLib&gt; named_lib;
    *   * If node[i].op is the name of one function in "library",
    *     node[i] is deemed as a function call. Otherwise, node[i].op
@@ -158,6 +156,8 @@ public interface GraphDefOrBuilder extends
    *     consumer does not start until all return values of the callee
    *     function are ready.
    * </pre>
+   *
+   * <code>.tensorflow.FunctionDefLibrary library = 2;</code>
    */
   org.tensorflow.framework.FunctionDefLibraryOrBuilder getLibraryOrBuilder();
 }

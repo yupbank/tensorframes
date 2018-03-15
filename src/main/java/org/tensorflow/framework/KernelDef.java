@@ -7,11 +7,12 @@ package org.tensorflow.framework;
  * Protobuf type {@code tensorflow.KernelDef}
  */
 public  final class KernelDef extends
-    com.google.protobuf.GeneratedMessage implements
+    com.google.protobuf.GeneratedMessageV3 implements
     // @@protoc_insertion_point(message_implements:tensorflow.KernelDef)
     KernelDefOrBuilder {
+private static final long serialVersionUID = 0L;
   // Use KernelDef.newBuilder() to construct.
-  private KernelDef(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+  private KernelDef(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
     super(builder);
   }
   private KernelDef() {
@@ -25,13 +26,19 @@ public  final class KernelDef extends
   @java.lang.Override
   public final com.google.protobuf.UnknownFieldSet
   getUnknownFields() {
-    return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
+    return this.unknownFields;
   }
   private KernelDef(
       com.google.protobuf.CodedInputStream input,
-      com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
+      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+      throws com.google.protobuf.InvalidProtocolBufferException {
     this();
+    if (extensionRegistry == null) {
+      throw new java.lang.NullPointerException();
+    }
     int mutable_bitField0_ = 0;
+    com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+        com.google.protobuf.UnknownFieldSet.newBuilder();
     try {
       boolean done = false;
       while (!done) {
@@ -41,19 +48,20 @@ public  final class KernelDef extends
             done = true;
             break;
           default: {
-            if (!input.skipField(tag)) {
+            if (!parseUnknownFieldProto3(
+                input, unknownFields, extensionRegistry, tag)) {
               done = true;
             }
             break;
           }
           case 10: {
-            String s = input.readStringRequireUtf8();
+            java.lang.String s = input.readStringRequireUtf8();
 
             op_ = s;
             break;
           }
           case 18: {
-            String s = input.readStringRequireUtf8();
+            java.lang.String s = input.readStringRequireUtf8();
 
             deviceType_ = s;
             break;
@@ -63,11 +71,12 @@ public  final class KernelDef extends
               constraint_ = new java.util.ArrayList<org.tensorflow.framework.KernelDef.AttrConstraint>();
               mutable_bitField0_ |= 0x00000004;
             }
-            constraint_.add(input.readMessage(org.tensorflow.framework.KernelDef.AttrConstraint.parser(), extensionRegistry));
+            constraint_.add(
+                input.readMessage(org.tensorflow.framework.KernelDef.AttrConstraint.parser(), extensionRegistry));
             break;
           }
           case 34: {
-            String s = input.readStringRequireUtf8();
+            java.lang.String s = input.readStringRequireUtf8();
             if (!((mutable_bitField0_ & 0x00000008) == 0x00000008)) {
               hostMemoryArg_ = new com.google.protobuf.LazyStringArrayList();
               mutable_bitField0_ |= 0x00000008;
@@ -76,7 +85,7 @@ public  final class KernelDef extends
             break;
           }
           case 42: {
-            String s = input.readStringRequireUtf8();
+            java.lang.String s = input.readStringRequireUtf8();
 
             label_ = s;
             break;
@@ -84,11 +93,10 @@ public  final class KernelDef extends
         }
       }
     } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-      throw new RuntimeException(e.setUnfinishedMessage(this));
+      throw e.setUnfinishedMessage(this);
     } catch (java.io.IOException e) {
-      throw new RuntimeException(
-          new com.google.protobuf.InvalidProtocolBufferException(
-              e.getMessage()).setUnfinishedMessage(this));
+      throw new com.google.protobuf.InvalidProtocolBufferException(
+          e).setUnfinishedMessage(this);
     } finally {
       if (((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
         constraint_ = java.util.Collections.unmodifiableList(constraint_);
@@ -96,6 +104,7 @@ public  final class KernelDef extends
       if (((mutable_bitField0_ & 0x00000008) == 0x00000008)) {
         hostMemoryArg_ = hostMemoryArg_.getUnmodifiableView();
       }
+      this.unknownFields = unknownFields.build();
       makeExtensionsImmutable();
     }
   }
@@ -104,7 +113,7 @@ public  final class KernelDef extends
     return org.tensorflow.framework.KernelDefProtos.internal_static_tensorflow_KernelDef_descriptor;
   }
 
-  protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+  protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
     return org.tensorflow.framework.KernelDefProtos.internal_static_tensorflow_KernelDef_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
@@ -116,48 +125,48 @@ public  final class KernelDef extends
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>optional string name = 1;</code>
-     *
      * <pre>
      * Name of an attr from the Op.
      * </pre>
+     *
+     * <code>string name = 1;</code>
      */
     java.lang.String getName();
     /**
-     * <code>optional string name = 1;</code>
-     *
      * <pre>
      * Name of an attr from the Op.
      * </pre>
+     *
+     * <code>string name = 1;</code>
      */
     com.google.protobuf.ByteString
         getNameBytes();
 
     /**
-     * <code>optional .tensorflow.AttrValue allowed_values = 2;</code>
-     *
      * <pre>
      * A list of values that this kernel supports for this attr.
      * Like OpDef.AttrDef.allowed_values, except for kernels instead of Ops.
      * </pre>
+     *
+     * <code>.tensorflow.AttrValue allowed_values = 2;</code>
      */
     boolean hasAllowedValues();
     /**
-     * <code>optional .tensorflow.AttrValue allowed_values = 2;</code>
-     *
      * <pre>
      * A list of values that this kernel supports for this attr.
      * Like OpDef.AttrDef.allowed_values, except for kernels instead of Ops.
      * </pre>
+     *
+     * <code>.tensorflow.AttrValue allowed_values = 2;</code>
      */
     org.tensorflow.framework.AttrValue getAllowedValues();
     /**
-     * <code>optional .tensorflow.AttrValue allowed_values = 2;</code>
-     *
      * <pre>
      * A list of values that this kernel supports for this attr.
      * Like OpDef.AttrDef.allowed_values, except for kernels instead of Ops.
      * </pre>
+     *
+     * <code>.tensorflow.AttrValue allowed_values = 2;</code>
      */
     org.tensorflow.framework.AttrValueOrBuilder getAllowedValuesOrBuilder();
   }
@@ -165,11 +174,12 @@ public  final class KernelDef extends
    * Protobuf type {@code tensorflow.KernelDef.AttrConstraint}
    */
   public  static final class AttrConstraint extends
-      com.google.protobuf.GeneratedMessage implements
+      com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:tensorflow.KernelDef.AttrConstraint)
       AttrConstraintOrBuilder {
+  private static final long serialVersionUID = 0L;
     // Use AttrConstraint.newBuilder() to construct.
-    private AttrConstraint(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+    private AttrConstraint(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
     private AttrConstraint() {
@@ -179,13 +189,19 @@ public  final class KernelDef extends
     @java.lang.Override
     public final com.google.protobuf.UnknownFieldSet
     getUnknownFields() {
-      return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
+      return this.unknownFields;
     }
     private AttrConstraint(
         com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
       this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
       int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
       try {
         boolean done = false;
         while (!done) {
@@ -195,13 +211,14 @@ public  final class KernelDef extends
               done = true;
               break;
             default: {
-              if (!input.skipField(tag)) {
+              if (!parseUnknownFieldProto3(
+                  input, unknownFields, extensionRegistry, tag)) {
                 done = true;
               }
               break;
             }
             case 10: {
-              String s = input.readStringRequireUtf8();
+              java.lang.String s = input.readStringRequireUtf8();
 
               name_ = s;
               break;
@@ -222,12 +239,12 @@ public  final class KernelDef extends
           }
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        throw new RuntimeException(e.setUnfinishedMessage(this));
+        throw e.setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
-        throw new RuntimeException(
-            new com.google.protobuf.InvalidProtocolBufferException(
-                e.getMessage()).setUnfinishedMessage(this));
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
       } finally {
+        this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
       }
     }
@@ -236,7 +253,7 @@ public  final class KernelDef extends
       return org.tensorflow.framework.KernelDefProtos.internal_static_tensorflow_KernelDef_AttrConstraint_descriptor;
     }
 
-    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return org.tensorflow.framework.KernelDefProtos.internal_static_tensorflow_KernelDef_AttrConstraint_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
@@ -246,11 +263,11 @@ public  final class KernelDef extends
     public static final int NAME_FIELD_NUMBER = 1;
     private volatile java.lang.Object name_;
     /**
-     * <code>optional string name = 1;</code>
-     *
      * <pre>
      * Name of an attr from the Op.
      * </pre>
+     *
+     * <code>string name = 1;</code>
      */
     public java.lang.String getName() {
       java.lang.Object ref = name_;
@@ -265,11 +282,11 @@ public  final class KernelDef extends
       }
     }
     /**
-     * <code>optional string name = 1;</code>
-     *
      * <pre>
      * Name of an attr from the Op.
      * </pre>
+     *
+     * <code>string name = 1;</code>
      */
     public com.google.protobuf.ByteString
         getNameBytes() {
@@ -288,34 +305,34 @@ public  final class KernelDef extends
     public static final int ALLOWED_VALUES_FIELD_NUMBER = 2;
     private org.tensorflow.framework.AttrValue allowedValues_;
     /**
-     * <code>optional .tensorflow.AttrValue allowed_values = 2;</code>
-     *
      * <pre>
      * A list of values that this kernel supports for this attr.
      * Like OpDef.AttrDef.allowed_values, except for kernels instead of Ops.
      * </pre>
+     *
+     * <code>.tensorflow.AttrValue allowed_values = 2;</code>
      */
     public boolean hasAllowedValues() {
       return allowedValues_ != null;
     }
     /**
-     * <code>optional .tensorflow.AttrValue allowed_values = 2;</code>
-     *
      * <pre>
      * A list of values that this kernel supports for this attr.
      * Like OpDef.AttrDef.allowed_values, except for kernels instead of Ops.
      * </pre>
+     *
+     * <code>.tensorflow.AttrValue allowed_values = 2;</code>
      */
     public org.tensorflow.framework.AttrValue getAllowedValues() {
       return allowedValues_ == null ? org.tensorflow.framework.AttrValue.getDefaultInstance() : allowedValues_;
     }
     /**
-     * <code>optional .tensorflow.AttrValue allowed_values = 2;</code>
-     *
      * <pre>
      * A list of values that this kernel supports for this attr.
      * Like OpDef.AttrDef.allowed_values, except for kernels instead of Ops.
      * </pre>
+     *
+     * <code>.tensorflow.AttrValue allowed_values = 2;</code>
      */
     public org.tensorflow.framework.AttrValueOrBuilder getAllowedValuesOrBuilder() {
       return getAllowedValues();
@@ -334,11 +351,12 @@ public  final class KernelDef extends
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       if (!getNameBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessage.writeString(output, 1, name_);
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, name_);
       }
       if (allowedValues_ != null) {
         output.writeMessage(2, getAllowedValues());
       }
+      unknownFields.writeTo(output);
     }
 
     public int getSerializedSize() {
@@ -347,17 +365,68 @@ public  final class KernelDef extends
 
       size = 0;
       if (!getNameBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessage.computeStringSize(1, name_);
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, name_);
       }
       if (allowedValues_ != null) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(2, getAllowedValues());
       }
+      size += unknownFields.getSerializedSize();
       memoizedSize = size;
       return size;
     }
 
-    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof org.tensorflow.framework.KernelDef.AttrConstraint)) {
+        return super.equals(obj);
+      }
+      org.tensorflow.framework.KernelDef.AttrConstraint other = (org.tensorflow.framework.KernelDef.AttrConstraint) obj;
+
+      boolean result = true;
+      result = result && getName()
+          .equals(other.getName());
+      result = result && (hasAllowedValues() == other.hasAllowedValues());
+      if (hasAllowedValues()) {
+        result = result && getAllowedValues()
+            .equals(other.getAllowedValues());
+      }
+      result = result && unknownFields.equals(other.unknownFields);
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + NAME_FIELD_NUMBER;
+      hash = (53 * hash) + getName().hashCode();
+      if (hasAllowedValues()) {
+        hash = (37 * hash) + ALLOWED_VALUES_FIELD_NUMBER;
+        hash = (53 * hash) + getAllowedValues().hashCode();
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static org.tensorflow.framework.KernelDef.AttrConstraint parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static org.tensorflow.framework.KernelDef.AttrConstraint parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
     public static org.tensorflow.framework.KernelDef.AttrConstraint parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -381,34 +450,40 @@ public  final class KernelDef extends
     }
     public static org.tensorflow.framework.KernelDef.AttrConstraint parseFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return PARSER.parseFrom(input);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
     }
     public static org.tensorflow.framework.KernelDef.AttrConstraint parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return PARSER.parseFrom(input, extensionRegistry);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
     }
     public static org.tensorflow.framework.KernelDef.AttrConstraint parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return PARSER.parseDelimitedFrom(input);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
     }
     public static org.tensorflow.framework.KernelDef.AttrConstraint parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return PARSER.parseDelimitedFrom(input, extensionRegistry);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
     public static org.tensorflow.framework.KernelDef.AttrConstraint parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
-      return PARSER.parseFrom(input);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
     }
     public static org.tensorflow.framework.KernelDef.AttrConstraint parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return PARSER.parseFrom(input, extensionRegistry);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
     public Builder newBuilderForType() { return newBuilder(); }
@@ -425,7 +500,7 @@ public  final class KernelDef extends
 
     @java.lang.Override
     protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
@@ -433,7 +508,7 @@ public  final class KernelDef extends
      * Protobuf type {@code tensorflow.KernelDef.AttrConstraint}
      */
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
         // @@protoc_insertion_point(builder_implements:tensorflow.KernelDef.AttrConstraint)
         org.tensorflow.framework.KernelDef.AttrConstraintOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
@@ -441,7 +516,7 @@ public  final class KernelDef extends
         return org.tensorflow.framework.KernelDefProtos.internal_static_tensorflow_KernelDef_AttrConstraint_descriptor;
       }
 
-      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return org.tensorflow.framework.KernelDefProtos.internal_static_tensorflow_KernelDef_AttrConstraint_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
@@ -454,12 +529,13 @@ public  final class KernelDef extends
       }
 
       private Builder(
-          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
       private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
         }
       }
       public Builder clear() {
@@ -504,6 +580,32 @@ public  final class KernelDef extends
         return result;
       }
 
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return (Builder) super.setField(field, value);
+      }
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof org.tensorflow.framework.KernelDef.AttrConstraint) {
           return mergeFrom((org.tensorflow.framework.KernelDef.AttrConstraint)other);
@@ -522,6 +624,7 @@ public  final class KernelDef extends
         if (other.hasAllowedValues()) {
           mergeAllowedValues(other.getAllowedValues());
         }
+        this.mergeUnknownFields(other.unknownFields);
         onChanged();
         return this;
       }
@@ -539,7 +642,7 @@ public  final class KernelDef extends
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
           parsedMessage = (org.tensorflow.framework.KernelDef.AttrConstraint) e.getUnfinishedMessage();
-          throw e;
+          throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
             mergeFrom(parsedMessage);
@@ -550,11 +653,11 @@ public  final class KernelDef extends
 
       private java.lang.Object name_ = "";
       /**
-       * <code>optional string name = 1;</code>
-       *
        * <pre>
        * Name of an attr from the Op.
        * </pre>
+       *
+       * <code>string name = 1;</code>
        */
       public java.lang.String getName() {
         java.lang.Object ref = name_;
@@ -569,11 +672,11 @@ public  final class KernelDef extends
         }
       }
       /**
-       * <code>optional string name = 1;</code>
-       *
        * <pre>
        * Name of an attr from the Op.
        * </pre>
+       *
+       * <code>string name = 1;</code>
        */
       public com.google.protobuf.ByteString
           getNameBytes() {
@@ -589,11 +692,11 @@ public  final class KernelDef extends
         }
       }
       /**
-       * <code>optional string name = 1;</code>
-       *
        * <pre>
        * Name of an attr from the Op.
        * </pre>
+       *
+       * <code>string name = 1;</code>
        */
       public Builder setName(
           java.lang.String value) {
@@ -606,11 +709,11 @@ public  final class KernelDef extends
         return this;
       }
       /**
-       * <code>optional string name = 1;</code>
-       *
        * <pre>
        * Name of an attr from the Op.
        * </pre>
+       *
+       * <code>string name = 1;</code>
        */
       public Builder clearName() {
         
@@ -619,11 +722,11 @@ public  final class KernelDef extends
         return this;
       }
       /**
-       * <code>optional string name = 1;</code>
-       *
        * <pre>
        * Name of an attr from the Op.
        * </pre>
+       *
+       * <code>string name = 1;</code>
        */
       public Builder setNameBytes(
           com.google.protobuf.ByteString value) {
@@ -638,26 +741,26 @@ public  final class KernelDef extends
       }
 
       private org.tensorflow.framework.AttrValue allowedValues_ = null;
-      private com.google.protobuf.SingleFieldBuilder<
+      private com.google.protobuf.SingleFieldBuilderV3<
           org.tensorflow.framework.AttrValue, org.tensorflow.framework.AttrValue.Builder, org.tensorflow.framework.AttrValueOrBuilder> allowedValuesBuilder_;
       /**
-       * <code>optional .tensorflow.AttrValue allowed_values = 2;</code>
-       *
        * <pre>
        * A list of values that this kernel supports for this attr.
        * Like OpDef.AttrDef.allowed_values, except for kernels instead of Ops.
        * </pre>
+       *
+       * <code>.tensorflow.AttrValue allowed_values = 2;</code>
        */
       public boolean hasAllowedValues() {
         return allowedValuesBuilder_ != null || allowedValues_ != null;
       }
       /**
-       * <code>optional .tensorflow.AttrValue allowed_values = 2;</code>
-       *
        * <pre>
        * A list of values that this kernel supports for this attr.
        * Like OpDef.AttrDef.allowed_values, except for kernels instead of Ops.
        * </pre>
+       *
+       * <code>.tensorflow.AttrValue allowed_values = 2;</code>
        */
       public org.tensorflow.framework.AttrValue getAllowedValues() {
         if (allowedValuesBuilder_ == null) {
@@ -667,12 +770,12 @@ public  final class KernelDef extends
         }
       }
       /**
-       * <code>optional .tensorflow.AttrValue allowed_values = 2;</code>
-       *
        * <pre>
        * A list of values that this kernel supports for this attr.
        * Like OpDef.AttrDef.allowed_values, except for kernels instead of Ops.
        * </pre>
+       *
+       * <code>.tensorflow.AttrValue allowed_values = 2;</code>
        */
       public Builder setAllowedValues(org.tensorflow.framework.AttrValue value) {
         if (allowedValuesBuilder_ == null) {
@@ -688,12 +791,12 @@ public  final class KernelDef extends
         return this;
       }
       /**
-       * <code>optional .tensorflow.AttrValue allowed_values = 2;</code>
-       *
        * <pre>
        * A list of values that this kernel supports for this attr.
        * Like OpDef.AttrDef.allowed_values, except for kernels instead of Ops.
        * </pre>
+       *
+       * <code>.tensorflow.AttrValue allowed_values = 2;</code>
        */
       public Builder setAllowedValues(
           org.tensorflow.framework.AttrValue.Builder builderForValue) {
@@ -707,12 +810,12 @@ public  final class KernelDef extends
         return this;
       }
       /**
-       * <code>optional .tensorflow.AttrValue allowed_values = 2;</code>
-       *
        * <pre>
        * A list of values that this kernel supports for this attr.
        * Like OpDef.AttrDef.allowed_values, except for kernels instead of Ops.
        * </pre>
+       *
+       * <code>.tensorflow.AttrValue allowed_values = 2;</code>
        */
       public Builder mergeAllowedValues(org.tensorflow.framework.AttrValue value) {
         if (allowedValuesBuilder_ == null) {
@@ -730,12 +833,12 @@ public  final class KernelDef extends
         return this;
       }
       /**
-       * <code>optional .tensorflow.AttrValue allowed_values = 2;</code>
-       *
        * <pre>
        * A list of values that this kernel supports for this attr.
        * Like OpDef.AttrDef.allowed_values, except for kernels instead of Ops.
        * </pre>
+       *
+       * <code>.tensorflow.AttrValue allowed_values = 2;</code>
        */
       public Builder clearAllowedValues() {
         if (allowedValuesBuilder_ == null) {
@@ -749,12 +852,12 @@ public  final class KernelDef extends
         return this;
       }
       /**
-       * <code>optional .tensorflow.AttrValue allowed_values = 2;</code>
-       *
        * <pre>
        * A list of values that this kernel supports for this attr.
        * Like OpDef.AttrDef.allowed_values, except for kernels instead of Ops.
        * </pre>
+       *
+       * <code>.tensorflow.AttrValue allowed_values = 2;</code>
        */
       public org.tensorflow.framework.AttrValue.Builder getAllowedValuesBuilder() {
         
@@ -762,12 +865,12 @@ public  final class KernelDef extends
         return getAllowedValuesFieldBuilder().getBuilder();
       }
       /**
-       * <code>optional .tensorflow.AttrValue allowed_values = 2;</code>
-       *
        * <pre>
        * A list of values that this kernel supports for this attr.
        * Like OpDef.AttrDef.allowed_values, except for kernels instead of Ops.
        * </pre>
+       *
+       * <code>.tensorflow.AttrValue allowed_values = 2;</code>
        */
       public org.tensorflow.framework.AttrValueOrBuilder getAllowedValuesOrBuilder() {
         if (allowedValuesBuilder_ != null) {
@@ -778,18 +881,18 @@ public  final class KernelDef extends
         }
       }
       /**
-       * <code>optional .tensorflow.AttrValue allowed_values = 2;</code>
-       *
        * <pre>
        * A list of values that this kernel supports for this attr.
        * Like OpDef.AttrDef.allowed_values, except for kernels instead of Ops.
        * </pre>
+       *
+       * <code>.tensorflow.AttrValue allowed_values = 2;</code>
        */
-      private com.google.protobuf.SingleFieldBuilder<
+      private com.google.protobuf.SingleFieldBuilderV3<
           org.tensorflow.framework.AttrValue, org.tensorflow.framework.AttrValue.Builder, org.tensorflow.framework.AttrValueOrBuilder> 
           getAllowedValuesFieldBuilder() {
         if (allowedValuesBuilder_ == null) {
-          allowedValuesBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+          allowedValuesBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
               org.tensorflow.framework.AttrValue, org.tensorflow.framework.AttrValue.Builder, org.tensorflow.framework.AttrValueOrBuilder>(
                   getAllowedValues(),
                   getParentForChildren(),
@@ -800,12 +903,12 @@ public  final class KernelDef extends
       }
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return this;
+        return super.setUnknownFieldsProto3(unknownFields);
       }
 
       public final Builder mergeUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return this;
+        return super.mergeUnknownFields(unknownFields);
       }
 
 
@@ -828,16 +931,7 @@ public  final class KernelDef extends
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
-        try {
-          return new AttrConstraint(input, extensionRegistry);
-        } catch (RuntimeException e) {
-          if (e.getCause() instanceof
-              com.google.protobuf.InvalidProtocolBufferException) {
-            throw (com.google.protobuf.InvalidProtocolBufferException)
-                e.getCause();
-          }
-          throw e;
-        }
+        return new AttrConstraint(input, extensionRegistry);
       }
     };
 
@@ -860,11 +954,11 @@ public  final class KernelDef extends
   public static final int OP_FIELD_NUMBER = 1;
   private volatile java.lang.Object op_;
   /**
-   * <code>optional string op = 1;</code>
-   *
    * <pre>
    * Must match the name of an Op.
    * </pre>
+   *
+   * <code>string op = 1;</code>
    */
   public java.lang.String getOp() {
     java.lang.Object ref = op_;
@@ -879,11 +973,11 @@ public  final class KernelDef extends
     }
   }
   /**
-   * <code>optional string op = 1;</code>
-   *
    * <pre>
    * Must match the name of an Op.
    * </pre>
+   *
+   * <code>string op = 1;</code>
    */
   public com.google.protobuf.ByteString
       getOpBytes() {
@@ -902,11 +996,11 @@ public  final class KernelDef extends
   public static final int DEVICE_TYPE_FIELD_NUMBER = 2;
   private volatile java.lang.Object deviceType_;
   /**
-   * <code>optional string device_type = 2;</code>
-   *
    * <pre>
    * Type of device this kernel runs on.
    * </pre>
+   *
+   * <code>string device_type = 2;</code>
    */
   public java.lang.String getDeviceType() {
     java.lang.Object ref = deviceType_;
@@ -921,11 +1015,11 @@ public  final class KernelDef extends
     }
   }
   /**
-   * <code>optional string device_type = 2;</code>
-   *
    * <pre>
    * Type of device this kernel runs on.
    * </pre>
+   *
+   * <code>string device_type = 2;</code>
    */
   public com.google.protobuf.ByteString
       getDeviceTypeBytes() {
@@ -979,46 +1073,46 @@ public  final class KernelDef extends
   public static final int HOST_MEMORY_ARG_FIELD_NUMBER = 4;
   private com.google.protobuf.LazyStringList hostMemoryArg_;
   /**
-   * <code>repeated string host_memory_arg = 4;</code>
-   *
    * <pre>
    * Names of the Op's input_/output_args that reside in host memory
    * instead of device memory.
    * </pre>
+   *
+   * <code>repeated string host_memory_arg = 4;</code>
    */
   public com.google.protobuf.ProtocolStringList
       getHostMemoryArgList() {
     return hostMemoryArg_;
   }
   /**
-   * <code>repeated string host_memory_arg = 4;</code>
-   *
    * <pre>
    * Names of the Op's input_/output_args that reside in host memory
    * instead of device memory.
    * </pre>
+   *
+   * <code>repeated string host_memory_arg = 4;</code>
    */
   public int getHostMemoryArgCount() {
     return hostMemoryArg_.size();
   }
   /**
-   * <code>repeated string host_memory_arg = 4;</code>
-   *
    * <pre>
    * Names of the Op's input_/output_args that reside in host memory
    * instead of device memory.
    * </pre>
+   *
+   * <code>repeated string host_memory_arg = 4;</code>
    */
   public java.lang.String getHostMemoryArg(int index) {
     return hostMemoryArg_.get(index);
   }
   /**
-   * <code>repeated string host_memory_arg = 4;</code>
-   *
    * <pre>
    * Names of the Op's input_/output_args that reside in host memory
    * instead of device memory.
    * </pre>
+   *
+   * <code>repeated string host_memory_arg = 4;</code>
    */
   public com.google.protobuf.ByteString
       getHostMemoryArgBytes(int index) {
@@ -1028,13 +1122,13 @@ public  final class KernelDef extends
   public static final int LABEL_FIELD_NUMBER = 5;
   private volatile java.lang.Object label_;
   /**
-   * <code>optional string label = 5;</code>
-   *
    * <pre>
    * This allows experimental kernels to be registered for an op that
    * won't be used unless the user specifies a "_kernel" attr with
    * value matching this.
    * </pre>
+   *
+   * <code>string label = 5;</code>
    */
   public java.lang.String getLabel() {
     java.lang.Object ref = label_;
@@ -1049,13 +1143,13 @@ public  final class KernelDef extends
     }
   }
   /**
-   * <code>optional string label = 5;</code>
-   *
    * <pre>
    * This allows experimental kernels to be registered for an op that
    * won't be used unless the user specifies a "_kernel" attr with
    * value matching this.
    * </pre>
+   *
+   * <code>string label = 5;</code>
    */
   public com.google.protobuf.ByteString
       getLabelBytes() {
@@ -1084,20 +1178,21 @@ public  final class KernelDef extends
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
     if (!getOpBytes().isEmpty()) {
-      com.google.protobuf.GeneratedMessage.writeString(output, 1, op_);
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 1, op_);
     }
     if (!getDeviceTypeBytes().isEmpty()) {
-      com.google.protobuf.GeneratedMessage.writeString(output, 2, deviceType_);
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 2, deviceType_);
     }
     for (int i = 0; i < constraint_.size(); i++) {
       output.writeMessage(3, constraint_.get(i));
     }
     for (int i = 0; i < hostMemoryArg_.size(); i++) {
-      com.google.protobuf.GeneratedMessage.writeString(output, 4, hostMemoryArg_.getRaw(i));
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 4, hostMemoryArg_.getRaw(i));
     }
     if (!getLabelBytes().isEmpty()) {
-      com.google.protobuf.GeneratedMessage.writeString(output, 5, label_);
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 5, label_);
     }
+    unknownFields.writeTo(output);
   }
 
   public int getSerializedSize() {
@@ -1106,10 +1201,10 @@ public  final class KernelDef extends
 
     size = 0;
     if (!getOpBytes().isEmpty()) {
-      size += com.google.protobuf.GeneratedMessage.computeStringSize(1, op_);
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, op_);
     }
     if (!getDeviceTypeBytes().isEmpty()) {
-      size += com.google.protobuf.GeneratedMessage.computeStringSize(2, deviceType_);
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, deviceType_);
     }
     for (int i = 0; i < constraint_.size(); i++) {
       size += com.google.protobuf.CodedOutputStream
@@ -1124,13 +1219,75 @@ public  final class KernelDef extends
       size += 1 * getHostMemoryArgList().size();
     }
     if (!getLabelBytes().isEmpty()) {
-      size += com.google.protobuf.GeneratedMessage.computeStringSize(5, label_);
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(5, label_);
     }
+    size += unknownFields.getSerializedSize();
     memoizedSize = size;
     return size;
   }
 
-  private static final long serialVersionUID = 0L;
+  @java.lang.Override
+  public boolean equals(final java.lang.Object obj) {
+    if (obj == this) {
+     return true;
+    }
+    if (!(obj instanceof org.tensorflow.framework.KernelDef)) {
+      return super.equals(obj);
+    }
+    org.tensorflow.framework.KernelDef other = (org.tensorflow.framework.KernelDef) obj;
+
+    boolean result = true;
+    result = result && getOp()
+        .equals(other.getOp());
+    result = result && getDeviceType()
+        .equals(other.getDeviceType());
+    result = result && getConstraintList()
+        .equals(other.getConstraintList());
+    result = result && getHostMemoryArgList()
+        .equals(other.getHostMemoryArgList());
+    result = result && getLabel()
+        .equals(other.getLabel());
+    result = result && unknownFields.equals(other.unknownFields);
+    return result;
+  }
+
+  @java.lang.Override
+  public int hashCode() {
+    if (memoizedHashCode != 0) {
+      return memoizedHashCode;
+    }
+    int hash = 41;
+    hash = (19 * hash) + getDescriptor().hashCode();
+    hash = (37 * hash) + OP_FIELD_NUMBER;
+    hash = (53 * hash) + getOp().hashCode();
+    hash = (37 * hash) + DEVICE_TYPE_FIELD_NUMBER;
+    hash = (53 * hash) + getDeviceType().hashCode();
+    if (getConstraintCount() > 0) {
+      hash = (37 * hash) + CONSTRAINT_FIELD_NUMBER;
+      hash = (53 * hash) + getConstraintList().hashCode();
+    }
+    if (getHostMemoryArgCount() > 0) {
+      hash = (37 * hash) + HOST_MEMORY_ARG_FIELD_NUMBER;
+      hash = (53 * hash) + getHostMemoryArgList().hashCode();
+    }
+    hash = (37 * hash) + LABEL_FIELD_NUMBER;
+    hash = (53 * hash) + getLabel().hashCode();
+    hash = (29 * hash) + unknownFields.hashCode();
+    memoizedHashCode = hash;
+    return hash;
+  }
+
+  public static org.tensorflow.framework.KernelDef parseFrom(
+      java.nio.ByteBuffer data)
+      throws com.google.protobuf.InvalidProtocolBufferException {
+    return PARSER.parseFrom(data);
+  }
+  public static org.tensorflow.framework.KernelDef parseFrom(
+      java.nio.ByteBuffer data,
+      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+      throws com.google.protobuf.InvalidProtocolBufferException {
+    return PARSER.parseFrom(data, extensionRegistry);
+  }
   public static org.tensorflow.framework.KernelDef parseFrom(
       com.google.protobuf.ByteString data)
       throws com.google.protobuf.InvalidProtocolBufferException {
@@ -1154,34 +1311,40 @@ public  final class KernelDef extends
   }
   public static org.tensorflow.framework.KernelDef parseFrom(java.io.InputStream input)
       throws java.io.IOException {
-    return PARSER.parseFrom(input);
+    return com.google.protobuf.GeneratedMessageV3
+        .parseWithIOException(PARSER, input);
   }
   public static org.tensorflow.framework.KernelDef parseFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
-    return PARSER.parseFrom(input, extensionRegistry);
+    return com.google.protobuf.GeneratedMessageV3
+        .parseWithIOException(PARSER, input, extensionRegistry);
   }
   public static org.tensorflow.framework.KernelDef parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
-    return PARSER.parseDelimitedFrom(input);
+    return com.google.protobuf.GeneratedMessageV3
+        .parseDelimitedWithIOException(PARSER, input);
   }
   public static org.tensorflow.framework.KernelDef parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
-    return PARSER.parseDelimitedFrom(input, extensionRegistry);
+    return com.google.protobuf.GeneratedMessageV3
+        .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
   }
   public static org.tensorflow.framework.KernelDef parseFrom(
       com.google.protobuf.CodedInputStream input)
       throws java.io.IOException {
-    return PARSER.parseFrom(input);
+    return com.google.protobuf.GeneratedMessageV3
+        .parseWithIOException(PARSER, input);
   }
   public static org.tensorflow.framework.KernelDef parseFrom(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
-    return PARSER.parseFrom(input, extensionRegistry);
+    return com.google.protobuf.GeneratedMessageV3
+        .parseWithIOException(PARSER, input, extensionRegistry);
   }
 
   public Builder newBuilderForType() { return newBuilder(); }
@@ -1198,7 +1361,7 @@ public  final class KernelDef extends
 
   @java.lang.Override
   protected Builder newBuilderForType(
-      com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
     Builder builder = new Builder(parent);
     return builder;
   }
@@ -1206,7 +1369,7 @@ public  final class KernelDef extends
    * Protobuf type {@code tensorflow.KernelDef}
    */
   public static final class Builder extends
-      com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+      com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
       // @@protoc_insertion_point(builder_implements:tensorflow.KernelDef)
       org.tensorflow.framework.KernelDefOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
@@ -1214,7 +1377,7 @@ public  final class KernelDef extends
       return org.tensorflow.framework.KernelDefProtos.internal_static_tensorflow_KernelDef_descriptor;
     }
 
-    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return org.tensorflow.framework.KernelDefProtos.internal_static_tensorflow_KernelDef_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
@@ -1227,12 +1390,13 @@ public  final class KernelDef extends
     }
 
     private Builder(
-        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       super(parent);
       maybeForceBuilderInitialization();
     }
     private void maybeForceBuilderInitialization() {
-      if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+      if (com.google.protobuf.GeneratedMessageV3
+              .alwaysUseFieldBuilders) {
         getConstraintFieldBuilder();
       }
     }
@@ -1298,6 +1462,32 @@ public  final class KernelDef extends
       return result;
     }
 
+    public Builder clone() {
+      return (Builder) super.clone();
+    }
+    public Builder setField(
+        com.google.protobuf.Descriptors.FieldDescriptor field,
+        java.lang.Object value) {
+      return (Builder) super.setField(field, value);
+    }
+    public Builder clearField(
+        com.google.protobuf.Descriptors.FieldDescriptor field) {
+      return (Builder) super.clearField(field);
+    }
+    public Builder clearOneof(
+        com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+      return (Builder) super.clearOneof(oneof);
+    }
+    public Builder setRepeatedField(
+        com.google.protobuf.Descriptors.FieldDescriptor field,
+        int index, java.lang.Object value) {
+      return (Builder) super.setRepeatedField(field, index, value);
+    }
+    public Builder addRepeatedField(
+        com.google.protobuf.Descriptors.FieldDescriptor field,
+        java.lang.Object value) {
+      return (Builder) super.addRepeatedField(field, value);
+    }
     public Builder mergeFrom(com.google.protobuf.Message other) {
       if (other instanceof org.tensorflow.framework.KernelDef) {
         return mergeFrom((org.tensorflow.framework.KernelDef)other);
@@ -1336,7 +1526,7 @@ public  final class KernelDef extends
             constraint_ = other.constraint_;
             bitField0_ = (bitField0_ & ~0x00000004);
             constraintBuilder_ = 
-              com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
+              com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
                  getConstraintFieldBuilder() : null;
           } else {
             constraintBuilder_.addAllMessages(other.constraint_);
@@ -1357,6 +1547,7 @@ public  final class KernelDef extends
         label_ = other.label_;
         onChanged();
       }
+      this.mergeUnknownFields(other.unknownFields);
       onChanged();
       return this;
     }
@@ -1374,7 +1565,7 @@ public  final class KernelDef extends
         parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
         parsedMessage = (org.tensorflow.framework.KernelDef) e.getUnfinishedMessage();
-        throw e;
+        throw e.unwrapIOException();
       } finally {
         if (parsedMessage != null) {
           mergeFrom(parsedMessage);
@@ -1386,11 +1577,11 @@ public  final class KernelDef extends
 
     private java.lang.Object op_ = "";
     /**
-     * <code>optional string op = 1;</code>
-     *
      * <pre>
      * Must match the name of an Op.
      * </pre>
+     *
+     * <code>string op = 1;</code>
      */
     public java.lang.String getOp() {
       java.lang.Object ref = op_;
@@ -1405,11 +1596,11 @@ public  final class KernelDef extends
       }
     }
     /**
-     * <code>optional string op = 1;</code>
-     *
      * <pre>
      * Must match the name of an Op.
      * </pre>
+     *
+     * <code>string op = 1;</code>
      */
     public com.google.protobuf.ByteString
         getOpBytes() {
@@ -1425,11 +1616,11 @@ public  final class KernelDef extends
       }
     }
     /**
-     * <code>optional string op = 1;</code>
-     *
      * <pre>
      * Must match the name of an Op.
      * </pre>
+     *
+     * <code>string op = 1;</code>
      */
     public Builder setOp(
         java.lang.String value) {
@@ -1442,11 +1633,11 @@ public  final class KernelDef extends
       return this;
     }
     /**
-     * <code>optional string op = 1;</code>
-     *
      * <pre>
      * Must match the name of an Op.
      * </pre>
+     *
+     * <code>string op = 1;</code>
      */
     public Builder clearOp() {
       
@@ -1455,11 +1646,11 @@ public  final class KernelDef extends
       return this;
     }
     /**
-     * <code>optional string op = 1;</code>
-     *
      * <pre>
      * Must match the name of an Op.
      * </pre>
+     *
+     * <code>string op = 1;</code>
      */
     public Builder setOpBytes(
         com.google.protobuf.ByteString value) {
@@ -1475,11 +1666,11 @@ public  final class KernelDef extends
 
     private java.lang.Object deviceType_ = "";
     /**
-     * <code>optional string device_type = 2;</code>
-     *
      * <pre>
      * Type of device this kernel runs on.
      * </pre>
+     *
+     * <code>string device_type = 2;</code>
      */
     public java.lang.String getDeviceType() {
       java.lang.Object ref = deviceType_;
@@ -1494,11 +1685,11 @@ public  final class KernelDef extends
       }
     }
     /**
-     * <code>optional string device_type = 2;</code>
-     *
      * <pre>
      * Type of device this kernel runs on.
      * </pre>
+     *
+     * <code>string device_type = 2;</code>
      */
     public com.google.protobuf.ByteString
         getDeviceTypeBytes() {
@@ -1514,11 +1705,11 @@ public  final class KernelDef extends
       }
     }
     /**
-     * <code>optional string device_type = 2;</code>
-     *
      * <pre>
      * Type of device this kernel runs on.
      * </pre>
+     *
+     * <code>string device_type = 2;</code>
      */
     public Builder setDeviceType(
         java.lang.String value) {
@@ -1531,11 +1722,11 @@ public  final class KernelDef extends
       return this;
     }
     /**
-     * <code>optional string device_type = 2;</code>
-     *
      * <pre>
      * Type of device this kernel runs on.
      * </pre>
+     *
+     * <code>string device_type = 2;</code>
      */
     public Builder clearDeviceType() {
       
@@ -1544,11 +1735,11 @@ public  final class KernelDef extends
       return this;
     }
     /**
-     * <code>optional string device_type = 2;</code>
-     *
      * <pre>
      * Type of device this kernel runs on.
      * </pre>
+     *
+     * <code>string device_type = 2;</code>
      */
     public Builder setDeviceTypeBytes(
         com.google.protobuf.ByteString value) {
@@ -1571,7 +1762,7 @@ public  final class KernelDef extends
        }
     }
 
-    private com.google.protobuf.RepeatedFieldBuilder<
+    private com.google.protobuf.RepeatedFieldBuilderV3<
         org.tensorflow.framework.KernelDef.AttrConstraint, org.tensorflow.framework.KernelDef.AttrConstraint.Builder, org.tensorflow.framework.KernelDef.AttrConstraintOrBuilder> constraintBuilder_;
 
     /**
@@ -1787,11 +1978,11 @@ public  final class KernelDef extends
          getConstraintBuilderList() {
       return getConstraintFieldBuilder().getBuilderList();
     }
-    private com.google.protobuf.RepeatedFieldBuilder<
+    private com.google.protobuf.RepeatedFieldBuilderV3<
         org.tensorflow.framework.KernelDef.AttrConstraint, org.tensorflow.framework.KernelDef.AttrConstraint.Builder, org.tensorflow.framework.KernelDef.AttrConstraintOrBuilder> 
         getConstraintFieldBuilder() {
       if (constraintBuilder_ == null) {
-        constraintBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
+        constraintBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
             org.tensorflow.framework.KernelDef.AttrConstraint, org.tensorflow.framework.KernelDef.AttrConstraint.Builder, org.tensorflow.framework.KernelDef.AttrConstraintOrBuilder>(
                 constraint_,
                 ((bitField0_ & 0x00000004) == 0x00000004),
@@ -1810,58 +2001,58 @@ public  final class KernelDef extends
        }
     }
     /**
-     * <code>repeated string host_memory_arg = 4;</code>
-     *
      * <pre>
      * Names of the Op's input_/output_args that reside in host memory
      * instead of device memory.
      * </pre>
+     *
+     * <code>repeated string host_memory_arg = 4;</code>
      */
     public com.google.protobuf.ProtocolStringList
         getHostMemoryArgList() {
       return hostMemoryArg_.getUnmodifiableView();
     }
     /**
-     * <code>repeated string host_memory_arg = 4;</code>
-     *
      * <pre>
      * Names of the Op's input_/output_args that reside in host memory
      * instead of device memory.
      * </pre>
+     *
+     * <code>repeated string host_memory_arg = 4;</code>
      */
     public int getHostMemoryArgCount() {
       return hostMemoryArg_.size();
     }
     /**
-     * <code>repeated string host_memory_arg = 4;</code>
-     *
      * <pre>
      * Names of the Op's input_/output_args that reside in host memory
      * instead of device memory.
      * </pre>
+     *
+     * <code>repeated string host_memory_arg = 4;</code>
      */
     public java.lang.String getHostMemoryArg(int index) {
       return hostMemoryArg_.get(index);
     }
     /**
-     * <code>repeated string host_memory_arg = 4;</code>
-     *
      * <pre>
      * Names of the Op's input_/output_args that reside in host memory
      * instead of device memory.
      * </pre>
+     *
+     * <code>repeated string host_memory_arg = 4;</code>
      */
     public com.google.protobuf.ByteString
         getHostMemoryArgBytes(int index) {
       return hostMemoryArg_.getByteString(index);
     }
     /**
-     * <code>repeated string host_memory_arg = 4;</code>
-     *
      * <pre>
      * Names of the Op's input_/output_args that reside in host memory
      * instead of device memory.
      * </pre>
+     *
+     * <code>repeated string host_memory_arg = 4;</code>
      */
     public Builder setHostMemoryArg(
         int index, java.lang.String value) {
@@ -1874,12 +2065,12 @@ public  final class KernelDef extends
       return this;
     }
     /**
-     * <code>repeated string host_memory_arg = 4;</code>
-     *
      * <pre>
      * Names of the Op's input_/output_args that reside in host memory
      * instead of device memory.
      * </pre>
+     *
+     * <code>repeated string host_memory_arg = 4;</code>
      */
     public Builder addHostMemoryArg(
         java.lang.String value) {
@@ -1892,12 +2083,12 @@ public  final class KernelDef extends
       return this;
     }
     /**
-     * <code>repeated string host_memory_arg = 4;</code>
-     *
      * <pre>
      * Names of the Op's input_/output_args that reside in host memory
      * instead of device memory.
      * </pre>
+     *
+     * <code>repeated string host_memory_arg = 4;</code>
      */
     public Builder addAllHostMemoryArg(
         java.lang.Iterable<java.lang.String> values) {
@@ -1908,12 +2099,12 @@ public  final class KernelDef extends
       return this;
     }
     /**
-     * <code>repeated string host_memory_arg = 4;</code>
-     *
      * <pre>
      * Names of the Op's input_/output_args that reside in host memory
      * instead of device memory.
      * </pre>
+     *
+     * <code>repeated string host_memory_arg = 4;</code>
      */
     public Builder clearHostMemoryArg() {
       hostMemoryArg_ = com.google.protobuf.LazyStringArrayList.EMPTY;
@@ -1922,12 +2113,12 @@ public  final class KernelDef extends
       return this;
     }
     /**
-     * <code>repeated string host_memory_arg = 4;</code>
-     *
      * <pre>
      * Names of the Op's input_/output_args that reside in host memory
      * instead of device memory.
      * </pre>
+     *
+     * <code>repeated string host_memory_arg = 4;</code>
      */
     public Builder addHostMemoryArgBytes(
         com.google.protobuf.ByteString value) {
@@ -1943,13 +2134,13 @@ public  final class KernelDef extends
 
     private java.lang.Object label_ = "";
     /**
-     * <code>optional string label = 5;</code>
-     *
      * <pre>
      * This allows experimental kernels to be registered for an op that
      * won't be used unless the user specifies a "_kernel" attr with
      * value matching this.
      * </pre>
+     *
+     * <code>string label = 5;</code>
      */
     public java.lang.String getLabel() {
       java.lang.Object ref = label_;
@@ -1964,13 +2155,13 @@ public  final class KernelDef extends
       }
     }
     /**
-     * <code>optional string label = 5;</code>
-     *
      * <pre>
      * This allows experimental kernels to be registered for an op that
      * won't be used unless the user specifies a "_kernel" attr with
      * value matching this.
      * </pre>
+     *
+     * <code>string label = 5;</code>
      */
     public com.google.protobuf.ByteString
         getLabelBytes() {
@@ -1986,13 +2177,13 @@ public  final class KernelDef extends
       }
     }
     /**
-     * <code>optional string label = 5;</code>
-     *
      * <pre>
      * This allows experimental kernels to be registered for an op that
      * won't be used unless the user specifies a "_kernel" attr with
      * value matching this.
      * </pre>
+     *
+     * <code>string label = 5;</code>
      */
     public Builder setLabel(
         java.lang.String value) {
@@ -2005,13 +2196,13 @@ public  final class KernelDef extends
       return this;
     }
     /**
-     * <code>optional string label = 5;</code>
-     *
      * <pre>
      * This allows experimental kernels to be registered for an op that
      * won't be used unless the user specifies a "_kernel" attr with
      * value matching this.
      * </pre>
+     *
+     * <code>string label = 5;</code>
      */
     public Builder clearLabel() {
       
@@ -2020,13 +2211,13 @@ public  final class KernelDef extends
       return this;
     }
     /**
-     * <code>optional string label = 5;</code>
-     *
      * <pre>
      * This allows experimental kernels to be registered for an op that
      * won't be used unless the user specifies a "_kernel" attr with
      * value matching this.
      * </pre>
+     *
+     * <code>string label = 5;</code>
      */
     public Builder setLabelBytes(
         com.google.protobuf.ByteString value) {
@@ -2041,12 +2232,12 @@ public  final class KernelDef extends
     }
     public final Builder setUnknownFields(
         final com.google.protobuf.UnknownFieldSet unknownFields) {
-      return this;
+      return super.setUnknownFieldsProto3(unknownFields);
     }
 
     public final Builder mergeUnknownFields(
         final com.google.protobuf.UnknownFieldSet unknownFields) {
-      return this;
+      return super.mergeUnknownFields(unknownFields);
     }
 
 
@@ -2069,16 +2260,7 @@ public  final class KernelDef extends
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      try {
-        return new KernelDef(input, extensionRegistry);
-      } catch (RuntimeException e) {
-        if (e.getCause() instanceof
-            com.google.protobuf.InvalidProtocolBufferException) {
-          throw (com.google.protobuf.InvalidProtocolBufferException)
-              e.getCause();
-        }
-        throw e;
-      }
+      return new KernelDef(input, extensionRegistry);
     }
   };
 

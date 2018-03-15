@@ -1,10 +1,11 @@
 package org.tensorframes.impl
 
-import scala.collection.mutable
-import org.{tensorflow => tf}
 import org.apache.spark.sql.Row
-import org.apache.spark.sql.types.{NumericType, StructType}
+import org.apache.spark.sql.types.StructType
 import org.tensorframes.{ColumnInformation, Logging, NodePath, Shape}
+import org.{tensorflow => tf}
+
+import scala.collection.mutable
 
 /**
  * Converts data between the C++ runtime of TensorFlow and the Spark runtime.
@@ -27,7 +28,7 @@ object TFDataOps extends Logging {
   def convert(
       it: Array[Row],
       struct: StructType,
-      requestedTFCols: Array[(NodePath, Int)]): Seq[(String, tf.Tensor)] = {
+      requestedTFCols: Array[(NodePath, Int)]): Seq[(String, tf.Tensor[_])] = {
     // This is a very simple and very inefficient implementation. It should be kept
     // as is for correctness checks.
 
@@ -69,7 +70,7 @@ object TFDataOps extends Logging {
   def convert(
       r: Row,
       blockStruct: StructType,
-      requestedTFCols: Array[(NodePath, Int)]): Seq[(String, tf.Tensor)] = {
+      requestedTFCols: Array[(NodePath, Int)]): Seq[(String, tf.Tensor[_])] = {
     // This is a very simple and very inefficient implementation. It should be kept
     // as is for correctness checks. The columnar implementation is meant to be more
     // efficient.
@@ -125,7 +126,7 @@ object TFDataOps extends Logging {
   // TODO PERF: the current code allocates a new row for each of the rows returned.
   // Instead of doing that, it could allocate once the memory and reuse the same rows and objects.
   def convertBack(
-      tv: Seq[tf.Tensor],
+      tv: Seq[tf.Tensor[_]],
       tf_struct: StructType,
       input: Array[Row],
       input_struct: StructType,
@@ -182,7 +183,7 @@ object TFDataOps extends Logging {
     * @return the number of rows and an iterable over the rows
     */
   private def getColumn(
-      t: tf.Tensor,
+      t: tf.Tensor[_],
       scalaType: ScalarType,
       cellShape: Shape,
       expectedNumRows: Option[Int],
@@ -191,7 +192,8 @@ object TFDataOps extends Logging {
       SupportedOperations.opsFor(scalaType).convertTensor(t)
     val numData = allDataBuffer.size
     // Infer if necessary the reshaping size.
-    val (inferredNumRows, inferredShape) = DataOps.inferPhysicalShape(numData, cellShape, expectedNumRows)
+    val (inferredNumRows, inferredShape) =
+      DataOps.inferPhysicalShape(numData, cellShape, expectedNumRows)
     val reshapeShape = inferredShape.prepend(inferredNumRows)
     val res = if (fastPath) {
       DataOps.getColumnFast0(reshapeShape, scalaType, allDataBuffer)
@@ -201,5 +203,4 @@ object TFDataOps extends Logging {
     }
     inferredNumRows -> res
   }
-
 }

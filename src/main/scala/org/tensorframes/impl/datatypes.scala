@@ -126,7 +126,7 @@ private[tensorframes] sealed abstract class TensorConverter[@specialized(Double,
     empty
   }
 
-  def tensor2(): tf.Tensor
+  def tensor2(): tf.Tensor[_]
 
   /**
    * The physical size of a single element, in bytes.
@@ -199,7 +199,7 @@ private[tensorframes] sealed abstract class ScalarTypeOperation[@specialized(Int
   @deprecated("to remove", "now")
   def convertBuffer(buff: ByteBuffer, numElements: Int): Iterable[Any]
 
-  def convertTensor(t: tf.Tensor): MWrappedArray[T]
+  def convertTensor(t: tf.Tensor[_]): MWrappedArray[T]
 
   final def convertBuffer1(b0: Array[_], dim1: Int): Array[T] = {
     val b = b0.asInstanceOf[Array[T]]
@@ -341,7 +341,7 @@ private[impl] class DoubleTensorConverter(s: Shape, numCells: Int)
     buffer.put(d)
   }
 
-  override def tensor2(): tf.Tensor = {
+  override def tensor2(): tf.Tensor[_] = {
     buffer.rewind()
     tf.Tensor.create(fullShape.dims.toArray, buffer)
   }
@@ -362,7 +362,7 @@ private[impl] object DoubleOperations extends ScalarTypeOperation[Double] with L
     new DoubleTensorConverter(cellShape, numCells)
 
 
-  override def convertTensor(t: tf.Tensor): MWrappedArray[Double] = {
+  override def convertTensor(t: tf.Tensor[_]): MWrappedArray[Double] = {
     val res: Array[Double] = Array.fill(t.numElements())(Double.NaN)
     val b = DoubleBuffer.wrap(res)
     t.writeTo(b)
@@ -404,7 +404,7 @@ private[impl] class FloatTensorConverter(s: Shape, numCells: Int)
     buffer.put(d)
   }
 
-  override def tensor2(): tf.Tensor = {
+  override def tensor2(): tf.Tensor[_] = {
     buffer.rewind()
     tf.Tensor.create(fullShape.dims.toArray, buffer)
   }
@@ -435,7 +435,7 @@ private[impl] object FloatOperations extends ScalarTypeOperation[Float] with Log
     res
   }
 
-  override def convertTensor(t: tf.Tensor): MWrappedArray[Float] = {
+  override def convertTensor(t: tf.Tensor[_]): MWrappedArray[Float] = {
     val res: Array[Float] = Array.fill(t.numElements())(Float.NaN)
     val b = FloatBuffer.wrap(res)
     t.writeTo(b)
@@ -465,7 +465,7 @@ private[impl] class IntTensorConverter(s: Shape, numCells: Int)
     buffer.put(d)
   }
 
-  override def tensor2(): tf.Tensor = {
+  override def tensor2(): tf.Tensor[_] = {
     buffer.rewind()
     tf.Tensor.create(fullShape.dims.toArray, buffer)
   }
@@ -485,7 +485,7 @@ private[impl] object IntOperations extends ScalarTypeOperation[Int] with Logging
   override def tfConverter(cellShape: Shape, numCells: Int): TensorConverter[Int] =
     new IntTensorConverter(cellShape, numCells)
 
-  override def convertTensor(t: tf.Tensor): MWrappedArray[Int] = {
+  override def convertTensor(t: tf.Tensor[_]): MWrappedArray[Int] = {
     val res: Array[Int] = Array.fill(t.numElements())(0)
     val b = IntBuffer.wrap(res)
     t.writeTo(b)
@@ -523,7 +523,7 @@ private[impl] class LongTensorConverter(s: Shape, numCells: Int)
     buffer.put(d)
   }
 
-  override def tensor2(): tf.Tensor = {
+  override def tensor2(): tf.Tensor[_] = {
     buffer.rewind()
     tf.Tensor.create(fullShape.dims.toArray, buffer)
   }
@@ -543,7 +543,7 @@ private[impl] object LongOperations extends ScalarTypeOperation[Long] with Loggi
   override def tfConverter(cellShape: Shape, numCells: Int): TensorConverter[Long] =
     new LongTensorConverter(cellShape, numCells)
 
-  override def convertTensor(t: tf.Tensor): MWrappedArray[Long] = {
+  override def convertTensor(t: tf.Tensor[_]): MWrappedArray[Long] = {
     val res: Array[Long] = Array.fill(t.numElements())(0L)
     val b = LongBuffer.wrap(res)
     t.writeTo(b)
@@ -589,7 +589,7 @@ private[impl] class StringTensorConverter(s: Shape, numCells: Int)
     buffer = d.clone()
   }
 
-  override def tensor2(): tf.Tensor = {
+  override def tensor2(): tf.Tensor[_] = {
     tf.Tensor.create(buffer)
   }
 
@@ -608,7 +608,7 @@ private[impl] object StringOperations extends ScalarTypeOperation[Array[Byte]] w
   override def tfConverter(cellShape: Shape, numCells: Int): TensorConverter[Array[Byte]] =
     new StringTensorConverter(cellShape, numCells)
 
-  override def convertTensor(t: tf.Tensor): MWrappedArray[Array[Byte]] = {
+  override def convertTensor(t: tf.Tensor[_]): MWrappedArray[Array[Byte]] = {
     throw new Exception(s"convertTensor is not implemented for strings")
   }
 

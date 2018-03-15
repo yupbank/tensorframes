@@ -4,19 +4,20 @@
 package org.tensorflow.framework;
 
 /**
- * Protobuf type {@code tensorflow.NameAttrList}
- *
  * <pre>
  * A list of attr names and their values. The whole list is attached
  * with a string name.  E.g., MatMul[T=float].
  * </pre>
+ *
+ * Protobuf type {@code tensorflow.NameAttrList}
  */
 public  final class NameAttrList extends
-    com.google.protobuf.GeneratedMessage implements
+    com.google.protobuf.GeneratedMessageV3 implements
     // @@protoc_insertion_point(message_implements:tensorflow.NameAttrList)
     NameAttrListOrBuilder {
+private static final long serialVersionUID = 0L;
   // Use NameAttrList.newBuilder() to construct.
-  private NameAttrList(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+  private NameAttrList(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
     super(builder);
   }
   private NameAttrList() {
@@ -26,13 +27,19 @@ public  final class NameAttrList extends
   @java.lang.Override
   public final com.google.protobuf.UnknownFieldSet
   getUnknownFields() {
-    return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
+    return this.unknownFields;
   }
   private NameAttrList(
       com.google.protobuf.CodedInputStream input,
-      com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
+      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+      throws com.google.protobuf.InvalidProtocolBufferException {
     this();
+    if (extensionRegistry == null) {
+      throw new java.lang.NullPointerException();
+    }
     int mutable_bitField0_ = 0;
+    com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+        com.google.protobuf.UnknownFieldSet.newBuilder();
     try {
       boolean done = false;
       while (!done) {
@@ -42,13 +49,14 @@ public  final class NameAttrList extends
             done = true;
             break;
           default: {
-            if (!input.skipField(tag)) {
+            if (!parseUnknownFieldProto3(
+                input, unknownFields, extensionRegistry, tag)) {
               done = true;
             }
             break;
           }
           case 10: {
-            String s = input.readStringRequireUtf8();
+            java.lang.String s = input.readStringRequireUtf8();
 
             name_ = s;
             break;
@@ -60,20 +68,21 @@ public  final class NameAttrList extends
               mutable_bitField0_ |= 0x00000002;
             }
             com.google.protobuf.MapEntry<java.lang.String, org.tensorflow.framework.AttrValue>
-            attr = input.readMessage(
+            attr__ = input.readMessage(
                 AttrDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
-            attr_.getMutableMap().put(attr.getKey(), attr.getValue());
+            attr_.getMutableMap().put(
+                attr__.getKey(), attr__.getValue());
             break;
           }
         }
       }
     } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-      throw new RuntimeException(e.setUnfinishedMessage(this));
+      throw e.setUnfinishedMessage(this);
     } catch (java.io.IOException e) {
-      throw new RuntimeException(
-          new com.google.protobuf.InvalidProtocolBufferException(
-              e.getMessage()).setUnfinishedMessage(this));
+      throw new com.google.protobuf.InvalidProtocolBufferException(
+          e).setUnfinishedMessage(this);
     } finally {
+      this.unknownFields = unknownFields.build();
       makeExtensionsImmutable();
     }
   }
@@ -93,7 +102,7 @@ public  final class NameAttrList extends
             "Invalid map field number: " + number);
     }
   }
-  protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+  protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
     return org.tensorflow.framework.AttrValueProtos.internal_static_tensorflow_NameAttrList_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
@@ -104,7 +113,7 @@ public  final class NameAttrList extends
   public static final int NAME_FIELD_NUMBER = 1;
   private volatile java.lang.Object name_;
   /**
-   * <code>optional string name = 1;</code>
+   * <code>string name = 1;</code>
    */
   public java.lang.String getName() {
     java.lang.Object ref = name_;
@@ -119,7 +128,7 @@ public  final class NameAttrList extends
     }
   }
   /**
-   * <code>optional string name = 1;</code>
+   * <code>string name = 1;</code>
    */
   public com.google.protobuf.ByteString
       getNameBytes() {
@@ -154,15 +163,61 @@ public  final class NameAttrList extends
     if (attr_ == null) {
       return com.google.protobuf.MapField.emptyMapField(
           AttrDefaultEntryHolder.defaultEntry);
-   }
+    }
     return attr_;
+  }
+
+  public int getAttrCount() {
+    return internalGetAttr().getMap().size();
   }
   /**
    * <code>map&lt;string, .tensorflow.AttrValue&gt; attr = 2;</code>
    */
 
+  public boolean containsAttr(
+      java.lang.String key) {
+    if (key == null) { throw new java.lang.NullPointerException(); }
+    return internalGetAttr().getMap().containsKey(key);
+  }
+  /**
+   * Use {@link #getAttrMap()} instead.
+   */
+  @java.lang.Deprecated
   public java.util.Map<java.lang.String, org.tensorflow.framework.AttrValue> getAttr() {
+    return getAttrMap();
+  }
+  /**
+   * <code>map&lt;string, .tensorflow.AttrValue&gt; attr = 2;</code>
+   */
+
+  public java.util.Map<java.lang.String, org.tensorflow.framework.AttrValue> getAttrMap() {
     return internalGetAttr().getMap();
+  }
+  /**
+   * <code>map&lt;string, .tensorflow.AttrValue&gt; attr = 2;</code>
+   */
+
+  public org.tensorflow.framework.AttrValue getAttrOrDefault(
+      java.lang.String key,
+      org.tensorflow.framework.AttrValue defaultValue) {
+    if (key == null) { throw new java.lang.NullPointerException(); }
+    java.util.Map<java.lang.String, org.tensorflow.framework.AttrValue> map =
+        internalGetAttr().getMap();
+    return map.containsKey(key) ? map.get(key) : defaultValue;
+  }
+  /**
+   * <code>map&lt;string, .tensorflow.AttrValue&gt; attr = 2;</code>
+   */
+
+  public org.tensorflow.framework.AttrValue getAttrOrThrow(
+      java.lang.String key) {
+    if (key == null) { throw new java.lang.NullPointerException(); }
+    java.util.Map<java.lang.String, org.tensorflow.framework.AttrValue> map =
+        internalGetAttr().getMap();
+    if (!map.containsKey(key)) {
+      throw new java.lang.IllegalArgumentException();
+    }
+    return map.get(key);
   }
 
   private byte memoizedIsInitialized = -1;
@@ -178,17 +233,15 @@ public  final class NameAttrList extends
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
     if (!getNameBytes().isEmpty()) {
-      com.google.protobuf.GeneratedMessage.writeString(output, 1, name_);
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 1, name_);
     }
-    for (java.util.Map.Entry<java.lang.String, org.tensorflow.framework.AttrValue> entry
-         : internalGetAttr().getMap().entrySet()) {
-      com.google.protobuf.MapEntry<java.lang.String, org.tensorflow.framework.AttrValue>
-      attr = AttrDefaultEntryHolder.defaultEntry.newBuilderForType()
-          .setKey(entry.getKey())
-          .setValue(entry.getValue())
-          .build();
-      output.writeMessage(2, attr);
-    }
+    com.google.protobuf.GeneratedMessageV3
+      .serializeStringMapTo(
+        output,
+        internalGetAttr(),
+        AttrDefaultEntryHolder.defaultEntry,
+        2);
+    unknownFields.writeTo(output);
   }
 
   public int getSerializedSize() {
@@ -197,23 +250,71 @@ public  final class NameAttrList extends
 
     size = 0;
     if (!getNameBytes().isEmpty()) {
-      size += com.google.protobuf.GeneratedMessage.computeStringSize(1, name_);
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, name_);
     }
     for (java.util.Map.Entry<java.lang.String, org.tensorflow.framework.AttrValue> entry
          : internalGetAttr().getMap().entrySet()) {
       com.google.protobuf.MapEntry<java.lang.String, org.tensorflow.framework.AttrValue>
-      attr = AttrDefaultEntryHolder.defaultEntry.newBuilderForType()
+      attr__ = AttrDefaultEntryHolder.defaultEntry.newBuilderForType()
           .setKey(entry.getKey())
           .setValue(entry.getValue())
           .build();
       size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(2, attr);
+          .computeMessageSize(2, attr__);
     }
+    size += unknownFields.getSerializedSize();
     memoizedSize = size;
     return size;
   }
 
-  private static final long serialVersionUID = 0L;
+  @java.lang.Override
+  public boolean equals(final java.lang.Object obj) {
+    if (obj == this) {
+     return true;
+    }
+    if (!(obj instanceof org.tensorflow.framework.NameAttrList)) {
+      return super.equals(obj);
+    }
+    org.tensorflow.framework.NameAttrList other = (org.tensorflow.framework.NameAttrList) obj;
+
+    boolean result = true;
+    result = result && getName()
+        .equals(other.getName());
+    result = result && internalGetAttr().equals(
+        other.internalGetAttr());
+    result = result && unknownFields.equals(other.unknownFields);
+    return result;
+  }
+
+  @java.lang.Override
+  public int hashCode() {
+    if (memoizedHashCode != 0) {
+      return memoizedHashCode;
+    }
+    int hash = 41;
+    hash = (19 * hash) + getDescriptor().hashCode();
+    hash = (37 * hash) + NAME_FIELD_NUMBER;
+    hash = (53 * hash) + getName().hashCode();
+    if (!internalGetAttr().getMap().isEmpty()) {
+      hash = (37 * hash) + ATTR_FIELD_NUMBER;
+      hash = (53 * hash) + internalGetAttr().hashCode();
+    }
+    hash = (29 * hash) + unknownFields.hashCode();
+    memoizedHashCode = hash;
+    return hash;
+  }
+
+  public static org.tensorflow.framework.NameAttrList parseFrom(
+      java.nio.ByteBuffer data)
+      throws com.google.protobuf.InvalidProtocolBufferException {
+    return PARSER.parseFrom(data);
+  }
+  public static org.tensorflow.framework.NameAttrList parseFrom(
+      java.nio.ByteBuffer data,
+      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+      throws com.google.protobuf.InvalidProtocolBufferException {
+    return PARSER.parseFrom(data, extensionRegistry);
+  }
   public static org.tensorflow.framework.NameAttrList parseFrom(
       com.google.protobuf.ByteString data)
       throws com.google.protobuf.InvalidProtocolBufferException {
@@ -237,34 +338,40 @@ public  final class NameAttrList extends
   }
   public static org.tensorflow.framework.NameAttrList parseFrom(java.io.InputStream input)
       throws java.io.IOException {
-    return PARSER.parseFrom(input);
+    return com.google.protobuf.GeneratedMessageV3
+        .parseWithIOException(PARSER, input);
   }
   public static org.tensorflow.framework.NameAttrList parseFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
-    return PARSER.parseFrom(input, extensionRegistry);
+    return com.google.protobuf.GeneratedMessageV3
+        .parseWithIOException(PARSER, input, extensionRegistry);
   }
   public static org.tensorflow.framework.NameAttrList parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
-    return PARSER.parseDelimitedFrom(input);
+    return com.google.protobuf.GeneratedMessageV3
+        .parseDelimitedWithIOException(PARSER, input);
   }
   public static org.tensorflow.framework.NameAttrList parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
-    return PARSER.parseDelimitedFrom(input, extensionRegistry);
+    return com.google.protobuf.GeneratedMessageV3
+        .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
   }
   public static org.tensorflow.framework.NameAttrList parseFrom(
       com.google.protobuf.CodedInputStream input)
       throws java.io.IOException {
-    return PARSER.parseFrom(input);
+    return com.google.protobuf.GeneratedMessageV3
+        .parseWithIOException(PARSER, input);
   }
   public static org.tensorflow.framework.NameAttrList parseFrom(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
-    return PARSER.parseFrom(input, extensionRegistry);
+    return com.google.protobuf.GeneratedMessageV3
+        .parseWithIOException(PARSER, input, extensionRegistry);
   }
 
   public Builder newBuilderForType() { return newBuilder(); }
@@ -281,20 +388,20 @@ public  final class NameAttrList extends
 
   @java.lang.Override
   protected Builder newBuilderForType(
-      com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
     Builder builder = new Builder(parent);
     return builder;
   }
   /**
-   * Protobuf type {@code tensorflow.NameAttrList}
-   *
    * <pre>
    * A list of attr names and their values. The whole list is attached
    * with a string name.  E.g., MatMul[T=float].
    * </pre>
+   *
+   * Protobuf type {@code tensorflow.NameAttrList}
    */
   public static final class Builder extends
-      com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+      com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
       // @@protoc_insertion_point(builder_implements:tensorflow.NameAttrList)
       org.tensorflow.framework.NameAttrListOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
@@ -324,7 +431,7 @@ public  final class NameAttrList extends
               "Invalid map field number: " + number);
       }
     }
-    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return org.tensorflow.framework.AttrValueProtos.internal_static_tensorflow_NameAttrList_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
@@ -337,12 +444,13 @@ public  final class NameAttrList extends
     }
 
     private Builder(
-        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       super(parent);
       maybeForceBuilderInitialization();
     }
     private void maybeForceBuilderInitialization() {
-      if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+      if (com.google.protobuf.GeneratedMessageV3
+              .alwaysUseFieldBuilders) {
       }
     }
     public Builder clear() {
@@ -382,6 +490,32 @@ public  final class NameAttrList extends
       return result;
     }
 
+    public Builder clone() {
+      return (Builder) super.clone();
+    }
+    public Builder setField(
+        com.google.protobuf.Descriptors.FieldDescriptor field,
+        java.lang.Object value) {
+      return (Builder) super.setField(field, value);
+    }
+    public Builder clearField(
+        com.google.protobuf.Descriptors.FieldDescriptor field) {
+      return (Builder) super.clearField(field);
+    }
+    public Builder clearOneof(
+        com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+      return (Builder) super.clearOneof(oneof);
+    }
+    public Builder setRepeatedField(
+        com.google.protobuf.Descriptors.FieldDescriptor field,
+        int index, java.lang.Object value) {
+      return (Builder) super.setRepeatedField(field, index, value);
+    }
+    public Builder addRepeatedField(
+        com.google.protobuf.Descriptors.FieldDescriptor field,
+        java.lang.Object value) {
+      return (Builder) super.addRepeatedField(field, value);
+    }
     public Builder mergeFrom(com.google.protobuf.Message other) {
       if (other instanceof org.tensorflow.framework.NameAttrList) {
         return mergeFrom((org.tensorflow.framework.NameAttrList)other);
@@ -399,6 +533,7 @@ public  final class NameAttrList extends
       }
       internalGetMutableAttr().mergeFrom(
           other.internalGetAttr());
+      this.mergeUnknownFields(other.unknownFields);
       onChanged();
       return this;
     }
@@ -416,7 +551,7 @@ public  final class NameAttrList extends
         parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
         parsedMessage = (org.tensorflow.framework.NameAttrList) e.getUnfinishedMessage();
-        throw e;
+        throw e.unwrapIOException();
       } finally {
         if (parsedMessage != null) {
           mergeFrom(parsedMessage);
@@ -428,7 +563,7 @@ public  final class NameAttrList extends
 
     private java.lang.Object name_ = "";
     /**
-     * <code>optional string name = 1;</code>
+     * <code>string name = 1;</code>
      */
     public java.lang.String getName() {
       java.lang.Object ref = name_;
@@ -443,7 +578,7 @@ public  final class NameAttrList extends
       }
     }
     /**
-     * <code>optional string name = 1;</code>
+     * <code>string name = 1;</code>
      */
     public com.google.protobuf.ByteString
         getNameBytes() {
@@ -459,7 +594,7 @@ public  final class NameAttrList extends
       }
     }
     /**
-     * <code>optional string name = 1;</code>
+     * <code>string name = 1;</code>
      */
     public Builder setName(
         java.lang.String value) {
@@ -472,7 +607,7 @@ public  final class NameAttrList extends
       return this;
     }
     /**
-     * <code>optional string name = 1;</code>
+     * <code>string name = 1;</code>
      */
     public Builder clearName() {
       
@@ -481,7 +616,7 @@ public  final class NameAttrList extends
       return this;
     }
     /**
-     * <code>optional string name = 1;</code>
+     * <code>string name = 1;</code>
      */
     public Builder setNameBytes(
         com.google.protobuf.ByteString value) {
@@ -502,7 +637,7 @@ public  final class NameAttrList extends
       if (attr_ == null) {
         return com.google.protobuf.MapField.emptyMapField(
             AttrDefaultEntryHolder.defaultEntry);
-     }
+      }
       return attr_;
     }
     private com.google.protobuf.MapField<java.lang.String, org.tensorflow.framework.AttrValue>
@@ -517,15 +652,80 @@ public  final class NameAttrList extends
       }
       return attr_;
     }
+
+    public int getAttrCount() {
+      return internalGetAttr().getMap().size();
+    }
     /**
      * <code>map&lt;string, .tensorflow.AttrValue&gt; attr = 2;</code>
      */
+
+    public boolean containsAttr(
+        java.lang.String key) {
+      if (key == null) { throw new java.lang.NullPointerException(); }
+      return internalGetAttr().getMap().containsKey(key);
+    }
+    /**
+     * Use {@link #getAttrMap()} instead.
+     */
+    @java.lang.Deprecated
     public java.util.Map<java.lang.String, org.tensorflow.framework.AttrValue> getAttr() {
+      return getAttrMap();
+    }
+    /**
+     * <code>map&lt;string, .tensorflow.AttrValue&gt; attr = 2;</code>
+     */
+
+    public java.util.Map<java.lang.String, org.tensorflow.framework.AttrValue> getAttrMap() {
       return internalGetAttr().getMap();
     }
     /**
      * <code>map&lt;string, .tensorflow.AttrValue&gt; attr = 2;</code>
      */
+
+    public org.tensorflow.framework.AttrValue getAttrOrDefault(
+        java.lang.String key,
+        org.tensorflow.framework.AttrValue defaultValue) {
+      if (key == null) { throw new java.lang.NullPointerException(); }
+      java.util.Map<java.lang.String, org.tensorflow.framework.AttrValue> map =
+          internalGetAttr().getMap();
+      return map.containsKey(key) ? map.get(key) : defaultValue;
+    }
+    /**
+     * <code>map&lt;string, .tensorflow.AttrValue&gt; attr = 2;</code>
+     */
+
+    public org.tensorflow.framework.AttrValue getAttrOrThrow(
+        java.lang.String key) {
+      if (key == null) { throw new java.lang.NullPointerException(); }
+      java.util.Map<java.lang.String, org.tensorflow.framework.AttrValue> map =
+          internalGetAttr().getMap();
+      if (!map.containsKey(key)) {
+        throw new java.lang.IllegalArgumentException();
+      }
+      return map.get(key);
+    }
+
+    public Builder clearAttr() {
+      internalGetMutableAttr().getMutableMap()
+          .clear();
+      return this;
+    }
+    /**
+     * <code>map&lt;string, .tensorflow.AttrValue&gt; attr = 2;</code>
+     */
+
+    public Builder removeAttr(
+        java.lang.String key) {
+      if (key == null) { throw new java.lang.NullPointerException(); }
+      internalGetMutableAttr().getMutableMap()
+          .remove(key);
+      return this;
+    }
+    /**
+     * Use alternate mutation accessors instead.
+     */
+    @java.lang.Deprecated
     public java.util.Map<java.lang.String, org.tensorflow.framework.AttrValue>
     getMutableAttr() {
       return internalGetMutableAttr().getMutableMap();
@@ -533,19 +733,33 @@ public  final class NameAttrList extends
     /**
      * <code>map&lt;string, .tensorflow.AttrValue&gt; attr = 2;</code>
      */
+    public Builder putAttr(
+        java.lang.String key,
+        org.tensorflow.framework.AttrValue value) {
+      if (key == null) { throw new java.lang.NullPointerException(); }
+      if (value == null) { throw new java.lang.NullPointerException(); }
+      internalGetMutableAttr().getMutableMap()
+          .put(key, value);
+      return this;
+    }
+    /**
+     * <code>map&lt;string, .tensorflow.AttrValue&gt; attr = 2;</code>
+     */
+
     public Builder putAllAttr(
         java.util.Map<java.lang.String, org.tensorflow.framework.AttrValue> values) {
-      getMutableAttr().putAll(values);
+      internalGetMutableAttr().getMutableMap()
+          .putAll(values);
       return this;
     }
     public final Builder setUnknownFields(
         final com.google.protobuf.UnknownFieldSet unknownFields) {
-      return this;
+      return super.setUnknownFieldsProto3(unknownFields);
     }
 
     public final Builder mergeUnknownFields(
         final com.google.protobuf.UnknownFieldSet unknownFields) {
-      return this;
+      return super.mergeUnknownFields(unknownFields);
     }
 
 
@@ -568,16 +782,7 @@ public  final class NameAttrList extends
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      try {
-        return new NameAttrList(input, extensionRegistry);
-      } catch (RuntimeException e) {
-        if (e.getCause() instanceof
-            com.google.protobuf.InvalidProtocolBufferException) {
-          throw (com.google.protobuf.InvalidProtocolBufferException)
-              e.getCause();
-        }
-        throw e;
-      }
+      return new NameAttrList(input, extensionRegistry);
     }
   };
 

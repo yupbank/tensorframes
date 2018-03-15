@@ -30,4 +30,28 @@ public interface FunctionDefLibraryOrBuilder extends
    */
   org.tensorflow.framework.FunctionDefOrBuilder getFunctionOrBuilder(
       int index);
+
+  /**
+   * <code>repeated .tensorflow.GradientDef gradient = 2;</code>
+   */
+  java.util.List<org.tensorflow.framework.GradientDef> 
+      getGradientList();
+  /**
+   * <code>repeated .tensorflow.GradientDef gradient = 2;</code>
+   */
+  org.tensorflow.framework.GradientDef getGradient(int index);
+  /**
+   * <code>repeated .tensorflow.GradientDef gradient = 2;</code>
+   */
+  int getGradientCount();
+  /**
+   * <code>repeated .tensorflow.GradientDef gradient = 2;</code>
+   */
+  java.util.List<? extends org.tensorflow.framework.GradientDefOrBuilder> 
+      getGradientOrBuilderList();
+  /**
+   * <code>repeated .tensorflow.GradientDef gradient = 2;</code>
+   */
+  org.tensorflow.framework.GradientDefOrBuilder getGradientOrBuilder(
+      int index);
 }
