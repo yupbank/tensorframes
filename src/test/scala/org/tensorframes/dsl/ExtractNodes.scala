@@ -26,7 +26,7 @@ object ExtractNodes extends Matchers with Logging {
     logTrace(s"Created temp file ${f.getAbsolutePath}")
     Files.write(f.toPath, content.getBytes(StandardCharsets.UTF_8))
     // Using the standard python installation in the PATH. It needs to have TensorFlow installed.
-    val p = new ProcessBuilder("brew_python2", f.getAbsolutePath).start()
+    val p = new ProcessBuilder("python", f.getAbsolutePath).start()
     val s = p.getInputStream
     val isr = new InputStreamReader(s)
     val br = new BufferedReader(isr)
@@ -55,7 +55,9 @@ object ExtractNodes extends Matchers with Logging {
 
   def compareOutput(py: String, nodes: Operation*): Unit = {
     val g = TestUtilities.buildGraph(nodes.head, nodes.tail:_*)
-    val m1 = g.getNodeList.asScala.map { n =>n.getName -> n.toString.trim} .toMap
+    val m1 = g.getNodeList.asScala.map { n =>
+      n.getName -> n.toString.trim
+    } .toMap
     val pym = executeCommand(py)
     logTrace(s"m1 = '$m1'")
     logTrace(s"pym = '$pym'")
