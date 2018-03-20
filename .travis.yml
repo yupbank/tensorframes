@@ -83,7 +83,7 @@ install:
   # Install dependencies from requirements.txt
   - pip install --user -r ./python/requirements.txt
   # Install tensorflow
-  - pip install --user tensorflow==1.5
+  - pip install --user tensorflow==1.6
 
 script:
  - rm -rf /home/travis/.javacpp
