@@ -1,9 +1,11 @@
 package org.tensorframes
 
-import scala.reflect.runtime.universe.TypeTag
 import org.apache.spark.sql.DataFrame
 import org.apache.spark.sql.types.{IntegerType, NumericType}
+import org.tensorflow.framework.DataType
 import org.tensorframes.impl.SupportedOperations
+
+import scala.reflect.runtime.universe.TypeTag
 
 /**
  * The public interface that reimplements a subset of the official TensorFlow python API.
@@ -81,6 +83,7 @@ package object dsl {
     build("Fill",
       shape = dims.n.shape,
       dtype = value.n.scalarType,
+      extraAttrs = Map("index_type" -> ProtoConversions.dataTypeToAttrValue(DataType.DT_INT32)),
       extraParents = (p: String) => Seq(dims.named(p + "/dims"), value.named(p + "/value")))
   }
 

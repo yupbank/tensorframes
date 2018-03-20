@@ -3,7 +3,6 @@ package org.tensorframes.dsl
 import java.nio.file.{Files, Paths => JPaths}
 
 import org.tensorflow.framework.GraphDef
-
 import org.tensorframes.ShapeDescription
 import org.tensorframes.impl.{GraphNodeSummary, TensorFlowOps}
 
@@ -11,7 +10,7 @@ import org.tensorframes.impl.{GraphNodeSummary, TensorFlowOps}
  * Some utilities for running tests.
  */
 // TODO(tjh) check that these methods are not implemented somewhere else.
-private[tensorframes] object TestUtilities {
+object TestUtilities {
 
   def buildGraph(node: Operation, nodes: Operation*): GraphDef = {
     DslImpl.buildGraph(Seq(node) ++ nodes)
