@@ -1,8 +1,9 @@
 package org.tensorframes
 
+import org.apache.spark.sql.Column
 import org.apache.spark.sql.DataFrame
 import org.apache.spark.sql.functions.col
-import org.apache.spark.sql.types.{ArrayType, DataType, NumericType}
+import org.apache.spark.sql.types.{ArrayType, DataType, MetadataBuilder, NumericType}
 
 import org.tensorframes.impl.{ScalarType, SupportedOperations}
 
@@ -44,6 +45,13 @@ trait ExperimentalOperations {
         col(f.name).as(f.name, ci.merged.metadata)
     }
     df.select(cols: _*)
+  }
+
+  def appendShape(df: DataFrame, col: Column, shape: Array[Double]): DataFrame = {
+    val meta = new MetadataBuilder
+    meta.putString("org.sparktf.type", "DoubleType")
+    meta.putDoubleArray("org.spartf.shape", shape)
+    df.withColumn(col.toString(), col.as("", meta.build()))
   }
 }
 

@@ -3,6 +3,7 @@ package org.tensorframes
 import org.scalatest.FunSuite
 
 import org.apache.spark.sql.Row
+import org.apache.spark.sql.functions.col
 
 import org.tensorframes.dsl.Implicits._
 import org.tensorframes.dsl._
@@ -36,6 +37,15 @@ class BasicOperationsSuite
   testGraph("Identity - 1 dim") {
     val df = make1(Seq(Seq(1.0), Seq(2.0)), "in")
     val adf = ops.analyze(df)
+    val p1 = placeholder[Double](Unknown, 1) named "in"
+    val out = identity(p1) named "out"
+    val df2 = adf.mapBlocks(out).select("in", "out")
+    compareRows(df2.collect(), Array(Row(Seq(1.0), Seq(1.0)), Row(Seq(2.0), Seq(2.0))))
+  }
+
+  testGraph("Identity - 1 dim with manfully") {
+    val df = make1(Seq(Seq(1.0), Seq(2.0)), "in")
+    val adf = ops.appendShape(df, col("in"), Array(-1.0, 1.0))
     val p1 = placeholder[Double](Unknown, 1) named "in"
     val out = identity(p1) named "out"
     val df2 = adf.mapBlocks(out).select("in", "out")
