@@ -43,9 +43,9 @@ class BasicOperationsSuite
     compareRows(df2.collect(), Array(Row(Seq(1.0), Seq(1.0)), Row(Seq(2.0), Seq(2.0))))
   }
 
-  testGraph("Identity - 1 dim with manfully") {
+  testGraph("Identity - 1 dim, Manually") {
     val df = make1(Seq(Seq(1.0), Seq(2.0)), "in")
-    val adf = ops.appendShape(df, col("in"), Array(-1.0, 1.0))
+    val adf = ops.appendShape(df, col("in"), Array(-1, 1))
     val p1 = placeholder[Double](Unknown, 1) named "in"
     val out = identity(p1) named "out"
     val df2 = adf.mapBlocks(out).select("in", "out")
@@ -61,6 +61,25 @@ class BasicOperationsSuite
       Seq(1.0)->Seq(1.1),
       Seq(2.0)->Seq(2.2))).toDF("a", "b")
     val adf = ops.analyze(df)
+    val df2 = adf.mapBlocks(out).select("a", "b","out")
+    compareRows(df2.collect(), Array(
+      Row(Seq(1.0), Seq(1.1), Seq(2.1)),
+      Row(Seq(2.0), Seq(2.2), Seq(4.2))))
+  }
+
+  testGraph("Simple add - 1 dim, Manually") {
+    val a = placeholder[Double](Unknown, 1) named "a"
+    val b = placeholder[Double](Unknown, 1) named "b"
+    val out = a + b named "out"
+
+    val df = sql.createDataFrame(Seq(
+      Seq(1.0)->Seq(1.1),
+      Seq(2.0)->Seq(2.2))).toDF("a", "b")
+    val adf = {
+      ops.appendShape(
+        ops.appendShape(df, col("a"), Array(-1, 1)),
+        col("b"), Array(-1, 1))
+    }
     val df2 = adf.mapBlocks(out).select("a", "b","out")
     compareRows(df2.collect(), Array(
       Row(Seq(1.0), Seq(1.1), Seq(2.1)),

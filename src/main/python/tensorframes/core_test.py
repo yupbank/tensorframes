@@ -4,6 +4,7 @@ from __future__ import print_function
 from pyspark import SparkContext
 from pyspark.sql import DataFrame, SQLContext
 from pyspark.sql import Row
+from pyspark.sql.functions import col
 import tensorflow as tf
 import pandas as pd
 
@@ -198,7 +199,22 @@ class TestCore(object):
             res = tfs.reduce_rows(x, df)
         assert res == sum([r.x for r in data])
 
-    # This test fails
+    def test_append_shape(self):
+        data = [Row(x=float(x)) for x in range(5)]
+        df = self.sql.createDataFrame(data)
+        ddf = tfs.append_shape(df, col('x'), [-1, 1])
+        import ipdb; ipdb.set_trace()
+        with tf.Graph().as_default():
+            # The placeholder that corresponds to column 'x'
+            x_1 = tf.placeholder(tf.double, shape=[], name="x_1")
+            x_2 = tf.placeholder(tf.double, shape=[], name="x_2")
+            # The output that adds 3 to x
+            x = tf.add(x_1, x_2, name='x')
+            # The resulting number
+            res = tfs.reduce_rows(x, ddf)
+            assert res == sum([r.x for r in data])
+
+# This test fails
     def test_reduce_blocks_1(self):
         data = [Row(x=float(x)) for x in range(5)]
         df = self.sql.createDataFrame(data)
