@@ -378,11 +378,12 @@ def analyze(dframe):
     """
     return DataFrame(_java_api().analyze(dframe._jdf), _sql)
 
-def append_shape(dframe, col, size):
+def append_shape(dframe, col, shape):
     """Append extra metadata for a dataframe that
      describes the numerical shape of the content.
 
      This method is useful when a dataframe contains non-scalar tensors, for which the shape must be checked beforehand.
+     The user is responsible for providing the right shape, any mismatch will trigger eventually an exception in Spark
 
      Note: nullable fields are not accepted.
 
@@ -390,10 +391,12 @@ def append_shape(dframe, col, size):
 
     :param dframe: a Spark DataFrame
     :param col: a Column expression
-    :param size: a shape corresponding to the tensor
+    :param shape: a shape corresponding to the tensor,
+                detailed explanation https://www.tensorflow.org/programmers_guide/tensors#shape
     :return: a Spark DataFrame with metadata information embedded.
     """
-    return DataFrame(_java_api().appendShape(dframe._jdf, col._jc, size), _sql)
+    shape = [i or -1 for i in shape]
+    return DataFrame(_java_api().appendShape(dframe._jdf, col._jc, shape), _sql)
 
 def aggregate(fetches, grouped_data, initial_variables=_initial_variables_default):
     """

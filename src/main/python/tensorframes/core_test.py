@@ -202,8 +202,7 @@ class TestCore(object):
     def test_append_shape(self):
         data = [Row(x=float(x)) for x in range(5)]
         df = self.sql.createDataFrame(data)
-        ddf = tfs.append_shape(df, col('x'), [-1, 1])
-        import ipdb; ipdb.set_trace()
+        ddf = tfs.append_shape(df, col('x'), [-1])
         with tf.Graph().as_default():
             # The placeholder that corresponds to column 'x'
             x_1 = tf.placeholder(tf.double, shape=[], name="x_1")
@@ -214,7 +213,7 @@ class TestCore(object):
             res = tfs.reduce_rows(x, ddf)
             assert res == sum([r.x for r in data])
 
-# This test fails
+    # This test fails
     def test_reduce_blocks_1(self):
         data = [Row(x=float(x)) for x in range(5)]
         df = self.sql.createDataFrame(data)

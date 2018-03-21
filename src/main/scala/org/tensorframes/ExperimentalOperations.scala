@@ -1,12 +1,14 @@
 package org.tensorframes
 
+import java.util
 import org.apache.spark.sql.Column
 import org.apache.spark.sql.DataFrame
 import org.apache.spark.sql.functions.col
 import org.apache.spark.sql.types.{ArrayType, DataType, MetadataBuilder, NumericType}
 import org.tensorframes.impl.{ScalarType, SupportedOperations}
+import scala.collection.JavaConverters._
 
-import java.util
+
 
 /**
   * Some useful methods for operating on dataframes that are not part of the official API (and thus may change anytime).
@@ -52,9 +54,9 @@ trait ExperimentalOperations {
 
     val meta = new MetadataBuilder
     val colDtypes = df.select(col).schema.fields.head.dataType
-    val basicDatatype = {
+    val basicDatatype =
       ExtraOperations.extractBasicType(colDtypes).getOrElse(throw new Exception(s"'$colDtypes' was not supported"))
-    }
+
     meta.putString(MetadataConstants.tensorStructType,
       SupportedOperations.opsFor(basicDatatype).sqlType.toString
       )
@@ -63,7 +65,7 @@ trait ExperimentalOperations {
   }
 
   def appendShape(df: DataFrame, col:Column, shape: util.ArrayList[Int]): DataFrame =
-    appendShape(df, col, shape)
+    appendShape(df, col, shape.asScala.toArray[Int])
 }
 
 private[tensorframes] object ExtraOperations extends ExperimentalOperations with Logging {
