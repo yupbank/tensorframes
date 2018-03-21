@@ -6,6 +6,8 @@ import org.apache.spark.sql.functions.col
 import org.apache.spark.sql.types.{ArrayType, DataType, MetadataBuilder, NumericType}
 import org.tensorframes.impl.{ScalarType, SupportedOperations}
 
+import java.util
+
 /**
   * Some useful methods for operating on dataframes that are not part of the official API (and thus may change anytime).
  */
@@ -46,7 +48,7 @@ trait ExperimentalOperations {
     df.select(cols: _*)
   }
 
-  def appendShape(df: DataFrame, col: Column, shape: Array[Long]): DataFrame = {
+  def appendShape(df: DataFrame, col: Column, shape: Array[Int]): DataFrame = {
 
     val meta = new MetadataBuilder
     val colDtypes = df.select(col).schema.fields.head.dataType
@@ -56,9 +58,12 @@ trait ExperimentalOperations {
     meta.putString(MetadataConstants.tensorStructType,
       SupportedOperations.opsFor(basicDatatype).sqlType.toString
       )
-    meta.putLongArray(MetadataConstants.shapeKey, shape)
+    meta.putLongArray(MetadataConstants.shapeKey, shape.map(_.asInstanceOf[Long]))
     df.withColumn(col.toString(), col.as("", meta.build()))
   }
+
+  def appendShape(df: DataFrame, col:Column, shape: util.ArrayList[Int]): DataFrame =
+    appendShape(df, col, shape)
 }
 
 private[tensorframes] object ExtraOperations extends ExperimentalOperations with Logging {
