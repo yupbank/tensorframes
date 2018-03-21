@@ -393,7 +393,7 @@ def append_shape(dframe, col, size):
     :param size: a shape corresponding to the tensor
     :return: a Spark DataFrame with metadata information embedded.
     """
-    return DataFrame(_java_api().appendShape(dframe._jdf, col, size), _sql)
+    return DataFrame(_java_api().appendShape(dframe._jdf, col._jc, size), _sql)
 
 def aggregate(fetches, grouped_data, initial_variables=_initial_variables_default):
     """
