@@ -178,20 +178,23 @@ df2.collect()
 ```
 
 ## How to compile and install for developers
-
-It is recommended you use [Nix](http://nixos.org/nix/) to guarantee that the build environment
-can be reproduced. Once you have installed Nix, you can set the environment from
+It is recommended you use [Conda Environment](https://conda.io/docs/user-guide/tasks/manage-environments.html) to guarantee that the build environment
+can be reproduced. Once you have installed Conda, you can set the environment from
 the root of project:
 
 ```bash
-nix-shell --pure default.nix
+conda create -q -n tensorframes-environment python=$PYTHON_VERSION
 ```
 
-This will create a python 2.7 environment with all the dependencies. If you
-want to work with Python 3.5, use `default-3.5.nix` instead.
+This will create an environment for your project. We recommend using Python version 3.6.2 or 2.7.13.
+After the environemnt is created, you can activate it and install all dependencies as follows:
 
- The C++ bindings are already compiled though, so you should only have to deal with compiling
- the scala code. The recommended procedure is to use the assembly:
+```bash
+conda activate tensorframes-environment
+pip install --user -r python/requirements.txt
+```
+
+You also need to compile the scala code. The recommended procedure is to use the assembly:
 
 ```bash
 build/sbt tfs_testing/assembly
