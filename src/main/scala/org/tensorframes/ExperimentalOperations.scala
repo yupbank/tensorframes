@@ -1,10 +1,14 @@
 package org.tensorframes
 
+import java.util
+import org.apache.spark.sql.Column
 import org.apache.spark.sql.DataFrame
 import org.apache.spark.sql.functions.col
-import org.apache.spark.sql.types.{ArrayType, DataType, NumericType}
-
+import org.apache.spark.sql.types.{ArrayType, DataType, MetadataBuilder, NumericType}
 import org.tensorframes.impl.{ScalarType, SupportedOperations}
+import scala.collection.JavaConverters._
+
+
 
 /**
   * Some useful methods for operating on dataframes that are not part of the official API (and thus may change anytime).
@@ -45,6 +49,23 @@ trait ExperimentalOperations {
     }
     df.select(cols: _*)
   }
+
+  def appendShape(df: DataFrame, col: Column, shape: Array[Int]): DataFrame = {
+
+    val meta = new MetadataBuilder
+    val colDtypes = df.select(col).schema.fields.head.dataType
+    val basicDatatype =
+      ExtraOperations.extractBasicType(colDtypes).getOrElse(throw new Exception(s"'$colDtypes' was not supported"))
+
+    meta.putString(MetadataConstants.tensorStructType,
+      SupportedOperations.opsFor(basicDatatype).sqlType.toString
+      )
+    meta.putLongArray(MetadataConstants.shapeKey, shape.map(_.asInstanceOf[Long]))
+    df.withColumn(col.toString(), col.as("", meta.build()))
+  }
+
+  def appendShape(df: DataFrame, col:Column, shape: util.ArrayList[Int]): DataFrame =
+    appendShape(df, col, shape.asScala.toArray[Int])
 }
 
 private[tensorframes] object ExtraOperations extends ExperimentalOperations with Logging {
@@ -110,7 +131,7 @@ private[tensorframes] object ExtraOperations extends ExperimentalOperations with
     DataFrameInfo(allInfo)
   }
 
-  private def extractBasicType(dt: DataType): Option[ScalarType] = dt match {
+  def extractBasicType(dt: DataType): Option[ScalarType] = dt match {
     case x: NumericType => Some(SupportedOperations.opsFor(x).scalarType)
     case x: ArrayType => extractBasicType(x.elementType)
     case _ => None

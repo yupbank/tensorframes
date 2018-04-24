@@ -9,7 +9,8 @@ from pyspark.sql import SQLContext, Row, DataFrame
 from pyspark.sql.types import DoubleType, IntegerType, LongType, FloatType, ArrayType
 
 __all__ = ['reduce_rows', 'map_rows', 'reduce_blocks', 'map_blocks',
-           'analyze', 'print_schema', 'aggregate', 'block', 'row']
+           'analyze', 'print_schema', 'aggregate', 'block', 'row',
+           'append_shape']
 
 _sc = None
 _sql = None
@@ -376,6 +377,26 @@ def analyze(dframe):
     :return: a Spark DataFrame with metadata information embedded.
     """
     return DataFrame(_java_api().analyze(dframe._jdf), _sql)
+
+def append_shape(dframe, col, shape):
+    """Append extra metadata for a dataframe that
+     describes the numerical shape of the content.
+
+     This method is useful when a dataframe contains non-scalar tensors, for which the shape must be checked beforehand.
+     The user is responsible for providing the right shape, any mismatch will trigger eventually an exception in Spark
+
+     Note: nullable fields are not accepted.
+
+     The function [print_schema] lets users introspect the information added to the DataFrame.
+
+    :param dframe: a Spark DataFrame
+    :param col: a Column expression
+    :param shape: a shape corresponding to the tensor,
+                detailed explanation https://www.tensorflow.org/programmers_guide/tensors#shape
+    :return: a Spark DataFrame with metadata information embedded.
+    """
+    shape = [i or -1 for i in shape]
+    return DataFrame(_java_api().appendShape(dframe._jdf, col._jc, shape), _sql)
 
 def aggregate(fetches, grouped_data, initial_variables=_initial_variables_default):
     """
