@@ -77,8 +77,8 @@ def _add_shapes(graph, builder, fetches):
     ph_names = []
     ph_shapes = []
     for n in graph.as_graph_def(add_shapes=True).node:
-        # Just the input nodes:
-        if not n.input:
+        # Just the input nodes which have output:
+        if not n.input and n.attr:
             op_name = n.name
             # Simply get the default output for now, assume that the nodes have only one output
             t = graph.get_tensor_by_name(op_name + ":0")
