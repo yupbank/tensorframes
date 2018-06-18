@@ -4,14 +4,14 @@ import sbtassembly.AssemblyKeys._
 import sbtassembly.AssemblyPlugin.autoImport.{ShadeRule => _, assembly => _, assemblyExcludedJars => _, assemblyOption => _, assemblyShadeRules => _}
 import sbtassembly._
 import sbtsparkpackage.SparkPackagePlugin.autoImport._
+import sbtrelease.ReleasePlugin.autoImport._
+import ReleaseTransformations._
 
 object Shading extends Build {
 
   import Dependencies._
 
-
   lazy val commonSettings = Seq(
-    version := "0.4.1-SNAPSHOT",
     name := "tensorframes",
     scalaVersion := sys.props.getOrElse("scala.version", "2.11.8"),
     organization := "databricks",
@@ -25,7 +25,16 @@ object Shading extends Build {
       baseDirectory.value / "src/main/python/"
     },
     // Spark packages does not like this part
-    test in assembly := {}
+    test in assembly := {},
+    // We only use sbt-release to update version numbers for now.
+    releaseProcess := Seq[ReleaseStep](
+      inquireVersions,
+      setReleaseVersion,
+      commitReleaseVersion,
+      tagRelease,
+      setNextVersion,
+      commitNextVersion
+    )
   )
 
   lazy val sparkDependencies = Seq(
