@@ -6,6 +6,8 @@ import sbtassembly._
 import sbtsparkpackage.SparkPackagePlugin.autoImport._
 import sbtrelease.ReleasePlugin.autoImport._
 import ReleaseTransformations._
+import sbtprotobuf.ProtobufPlugin
+import sbtprotobuf.ProtobufPlugin.autoImport._
 
 object Shading extends Build {
 
@@ -24,6 +26,7 @@ object Shading extends Build {
     unmanagedResourceDirectories in Compile += {
       baseDirectory.value / "src/main/python/"
     },
+    version in protobufGenerate := "3.5.1",
     // Spark packages does not like this part
     test in assembly := {},
     // We only use sbt-release to update version numbers for now.
@@ -68,15 +71,10 @@ object Shading extends Build {
     "org.scalatest" %% "scalatest" % "3.0.0" % "test"
   )
 
-  lazy val shadedDependencies = Seq(
-    "com.google.protobuf" % "protobuf-java" % "3.5.1"
-  )
-
   lazy val shaded = Project("shaded", file(".")).settings(
     target := target.value / "shaded",
     libraryDependencies ++= nonShadedDependencies.map(_ % "provided"),
     libraryDependencies ++= sparkDependencies.map(_ % "provided"),
-    libraryDependencies ++= shadedDependencies,
     libraryDependencies ++= testDependencies,
     libraryDependencies ++= allPlatformDependencies,
     assemblyShadeRules in assembly := Seq(
@@ -85,6 +83,7 @@ object Shading extends Build {
     ),
     assemblyOption in assembly := (assemblyOption in assembly).value.copy(includeScala = false)
   ).settings(commonSettings: _*)
+  .enablePlugins(ProtobufPlugin)
 
   // The artifact that is used for spark packages:
   // - includes the binary libraries, shaded protobuf
@@ -116,13 +115,13 @@ object Shading extends Build {
     assembly in spPackage := (assembly in shaded).value,
     credentials += Credentials(Path.userHome / ".ssh" / "credentials_tensorframes.sbt.txt")
   ).settings(commonSettings: _*)
+  .enablePlugins(ProtobufPlugin)
 
   // The java testing artifact: do not shade or embed anything.
   lazy val testing = Project("tfs_testing", file(".")).settings(
     target := target.value / "testing",
     libraryDependencies ++= sparkDependencies.map(_ % "provided"),
     libraryDependencies ++= nonShadedDependencies,
-    libraryDependencies ++= shadedDependencies,
     libraryDependencies ++= testDependencies,
     libraryDependencies ++= allPlatformDependencies,
     // Do not attempt to run tests when building the assembly.
@@ -134,4 +133,5 @@ object Shading extends Build {
     ),
     assemblyOption in assembly := (assemblyOption in assembly).value.copy(includeScala = false)
   ).settings(commonSettings: _*)
+  .enablePlugins(ProtobufPlugin)
 }
