@@ -123,6 +123,24 @@ trait OperationsInterface {
    * @param shapeHints some hints for the shape.
    * @return
    */
+  def treeReduceBlocks(dataFrame: DataFrame, graph: GraphDef, depth: Int, shapeHints: ShapeDescription): Row
+
+  /**
+   * Aggregates rows using tree reduce , using a reducing transform on grouped data.
+   *
+   * This is useful when data is already grouped by key.
+   *
+   * This example computes the minimum for each key of some dataset:
+   *
+   * ???
+   *
+   * Only numerical data is supported at present.
+   *
+   * @param data the grouped data.
+   * @param graph the computation graph. It is subject to the same conditions as in [reduceBlocks].
+   * @param shapeHints some hints for the shape.
+   * @return
+   */
   def aggregate(data: RelationalGroupedDataset, graph: GraphDef, shapeHints: ShapeDescription): DataFrame
 
   /**

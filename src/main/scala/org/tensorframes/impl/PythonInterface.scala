@@ -87,7 +87,8 @@ class PythonOpBuilder(
     interface: OperationsInterface with ExperimentalOperations,
     op: PythonInterface.Operation,
     df: DataFrame = null,
-    groupedData: RelationalGroupedDataset = null) {
+    groupedData: RelationalGroupedDataset = null,
+    depth: Int=2) {
   import PythonInterface._
   private var _shapeHints: ShapeDescription = ShapeDescription.empty
   // TODO: this object may leak because of Py4J -> do not hold to large objects here.
@@ -132,6 +133,11 @@ class PythonOpBuilder(
         df.schema, buildGraphDef(), _shapeHints)
       val r = interface.reduceBlocks(df, buildGraphDef(), _shapeHints)
       wrapDF(r, allSchema.output)
+    case TreeReduceBlock =>
+      val allSchema = SchemaTransforms.reduceBlocksSchema(
+        df.schema, buildGraphDef(), _shapeHints)
+      val r = interface.treeReduceBlocks(df, buildGraphDef(), depth, _shapeHints)
+      wrapDF(r, allSchema.output)
     case ReduceRow =>
       val outSchema: StructType = SchemaTransforms.reduceRowsSchema(
         df.schema, buildGraphDef(), _shapeHints)
@@ -175,6 +181,7 @@ private object PythonInterface {
   case object MapBlockTrimmed extends Operation
   case object MapRow extends Operation
   case object ReduceBlock extends Operation
+  case object TreeReduceBlock extends Operation
   case object ReduceRow extends Operation
   case object AggregateBlock extends Operation
 }

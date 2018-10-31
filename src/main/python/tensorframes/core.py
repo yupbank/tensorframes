@@ -352,6 +352,47 @@ def reduce_blocks(fetches, dframe, initial_variables=_initial_variables_default)
     df = builder.buildRow()
     return _unpack_row(df, fetches)
 
+def tree_reduce_blocks(fetches, dframe, initial_variables=_initial_variables_default, depth=2):
+    """ Applies the fetches on blocks of rows, so that only one row of data remains in the end. The order in which
+    the operations are performed on the rows is unspecified.
+
+    The `fetches` argument may be a list of graph elements or a single
+    graph element. A graph element can be of the following type:
+
+    * If the *i*th element of `fetches` is a
+      `Tensor`, the *i*th return value will be a numpy ndarray containing the value of that tensor.
+
+    There is no support for sparse tensor objects yet.
+
+    This transform not lazy and is performed when called.
+
+    In order to perform the reduce operation, the fetches must follow some naming conventions: for each fetch called
+    for example 'z', there must be one placeholder 'z_input'. The dtype of 'z' and 'z_input' must be the same, and
+    the shape of 'z_input' must be one degree higher than 'z'. For example, if 'z' is scalar, then 'z_input' must be
+    a vector with unknown dimension.
+
+    Args:
+      fetches: A single graph element, or a list of graph elements
+        (described above).
+      dframe: A DataFrame object. The columns of the tensor frame will be fed into the fetches at execution.
+    :param initial_variables: a boolean option default True, inital variables if it is used.
+
+    Returns: a list of numpy arrays, one for each of the fetches, or a single numpy array if there is but one fetch.
+
+    :param fetches: see description above
+    :param dframe: a Spark DataFrame
+    :param initial_variables: a boolean option default True, inital variables if it is used.
+    :return: a list of numpy arrays
+    """
+    fetches = _check_fetches(fetches)
+    graph = _get_graph(fetches, initial_variables)
+    builder = _java_api().reduce_blocks(dframe._jdf)
+    _add_graph(graph, builder)
+    _add_shapes(graph, builder, fetches)
+    df = builder.buildRow()
+    return _unpack_row(df, fetches)
+
+
 def print_schema(dframe):
     """
     Prints the schema of the dataframe, including all the metadata that describes tensor information.

@@ -532,6 +532,32 @@ class DebugRowOps
       allSchema.reduceInput, allSchema.output, gProto))
   }
 
+  override def treeReduceBlocks(
+      dataframe: DataFrame,
+      graph: GraphDef,
+      depth: Int,
+      shapeHints: ShapeDescription): Row = {
+    val sc = dataframe.sqlContext.sparkContext
+    val schema = dataframe.schema
+    val allSchema = reduceBlocksSchema(schema, graph, shapeHints)
+    val gProto = sc.broadcast(TensorFlowOps.graphSerial(graph))
+    // It first reduces each block, and then performs pair-wise reduction.
+    val transformRdd = dataframe.rdd.mapPartitions { it =>
+      // TODO(tjh) add test for empty iterator
+      val arr = it.toArray
+      if (arr.length <= 1) {
+        arr.iterator
+      } else {
+        val row = DebugRowOpsImpl.performReduceBlock(
+          arr, allSchema.mapInput, allSchema.mapTFCols, allSchema.output, gProto.value)
+        Array(row).iterator
+      }
+    }
+    // TODO: it would be nice to respect the output order here?
+    transformRdd.treeReduce(DebugRowOpsImpl.reducePairBlock(
+      allSchema.reduceInput, allSchema.output, gProto), depth)
+  }
+
   override def explain(df: DataFrame): String = {
     val d = explainDetailed(df)
 
